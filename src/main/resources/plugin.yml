@@ -1,0 +1,7 @@
+name: MineLib
+version: '1.0.0'
+main: dev.nikdekur.minelib.MineLib
+authors: [Nik_De_Kur]
+api-version: 1.12
+description: Plugin with big amount of features for plugin development
+load: POSTWORLD
