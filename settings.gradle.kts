@@ -3,3 +3,7 @@ plugins {
 }
 rootProject.name = "minelib"
 
+
+include("core")
+include("versions:1_12_R1")
+include("versions:1_20_4")

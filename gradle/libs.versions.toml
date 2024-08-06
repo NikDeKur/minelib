@@ -1,23 +1,29 @@
 [versions]
 kotlin = "2.0.0"
 kotlinx-serialization = "1.7.1"
-ndkore = "1.1.1"
-spigot = "1.12.2-R0.1-SNAPSHOT"
+ndkore = "1.2.1"
 kotlinx-coroutine = "1.9.0-RC"
 google-guava = "33.2.1-jre"
 shadowJar = "8.1.1"
+licenser = "0.6.1"
 kaml = "0.57.0"
+authlib = "1.11"
 
 [libraries]
 ndkore = { module = "dev.nikdekur:ndkore", version.ref = "ndkore" }
-spigot = { module = "org.spigotmc:spigot", version.ref = "spigot" }
+spigot-api = { module = "org.spigotmc:spigot-api", version = "1.12.2-R0.1-SNAPSHOT" }
+spigot112R1 = { module = "org.spigotmc:spigot", version = "1.12.2-R0.1-SNAPSHOT" }
+spigot_1_20_4 = { module = "org.spigotmc:spigot", version = "1.20.4-R0.1-SNAPSHOT" }
+spigot_1_21 = { module = "org.spigotmc:spigot", version = "1.21-R0.1-SNAPSHOT" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutine" }
 google-guava = { module = "com.google.guava:guava", version.ref = "google-guava" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+authlib = { module = "com.mojang:authlib", version.ref = "authlib" }
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 shadowJar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowJar" }
+licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }

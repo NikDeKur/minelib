@@ -1,6 +1,5 @@
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.libs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -8,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.shadowJar)
+    alias(libs.plugins.licenser)
     id("maven-publish")
 }
 
@@ -18,26 +18,39 @@ version = "1.0.0"
 val authorId: String by project
 val authorName: String by project
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url = uri("https://repo.dmulloy2.net/repository/public/")
+allprojects {
+    apply {
+        plugin(rootProject.libs.plugins.kotlinJvm.get().pluginId)
+        plugin(rootProject.libs.plugins.kotlinSerialization.get().pluginId)
     }
-    maven {
-        url = uri("https://repo.destroystokyo.com/repository/maven-public/")
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url = uri("https://repo.dmulloy2.net/repository/public/")
+        }
+        maven {
+            url = uri("https://repo.destroystokyo.com/repository/maven-public/")
+        }
+        maven("https://repo.aikar.co/nexus/content/repositories/aikar-release/")
+    }
+
+    val implementation by configurations
+
+    dependencies {
+        implementation(rootProject.libs.ndkore)
+    }
+
+    // Remove Java compatibility made by params non-null assertions
+    tasks.withType<KotlinCompile> {
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xno-param-assertions", "-Xno-call-assertions")
+        }
     }
 }
 
-dependencies {
-    compileOnly(libs.spigot)
-    implementation(libs.ndkore)
-    implementation(libs.google.guava)
-    implementation(libs.kaml)
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.serialization)
-    implementation(libs.kotlinx.coroutines)
-}
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -46,15 +59,29 @@ java {
     withSourcesJar()
 }
 
+kotlin {
+    jvmToolchain(8)
+}
+
 tasks.withType<KotlinCompile> {
     compilerOptions {
         freeCompilerArgs.addAll("-Xno-param-assertions", "-Xno-call-assertions")
     }
 }
 
-kotlin {
-    jvmToolchain(8)
+
+
+license {
+    header(project.file("HEADER"))
+    properties {
+        set("year", "2024-present")
+        set("name", authorName)
+    }
 }
+
+
+
+
 
 publishing {
     publications {
@@ -81,6 +108,18 @@ tasks.test {
     useJUnitPlatform()
 }
 
+
+// Collect all in 1 jar
 tasks.withType<ShadowJar> {
     archiveClassifier.set("")
+
+    // Include all output directories and runtime classpath from all subprojects
+    allprojects.forEach { project ->
+        from(project.sourceSets.main.get().output)
+        configurations.add(project.configurations.runtimeClasspath.get())
+    }
+
+    // minimize()
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
