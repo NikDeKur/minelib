@@ -99,7 +99,11 @@ publishing {
                 }
             }
 
-            from(components["java"])
+            afterEvaluate {
+                val shadowJar = tasks.findByName("shadowJar")
+                if (shadowJar == null) from(components["java"])
+                else artifact(shadowJar)
+            }
         }
     }
 }
