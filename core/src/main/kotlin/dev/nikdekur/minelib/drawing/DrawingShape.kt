@@ -5,7 +5,7 @@ import dev.nikdekur.ndkore.`interface`.Snowflake
 import java.util.*
 
 data class DrawingShape(
-    val manager: DrawingManager,
+    val manager: DrawingServiceImpl,
     override val id: UUID,
     val shape: Shape,
     val delay: Long,
@@ -32,7 +32,7 @@ data class DrawingShape(
      *
      * Will remove the shape from the drawing manager and stop the drawing task.
      *
-     * @see DrawingManager.removeShape
+     * @see DrawingServiceImpl.removeShape
      */
     fun stop() {
         manager.removeShape(id)

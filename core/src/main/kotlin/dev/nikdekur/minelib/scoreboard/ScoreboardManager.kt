@@ -1,9 +1,9 @@
 package dev.nikdekur.minelib.scoreboard
 
 
-import dev.nikdekur.minelib.PluginModule
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.MineLibModule
 import dev.nikdekur.minelib.ext.bLogger
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
 import dev.nikdekur.ndkore.cooldown.Cooldown
 import dev.nikdekur.ndkore.cooldown.GrowPolicy
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class ScoreboardManager(override val app: ServerPlugin, val adapter: AssembleAdapter) : PluginModule {
+class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter) : MineLibModule {
 
     // ScoreboardManager will be loaded after all possibly displayable data is loaded
     // And unloaded first before all possibly displayable data is unloaded

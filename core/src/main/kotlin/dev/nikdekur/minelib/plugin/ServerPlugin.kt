@@ -2,14 +2,12 @@ package dev.nikdekur.minelib.plugin
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import dev.nikdekur.minelib.PluginModule
+import dev.nikdekur.minelib.MineLibModule
 import dev.nikdekur.minelib.command.ServerCommand
 import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.ext.warning
-import dev.nikdekur.minelib.nms.VersionAdapter
 import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.utils.ClassUtils
-import dev.nikdekur.minelib.utils.ClassUtils.logger
 import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.loadConfig
@@ -20,11 +18,10 @@ import dev.nikdekur.ndkore.module.ModulesManager
 import dev.nikdekur.ndkore.reflect.ClassFinder
 import dev.nikdekur.ndkore.reflect.Reflect
 import kotlinx.serialization.encodeToString
-import org.bukkit.Bukkit
-import org.bukkit.command.PluginCommand
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.annotation.KoinInternalApi
 import java.io.File
 import java.io.IOException
 import java.util.function.Predicate
@@ -116,12 +113,12 @@ abstract class ServerPlugin : JavaPlugin() {
 
 
 
-            /**
-     * Internal function called once the plugin is enabled to register all components.
-     *
-     * Function go through [components] and [defaultComponents] and register them via [registerComponent] function.
-     */
-    private fun registerComponents() {
+    /**
+* Internal function called once the plugin is enabled to register all components.
+*
+* Function go through [components] and [defaultComponents] and register them via [registerComponent] function.
+*/
+    protected open fun registerComponents() {
         defaultComponents.forEachSafe(
             {e, el -> logger.warning("Failed to register default component $el", e) },
             ::registerComponent
@@ -142,6 +139,7 @@ abstract class ServerPlugin : JavaPlugin() {
      * @param component Component to register
      * @return has the component been registered?
      */
+    @OptIn(KoinInternalApi::class)
     open fun registerComponent(component: Any): Boolean {
         var registered = false
 
@@ -158,7 +156,7 @@ abstract class ServerPlugin : JavaPlugin() {
         if (component is Module<*>) {
             component.app as? ServerPlugin ?: return false
             @Suppress("UNCHECKED_CAST")
-            modulesManager.addModule(component as PluginModule)
+            modulesManager.addModule(component as Module<ServerPlugin>)
             registered = true
         }
 
@@ -223,12 +221,13 @@ abstract class ServerPlugin : JavaPlugin() {
 
     open val preLoadingClassesWL: Set<String> = emptySet()
     open val preLoadingClassesBL: Set<String> = emptySet()
-    private fun loadAllPluginClasses() {
+    protected fun loadAllPluginClasses() {
         val startNanos = System.nanoTime()
         val success: Boolean = try {
             ClassUtils.loadAllClassesFromJar(classLoader, file) { className ->
                 return@loadAllClassesFromJar when {
                     preLoadingClassesBL.contains(className) -> false
+                    className.contains("v1_") -> false
                     className.startsWith("dev.nikdekur.") -> true
                     preLoadingClassesWL.contains(className) -> true
                     else -> false
@@ -249,21 +248,9 @@ abstract class ServerPlugin : JavaPlugin() {
         }
     }
 
-    private fun getNDKCommand(name: String): PluginCommand? {
-        return super.getCommand(name) ?: run {
-            logger.warning("Command '$name' not found. Maybe you forgot to register it?")
-            return null
-        }
-    }
 
-    protected fun registerCommand(name: String, executor: ServerCommand) {
-        try {
-            val command = getNDKCommand(name) ?: return
-            command.executor = executor
-            command.tabCompleter = executor
-        } catch (e: NoSuchElementException) {
-            e.printStackTrace()
-        }
+    protected fun registerCommand(name: String, command: ServerCommand) {
+        command.register(this)
     }
 
     /**
@@ -352,19 +339,6 @@ abstract class ServerPlugin : JavaPlugin() {
     }
 
     private val defaultComponents by lazy {
-        listOf<PluginModule>()
-    }
-
-
-    companion object {
-
-
-        val versionAdapter by lazy {
-            val packageName = Bukkit.getServer().javaClass.`package`.name
-            val versionStr = packageName.substring(packageName.lastIndexOf('.') + 1)
-            logger.log(Level.INFO, "Version: $versionStr");
-            VersionAdapter.getForVersion(versionStr)
-        }
-
+        listOf<MineLibModule>()
     }
 }

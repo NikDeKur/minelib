@@ -2,7 +2,7 @@
 
 package dev.nikdekur.minelib.ext
 
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.MineLib
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -60,7 +60,7 @@ inline fun Player.getTargetUpLocation(maxDistance: Int, transparent: Set<Materia
  * @param speed the speed to set (from 0 to 1)
  */
 inline fun Player.setHighWalkSpeed(speed: Float) {
-    ServerPlugin.versionAdapter.setWalkSpeed(this, speed)
+    MineLib.versionAdapter.setWalkSpeed(this, speed)
 }
 
 /**
@@ -71,7 +71,7 @@ inline fun Player.setHighWalkSpeed(speed: Float) {
  * @param speed the speed to set (from 0 to 1)
  */
 inline fun Player.setHighFlySpeed(speed: Float) {
-    ServerPlugin.versionAdapter.setFlySpeed(this, speed)
+    MineLib.versionAdapter.setFlySpeed(this, speed)
 }
 
 /**

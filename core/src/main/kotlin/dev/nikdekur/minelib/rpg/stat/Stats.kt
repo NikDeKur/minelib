@@ -33,6 +33,16 @@ object RPGMaxHealthStat : RPGStat.Double() {
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_MAX_HEALTH
 }
 
+// ----------------------------
+// HEALTH
+// ----------------------------
+object RPGArmorStat : RPGStat.Double() {
+    override val id: String = "armor"
+    override val nameMSG = DefaultMSG.RPG_STAT_NAME_ARMOR
+    override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_ARMOR
+}
+
+
 
 // ----------------------------
 // REGENERATION

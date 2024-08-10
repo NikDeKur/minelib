@@ -1,18 +1,19 @@
 package dev.nikdekur.minelib.rpg.profile
 
-import dev.nikdekur.minelib.rpg.RPGManager
+import dev.nikdekur.minelib.rpg.DefaultRPGService
 import dev.nikdekur.minelib.rpg.buff.AttachableBuffsList
-import dev.nikdekur.minelib.rpg.combat.CombatTracker
 import dev.nikdekur.minelib.rpg.combat.DamageSource
 import dev.nikdekur.minelib.rpg.stat.*
 import dev.nikdekur.minelib.rpg.stat.RPGProfileStats
+import dev.nikdekur.minelib.rpg.strategy.DamageStrategy
 import dev.nikdekur.minelib.rpg.update.FixedRateUpdater
 import dev.nikdekur.ndkore.`interface`.Snowflake
 import java.util.*
 
 interface RPGProfile : Snowflake<UUID> {
 
-    val combatTracker: CombatTracker
+    val strategy: DamageStrategy
+
     val buffs: AttachableBuffsList
 
     // val defaultStats: Map<RPGStat<*>, Any>
@@ -70,62 +71,19 @@ interface RPGProfile : Snowflake<UUID> {
     /**
      * Damage the profile for the given amount of damage
      *
-     * Doesn't change damage anyway, apply the damage to the profile.
-     *
-     * @param damage The damage to apply
-     * @param source The source of the damage
-     * @return True if damage was applied, false if an event was cancelled or the player is already dead
-     */
-    fun damageRaw(damage: Double, source: DamageSource): Boolean
-
-
-    /**
-     * Damage the profile for the given amount of damage
-     *
      * Method can decrease or cancel damage depending on the player's stats and damage caused.
      *
      * @param damage The damage to apply
      * @param source The source of the damage
      * @return The actual damage that was applied to the player
      */
-    fun damage(damage: Double, source: DamageSource): Double
+    fun damage(source: DamageSource): Double
 
-
-    /**
-     * Makes this profile attack another profile
-     *
-     * Scale the damage by with function [scaleSelfDamage]
-     *
-     * Enter combat with the target profile
-     *
-     * @param target The profile to attack
-     * @param additionalDamage The additional damage to pass into the [scaleSelfDamage] function
-     * @param source The source of the damage
-     * @return The actual damage that was applied to the player
-     */
-    fun attack(target: RPGProfile, additionalDamage: Double = 0.0, source: DamageSource): Double
-
-    /**
-     * Makes this profile attack another profile
-     *
-     * Shortcut for [attack] with additionalDamage = 0.0
-     *
-     * Scale the damage by with function [scaleSelfDamage]
-     *
-     * Enter combat with the target profile
-     *
-     * @param target The profile to attack
-     * @param source The source of the damage
-     * @return The actual damage that was applied to the player
-     */
-    fun attack(target: RPGProfile, source: DamageSource): Double {
-        return attack(target, 0.0, source)
-    }
 
     /**
      * Kill the profile
      *
-     * Calls [RPGKillEvent] and remove profile from the [RPGManager]
+     * Calls [RPGKillEvent] and remove profile from the [DefaultRPGService]
      *
      * @param source The source of the damage
      */

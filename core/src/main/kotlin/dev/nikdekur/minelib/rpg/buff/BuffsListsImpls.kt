@@ -8,23 +8,20 @@ import dev.nikdekur.ndkore.map.multi.MultiHashMap
 import java.util.*
 
 
-open class BuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), BuffsList {
+open class BuffsListImpl : MultiHashMap<RPGStat<*>, UUID, RPGBuff<*>>(), BuffsList {
 
     override fun getBuffs(): Collection<RPGBuff<*>> {
         return values.flatMap { it.values }
     }
-    
-    override fun <T : Comparable<T>> getBuffs(id: String): Collection<RPGBuff<T>> {
-        val res = get(id) ?: return emptyList()
+
+
+    override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> {
+        val res = get(type) ?: return emptyList()
         return res.values as? Collection<RPGBuff<T>> ?: emptyList()
     }
 
-    final override inline fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> {
-        return getBuffs(type.id)
-    }
-
     override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<T>? {
-        return get(type.id, id) as? RPGBuff<T>
+        return get(type, id) as? RPGBuff<T>
     }
 
 
@@ -48,12 +45,12 @@ open class BuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), BuffsList {
 
 
     override fun <T : Comparable<T>> addBuff(buff: RPGBuff<T>) {
-        if (contains(buff.stat.id, buff.id)) return
+        if (contains(buff.stat, buff.id)) return
 
         beforeAddBuff(buff)
         buff.beforeAdd(this)
 
-        put(buff.stat.id, buff.id, buff)
+        put(buff.stat, buff.id, buff)
 
         buff.afterAdd(this)
         afterAddBuff(buff)
@@ -73,18 +70,18 @@ open class BuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), BuffsList {
     }
 
     override fun <T  : Comparable<T>> removeBuff(buff: RPGBuff<T>) {
-        if (!contains(buff.stat.id, buff.id)) return
+        if (!contains(buff.stat, buff.id)) return
 
         beforeRemoveBuff(buff)
         buff.beforeRemove(this)
 
-        remove(buff.stat.id, buff.id)
+        remove(buff.stat, buff.id)
 
         afterRemoveBuff(buff)
         buff.afterRemove(this)
     }
 
-    override fun forEachStat(action: (String) -> Unit) {
+    override fun forEachStat(action: (RPGStat<*>) -> Unit) {
         keys.forEach(action)
     }
 
@@ -107,6 +104,26 @@ open class BuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), BuffsList {
         }
     }
 
+    override fun compareByBuffsValue(other: BuffsList): Int {
+        var res = 0
+        forEachStat { stat ->
+            val thisBuff = getBuffValueOrNull(stat)
+            val otherBuff = other.getBuffValueOrNull(stat)
+            if (thisBuff == null || otherBuff == null)
+                return@forEachStat
+
+            thisBuff as Comparable<Any>
+            otherBuff as Comparable<Any>
+
+            if (thisBuff > otherBuff)
+                res++
+            else if (thisBuff < otherBuff)
+                res--
+        }
+
+        return res
+    }
+
     override fun clear() {
         forEach { _, map ->
             map.forEach { (_, buff) ->
@@ -118,24 +135,22 @@ open class BuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), BuffsList {
 }
 
 
-class ImaginaryBuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), ImaginaryBuffsList {
+class ImaginaryBuffsListImpl : MultiHashMap<RPGStat<*>, UUID, RPGBuff<*>>(), ImaginaryBuffsList {
 
     override fun getBuffs(): Collection<RPGBuff<*>> {
         return values.flatMap { it.values }
     }
 
-    override fun <T : Comparable<T>> getBuffs(id: String): Collection<RPGBuff<T>> {
-        val res = get(id) ?: return emptyList()
+    override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> {
+        val res = get(type) ?: return emptyList()
         return res.values as? Collection<RPGBuff<T>> ?: emptyList()
     }
 
-    override inline fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> {
-        return getBuffs(type.id)
-    }
+
 
 
     override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<T>? {
-        return get(type.id, id) as? RPGBuff<T>
+        return get(type, id) as? RPGBuff<T>
     }
 
     override fun <T : Comparable<T>> getBuffValueOrNull(type: RPGStat<T>): T? {
@@ -156,7 +171,7 @@ class ImaginaryBuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), Imagina
     }
 
     override fun <T : Comparable<T>> addBuff(buff: RPGBuff<T>) {
-        put(buff.stat.id, buff.id, buff)
+        put(buff.stat, buff.id, buff)
     }
 
     override fun <T : Comparable<T>> addBuff(type: RPGStat<T>, value: T) {
@@ -164,12 +179,16 @@ class ImaginaryBuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), Imagina
     }
 
     override fun <T : Comparable<T>> removeBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> {
-        val remove = remove(type.id)?.values ?: return emptyList()
+        val remove = remove(type)?.values ?: return emptyList()
         return remove as? Collection<RPGBuff<T>> ?: emptyList()
     }
 
     override fun <T : Comparable<T>> removeBuff(buff: RPGBuff<T>) {
-        remove(buff.stat.id, buff.id)
+        remove(buff.stat, buff.id)
+    }
+
+    override fun clear() {
+        super.clear()
     }
 
 
@@ -183,7 +202,7 @@ class ImaginaryBuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), Imagina
         return added
     }
 
-    override fun forEachStat(action: (String) -> Unit) {
+    override fun forEachStat(action: (RPGStat<*>) -> Unit) {
         keys.forEach(action)
     }
 
@@ -198,6 +217,27 @@ class ImaginaryBuffsListImpl : MultiHashMap<String, UUID, RPGBuff<*>>(), Imagina
     override fun updateConditional(profile: RPGProfile) {
         // Do nothing
     }
+
+    override fun compareByBuffsValue(other: BuffsList): Int {
+        var res = 0
+        forEachStat { stat ->
+            val thisBuff = getBuffValueOrNull(stat)
+            val otherBuff = other.getBuffValueOrNull(stat)
+            if (thisBuff == null || otherBuff == null)
+                return@forEachStat
+
+            thisBuff as Comparable<Any>
+            otherBuff as Comparable<Any>
+
+            if (thisBuff > otherBuff)
+                res++
+            else if (thisBuff < otherBuff)
+                res--
+        }
+
+        return res
+    }
+
 }
 
 
@@ -233,7 +273,6 @@ open class AttachableBuffsListImpl : BuffsListImpl(), AttachableBuffsList {
 
 object EmptyBuffsList : BuffsList, MutableMap<String, MutableMap<UUID, RPGBuff<*>>> by HashMap(0) {
     override fun getBuffs(): Collection<RPGBuff<*>> = emptyList()
-    override fun <T : Comparable<T>> getBuffs(id: String): Collection<RPGBuff<T>> = emptyList()
     override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> = emptyList()
     override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<T>? = null
     override fun <T : Comparable<T>> getBuffValueOrNull(type: RPGStat<T>): T? = null
@@ -243,9 +282,10 @@ object EmptyBuffsList : BuffsList, MutableMap<String, MutableMap<UUID, RPGBuff<*
     override fun <T : Comparable<T>> removeBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> = emptyList()
     override fun <T : Comparable<T>> removeBuff(buff: RPGBuff<T>) {}
     override fun clear() {}
-    override fun forEachStat(action: (String) -> Unit) {}
+    override fun forEachStat(action: (RPGStat<*>) -> Unit) {}
     override fun forEachBuff(action: (RPGBuff<*>) -> Unit) {}
     override fun updateConditional(profile: RPGProfile) {}
+    override fun compareByBuffsValue(other: BuffsList) = 0
 }
 
 object EmptyImaginaryBuffsList : BuffsList by EmptyBuffsList, ImaginaryBuffsList {

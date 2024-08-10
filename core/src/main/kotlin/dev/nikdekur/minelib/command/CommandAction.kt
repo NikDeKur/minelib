@@ -1,11 +1,11 @@
 package dev.nikdekur.minelib.command
 
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.`interface`.Snowflake
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 interface CommandAction : Snowflake<String> {
 
@@ -34,18 +34,18 @@ interface CommandAction : Snowflake<String> {
                         return
                     }
 
-                    throw UnsupportedOperationException("Usage is not defined for command ${command.commandPath}")
+                    throw UnsupportedOperationException("Usage is not defined for command $command")
                 }
 
                 SET_COOLDOWN -> {
                     if (command.hasCooldown() && player != null) {
-                        command.setCooldown(player, command.commandPath, command.cooldown)
+                        command.service.setCooldown(player, command, command.cooldown)
                     }
                 }
 
                 UNSET_COOLDOWN -> {
                     if (command.hasCooldown() && player != null) {
-                        command.resetCooldown(player, command.commandPath)
+                        command.service.resetCooldown(player, command)
                     }
                 }
 

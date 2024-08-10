@@ -5,52 +5,45 @@ import org.bukkit.World
 
 interface DamageSource {
 
-    val type: String
     val world: World
-
-    object Type {
-        const val FIRE = "FIRE"
-        const val DROWN = "DROWN"
-        const val FALL = "FALL"
-        const val CUSTOM = "CUSTOM"
-    }
 
     interface RPG : DamageSource {
         val attacker: RPGProfile
     }
 
+    class Physical(
+        override val world: World,
+        override val attacker: RPGProfile
+    ) : RPG
+
+    /**
+     * Fire damage source when player stands in fire
+     */
     class Fire(
         override val world: World,
         val count: Int
-    ) : DamageSource {
-        override val type = Type.FIRE
-    }
+    ) : DamageSource
+
+    /**
+     * Fire damage source when player burns, not [Fire]
+     */
+    class FireTick(
+        override val world: World,
+        val count: Int
+    ) : DamageSource
 
     class Drown(
         override val world: World,
         val depth: Int
-    ) : DamageSource {
-        override val type = Type.DROWN
-    }
+    ) : DamageSource
 
     class Fall(
         override val world: World,
-        val height: Int
-    ) : DamageSource {
-        override val type = Type.FALL
-    }
+        val height: Double
+    ) : DamageSource
 
     class Unknown(
         override val world: World
-    ) : DamageSource {
-        override val type = Type.CUSTOM
-    }
+    ) : DamageSource
 
-
-    companion object {
-        fun fire(world: World, count: Int) = Fire(world, count)
-        fun drown(world: World, depth: Int) = Drown(world, depth)
-        fun fall(world: World, height: Int) = Fall(world, height)
-        fun unknown(world: World) = Unknown(world)
-    }
 }

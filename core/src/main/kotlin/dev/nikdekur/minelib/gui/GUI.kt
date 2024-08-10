@@ -2,17 +2,21 @@
 
 package dev.nikdekur.minelib.gui
 
+import dev.nikdekur.minelib.ext.applyColors
+import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.*
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.InventoryView
-import dev.nikdekur.minelib.ext.applyColors
+import org.koin.core.component.inject
 import java.util.*
 
 @Suppress("LeakingThis")
-abstract class GUI(val player: Player, val size: Int) : InventoryHolder {
+abstract class GUI(val player: Player, val size: Int) : InventoryHolder, MineLibKoinComponent {
+
+    val service by inject<GUIService>()
 
     val id: UUID = UUID.randomUUID()
     lateinit var inv: Inventory
@@ -32,7 +36,7 @@ abstract class GUI(val player: Player, val size: Int) : InventoryHolder {
 
 
     init {
-        GUIManager.registerGUI(this)
+        service.registerGUI(this)
     }
 
     var initialized = false
@@ -68,7 +72,7 @@ abstract class GUI(val player: Player, val size: Int) : InventoryHolder {
     }
 
     open fun finish() {
-        GUIManager.unregisterGUI(this)
+        service.unregisterGUI(this)
     }
 
     open fun closeAndFinish() {

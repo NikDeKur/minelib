@@ -3,7 +3,8 @@ package dev.nikdekur.minelib.inventory
 import kotlin.math.min
 
 
-class InventoryZone(val slots: MutableSet<Int>) {
+@JvmInline
+value class InventoryZone(val slots: MutableSet<Int>) {
 
     fun remove(slot: Int) {
         slots.remove(slot)

@@ -75,6 +75,9 @@ enum class DefaultMSG(override val defaultText: String) : MSGHolder {
     RPG_STAT_NAME_MAX_HEALTH("Max Health"),
     RPG_STAT_NAME_BUFF_MAX_HEALTH("&f{buff.name}: &6+{buff.value}"),
 
+    RPG_STAT_NAME_ARMOR("Armor"),
+    RPG_STAT_NAME_BUFF_ARMOR("&f{buff.name}: &6+{buff.value}"),
+
     RPG_STAT_NAME_REGENERATION("Regeneration"),
     RPG_STAT_NAME_BUFF_REGENERATION("&f{buff.name}: &6+{buff.value}"),
 

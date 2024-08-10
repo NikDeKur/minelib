@@ -5,6 +5,6 @@ import org.bukkit.command.CommandSender
 
 interface LanguageDataProvider : Snowflake<String> {
 
-    fun getLanguage(sender: CommandSender): Language
+    fun getLanguage(sender: CommandSender): Language?
     fun setLanguage(sender: CommandSender, language: Language)
 }

@@ -1,16 +1,15 @@
 package dev.nikdekur.minelib.rpg.profile
 
 import dev.nikdekur.minelib.ext.call
-import dev.nikdekur.minelib.rpg.RPGManager
 import dev.nikdekur.minelib.rpg.buff.AttachableBuffsListImpl
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
 import dev.nikdekur.minelib.rpg.combat.DamageSource
 import dev.nikdekur.minelib.rpg.event.RPGDamageEvent
 import dev.nikdekur.minelib.rpg.event.RPGKillEvent
-import dev.nikdekur.minelib.rpg.stat.RPGDamageMultiplierStat
 import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGMaxHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGProfileStats
+import dev.nikdekur.minelib.rpg.strategy.DefaultDamageStrategy
 import dev.nikdekur.minelib.rpg.update.FixedRateUpdater
 import java.util.*
 
@@ -19,6 +18,8 @@ abstract class RPGSimpleProfile : RPGProfile {
     final override val stats by lazy {
         RPGProfileStats(this)
     }
+
+    override val strategy = DefaultDamageStrategy
 
 
     override val buffs = object : AttachableBuffsListImpl() {
@@ -61,17 +62,15 @@ abstract class RPGSimpleProfile : RPGProfile {
         heal(toHeal)
     }
 
-    override fun damageRaw(damage: Double, source: DamageSource): Boolean {
-        require(damage >= 0.0) { "Damage can't be negative" }
-        require(health > 0.0) { "Can't damage a dead profile" }
-
+    override fun damage(source: DamageSource): Double  {
         var finalDamage = damage
         if (finalDamage > health) {
             finalDamage = health
         }
+
         val event = RPGDamageEvent(this, source, finalDamage)
         event.call()
-        if (event.isCancelled) return false
+        if (event.isCancelled) return 0.0
         finalDamage = event.damage
 
         if (health - finalDamage <= 0.0) {
@@ -80,28 +79,13 @@ abstract class RPGSimpleProfile : RPGProfile {
             val newHealth = health - finalDamage
             stats[RPGHealthStat] = newHealth
         }
-        return true
-    }
 
-    override fun damage(damage: Double, source: DamageSource): Double  {
-        damageRaw(damage, source)
         return damage
-    }
-
-    override fun attack(target: RPGProfile, additionalDamage: Double, source: DamageSource): Double {
-        val scaledDamage = scaleSelfDamage(additionalDamage)
-        val damaged = target.damage(scaledDamage, source)
-        enterCombat(this, target)
-        return damaged
     }
 
     override fun kill(source: DamageSource) {
         stats[RPGHealthStat] = 0.0
         RPGKillEvent(this, source).call()
-
-        RPGManager.removeProfile(id)
-
-        combatTracker.clear()
     }
 
 
@@ -127,28 +111,5 @@ abstract class RPGSimpleProfile : RPGProfile {
         val regen = updaters.remove(id)
         regen?.cancel()
         return regen
-    }
-
-
-    /**
-     * Scale the damage by the profile's damage and damage multiplier
-     *
-     * Method adds the profile's [RPGProfile.damageRaw] to the given [damage] and scales it by the damage multiplier
-     *
-     * @param damage The damage to scale
-     * @return The scaled damage
-     */
-    open fun scaleSelfDamage(damage: Double): Double {
-        return (this.damage + damage) * stats[RPGDamageMultiplierStat]
-    }
-
-
-
-    companion object {
-
-        fun enterCombat(profile1: RPGProfile, profile2: RPGProfile) {
-            profile1.combatTracker.enterCombat(profile2)
-            profile2.combatTracker.enterCombat(profile1)
-        }
     }
 }

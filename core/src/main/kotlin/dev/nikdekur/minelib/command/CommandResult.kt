@@ -26,16 +26,16 @@ class CommandResult : Iterable<CommandAction> {
     }
 
     companion object {
-        @JvmStatic
+        @JvmField
         val EMPTY = CommandResult()
 
-        @JvmStatic
+        @JvmField
         val SUCCESS = CommandResult(CommandAction.Default.SET_COOLDOWN)
 
-        @JvmStatic
+        @JvmField
         val SUCCESS_NO_COOLDOWN = EMPTY
 
-        @JvmStatic
+        @JvmField
         val THROW_USAGE = CommandResult(CommandAction.Default.THROW_USAGE)
     }
 }

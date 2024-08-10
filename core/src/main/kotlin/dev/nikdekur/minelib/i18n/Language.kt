@@ -1,9 +1,5 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package dev.nikdekur.minelib.i18n
 
-import dev.nikdekur.minelib.ext.bLogger
-import dev.nikdekur.ndkore.placeholder.Placeholder
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -12,69 +8,25 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-open class Language(
-    val code: Code,
-    val messages: MutableMap<String, String>
-) : Placeholder {
+interface Language {
 
-    override fun getPlaceholder(key: String): Any? {
-        val message = getIfPresent(key)
-        return message ?: super.getPlaceholder(key)
-    }
+    val code: Code
 
+    fun getMessage(msg: MSGHolder): Message?
 
-    fun getIfPresent(id: String): String? {
-        return messages[id]
-    }
-
-    fun getMessage(id: String): Message? {
-        return getIfPresent(id)?.let { Message(it) }
-    }
-
-    operator fun get(id: String): Message {
-        return getMessage(id) ?: run {
-            bLogger.warning("Message '${id}' not found in language '$id'! Trying to use default message!")
-            Message(LanguagesManager.getDefaultMessage(id))
-        }
-    }
-
-    inline operator fun get(msg: MSGHolder) = get(msg.id)
-
-    fun hasMessage(id: String): Boolean {
-        return messages.containsKey(id)
-    }
-
-    fun addMessage(id: String, message: String) {
-        require(LanguagesManager.hasDefaultMessage(id)) {
-            "Cannot add message with id '$id' to language '$id' because it does not exist in the default language!. Use 'LanguageSystem.addDefaultMessage' before this!"
-        }
-        messages[id] = message
-    }
-
-
-
+    operator fun get(msg: MSGHolder): Message
 
     @Serializable(with = CodeSerializer::class)
     data class Code(
         val id: String,
         val region: String
     ) {
-
-        override fun toString(): String {
-            return "Language.Code($code)"
-        }
+        override fun toString() = "Language.Code($code)"
 
         val code: String
             get() = "${id}_$region"
 
         companion object {
-
-            @JvmField
-            val EN_US = Code("en", "us")
-
-            @JvmField
-            val RU_RU = Code("ru", "ru")
-
             /**
              * Reads the language code from the language code string.
              *
@@ -124,10 +76,12 @@ open class Language(
                 val languageCode = fileName.substringBefore('.')
                 return fromCode(languageCode)
             }
+
+
+            val EN_US = Code("en", "us")
         }
     }
 }
-
 
 object CodeSerializer : KSerializer<Language.Code> {
 
@@ -141,6 +95,3 @@ object CodeSerializer : KSerializer<Language.Code> {
         return Language.Code.fromCodeOrThrow(decoder.decodeString())
     }
 }
-
-
-

@@ -3,7 +3,6 @@
 package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.gui.GUI
-import dev.nikdekur.minelib.gui.GUIManager
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -126,10 +125,7 @@ inline fun Inventory.emptySlots(start: Int, end: Int = this.size): Int {
 
 
 inline val Inventory.gui: GUI?
-    get() = (holder as? GUI)?.let {
-        if (GUIManager.guis.contains(it.id)) it
-        else null
-    }
+    get() = (holder as? GUI)
 
 
 

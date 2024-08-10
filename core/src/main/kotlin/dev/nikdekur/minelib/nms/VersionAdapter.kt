@@ -1,7 +1,6 @@
 package dev.nikdekur.minelib.nms
 
-import dev.nikdekur.minelib.nms.protocol.ProtocolModule
-import dev.nikdekur.minelib.pentity.ServerPersonalEntityManager
+import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.ndkore.ext.getInstanceField
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -10,6 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 interface VersionAdapter {
+
+    fun init(plugin: MineLib)
 
     /**
      * Expand the entity bounding box to the axis values
@@ -41,15 +42,16 @@ interface VersionAdapter {
 
     fun <T : Entity> createEntity(world: World, type: EntityType): T
 
-    fun getServerPersonalEntityManager(): ServerPersonalEntityManager
-    fun getProtocolModule(): ProtocolModule
-
 
     companion object {
 
-        fun getForVersion(version: String): VersionAdapter {
-            val clazz = Class.forName("dev.nikdekur.minelib.nms.VersionAdapter_$version")
-            val instance = clazz.getInstanceField() as VersionAdapter
+        fun getForVersion(version: String): VersionAdapter? {
+            val clazz = try {
+                Class.forName("dev.nikdekur.minelib.nms.VersionAdapter_$version")
+            } catch (_: ClassNotFoundException) {
+                return null
+            }
+            val instance = clazz.getInstanceField() as? VersionAdapter ?: return null
             return instance
         }
     }

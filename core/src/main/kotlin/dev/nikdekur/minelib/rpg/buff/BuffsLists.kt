@@ -1,6 +1,5 @@
 package dev.nikdekur.minelib.rpg.buff
 
-import dev.nikdekur.minelib.rpg.RPGManager
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import java.util.*
@@ -9,7 +8,6 @@ interface BuffsList : Comparable<BuffsList> {
 
     fun getBuffs(): Collection<RPGBuff<*>>
 
-    fun <T : Comparable<T>> getBuffs(id: String): Collection<RPGBuff<T>>
     fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>>
     fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<*>?
 
@@ -53,7 +51,7 @@ interface BuffsList : Comparable<BuffsList> {
         // Do nothing by default
     }
 
-    fun forEachStat(action: (String) -> Unit)
+    fun forEachStat(action: (RPGStat<*>) -> Unit)
     fun forEachBuff(action: (RPGBuff<*>) -> Unit)
 
     fun updateConditional(profile: RPGProfile)
@@ -69,24 +67,7 @@ interface BuffsList : Comparable<BuffsList> {
      *
      * @param other BuffsList to compare with
      */
-    fun compareByBuffsValue(other: BuffsList): Int {
-        var res = 0
-        forEachStat {
-            val stat = RPGManager.getAnyType(it) ?: return@forEachStat
-            val thisBuff = getBuffValueOrNull(stat)
-            val otherBuff = other.getBuffValueOrNull(stat)
-            if (thisBuff == null || otherBuff == null) {
-                return@forEachStat
-            }
-
-            if (thisBuff > otherBuff)
-                res++
-            else if (thisBuff < otherBuff)
-                res--
-        }
-
-        return res
-    }
+    fun compareByBuffsValue(other: BuffsList): Int
 
 
     /**

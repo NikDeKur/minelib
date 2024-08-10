@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 
 val random = java.util.Random()
 
-abstract class RPGStat<T : Comparable<T>> : Snowflake<String>, MSGNameHolder {
+abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparable<T>, T : Any {
     abstract val defaultValue: T
     abstract val clazz: KClass<T>
 

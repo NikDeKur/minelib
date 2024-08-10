@@ -1,4 +1,3 @@
-
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.kotlin.dsl.libs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -40,6 +39,7 @@ allprojects {
 
     dependencies {
         implementation(rootProject.libs.ndkore)
+        implementation(rootProject.libs.koin)
     }
 
     // Remove Java compatibility made by params non-null assertions
@@ -48,26 +48,22 @@ allprojects {
             freeCompilerArgs.addAll("-Xno-param-assertions", "-Xno-call-assertions")
         }
     }
-}
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
 
+        withSourcesJar()
+    }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    withSourcesJar()
-}
-
-kotlin {
-    jvmToolchain(8)
-}
-
-tasks.withType<KotlinCompile> {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xno-param-assertions", "-Xno-call-assertions")
+    kotlin {
+        jvmToolchain(8)
     }
 }
+
+
+
+
 
 
 
@@ -122,8 +118,6 @@ tasks.withType<ShadowJar> {
         from(project.sourceSets.main.get().output)
         configurations.add(project.configurations.runtimeClasspath.get())
     }
-
-    // minimize()
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

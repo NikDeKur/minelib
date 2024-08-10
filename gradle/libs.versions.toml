@@ -8,19 +8,17 @@ shadowJar = "8.1.1"
 licenser = "0.6.1"
 kaml = "0.57.0"
 authlib = "1.11"
+koin = "3.5.6"
 
 [libraries]
 ndkore = { module = "dev.nikdekur:ndkore", version.ref = "ndkore" }
-spigot-api = { module = "org.spigotmc:spigot-api", version = "1.12.2-R0.1-SNAPSHOT" }
-spigot112R1 = { module = "org.spigotmc:spigot", version = "1.12.2-R0.1-SNAPSHOT" }
-spigot_1_20_4 = { module = "org.spigotmc:spigot", version = "1.20.4-R0.1-SNAPSHOT" }
-spigot_1_21 = { module = "org.spigotmc:spigot", version = "1.21-R0.1-SNAPSHOT" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutine" }
 google-guava = { module = "com.google.guava:guava", version.ref = "google-guava" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 authlib = { module = "com.mojang:authlib", version.ref = "authlib" }
+koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

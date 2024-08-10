@@ -4,7 +4,7 @@ package dev.nikdekur.minelib.ext
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.ndkore.ext.r_SetField
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -30,13 +30,13 @@ inline fun ItemStack.setStackAmount(amount: Int): ItemStack {
 
 
 fun ItemStack.setTag(tag: String, value: Any): ItemStack {
-    ServerPlugin.versionAdapter.setTag(this, tag, value)
+    MineLib.versionAdapter.setTag(this, tag, value)
     return this
 }
 
 
 fun ItemStack.getTag(tag: String): Any? {
-    return ServerPlugin.versionAdapter.getTag(this, tag)
+    return MineLib.versionAdapter.getTag(this, tag)
 }
 
 
@@ -96,20 +96,20 @@ fun ItemStack.getBooleanTag(tag: String): Boolean? {
 }
 
 fun ItemStack.removeTag(tag: String): ItemStack {
-    ServerPlugin.versionAdapter.removeTag(this, tag)
+    MineLib.versionAdapter.removeTag(this, tag)
     return this
 }
 
 fun ItemStack.hasTag(tag: String): Boolean {
-    return ServerPlugin.versionAdapter.hasTag(this, tag)
+    return MineLib.versionAdapter.hasTag(this, tag)
 }
 
 val ItemStack.tags: Collection<String>
-    get() = ServerPlugin.versionAdapter.getTags(this)
+    get() = MineLib.versionAdapter.getTags(this)
 
 @Suppress("UNCHECKED_CAST")
 val ItemStack.tagsMap: Map<String, Any>
-    get() = ServerPlugin.versionAdapter.getTagsMap(this)
+    get() = MineLib.versionAdapter.getTagsMap(this)
 
 
 inline fun ItemStack.editMeta(func: ItemMeta.() -> Unit) {

@@ -1,11 +1,11 @@
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.ext.msToSecs
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.DefaultMSG
 import dev.nikdekur.minelib.i18n.Language
-import dev.nikdekur.minelib.i18n.LanguagesManager
+import dev.nikdekur.minelib.i18n.LanguagesService
 import dev.nikdekur.minelib.i18n.MSGHolder
+import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
 import dev.nikdekur.ndkore.extra.Tools
@@ -14,13 +14,17 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
+import org.koin.core.component.inject
 import java.text.DecimalFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration
 
 open class CommandContext(val sender: CommandSender, val args: Array<String>)
-    : CommandSender by sender
+    : CommandSender by sender, MineLibKoinComponent
 {
+
+    val languageService: LanguagesService by inject()
 
 
     val isPlayer = sender is Player
@@ -33,9 +37,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     val argsSize: Int = args.size
     val maxIndex: Int = argsSize - 1
 
-    fun stop(): Nothing {
-        throw ServerCommand.StopCommand()
-    }
+    fun stop(): Nothing = throw ServerCommand.StopCommand()
 
     fun throwUsage(): Nothing {
         commandResult = CommandResult.THROW_USAGE
@@ -133,34 +135,36 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
 
 
-    fun formatSecondsValue(ms: Long): String {
-        var leftSeconds = ms.msToSecs()
-        val decimalFormat: DecimalFormat = if (leftSeconds >= 5) {
+    fun formatSecondsValue(leftSecs: Long): String {
+        var leftSecs = leftSecs.toDouble()
+        val decimalFormat: DecimalFormat = if (leftSecs >= 5) {
             GTFIVE_SECONDS_FORMAT
         } else {
-            if (leftSeconds < 0.1) leftSeconds = 0.1
+            if (leftSecs < 0.1) leftSecs = 0.1
             LTFIVE_SECONDS_FORMAT
         }
-        return decimalFormat.format(leftSeconds)
+        return decimalFormat.format(leftSecs)
     }
 
     fun sendCooldown(
-        cooldownLeftMs: Long,
+        cooldown: Duration,
         cooldownMSG: MSGHolder = DefaultMSG.COOLDOWN_ON_COMMAND,
-        vararg placeholders: Pair<String, Any?>) {
+        vararg placeholders: Pair<String, Any?>
+    ) {
+        val format = formatSecondsValue(cooldown.inWholeMilliseconds)
         if (placeholders.isEmpty()) {
-            send(cooldownMSG, "time" to formatSecondsValue(cooldownLeftMs))
+            send(cooldownMSG, "time" to format)
         } else {
             send(
                 cooldownMSG,
                 *arrayOf(*placeholders)
-                    .plus("time" to formatSecondsValue(cooldownLeftMs))
+                    .plus("time" to format)
             )
         }
     }
 
-    fun sendCooldownAndStop(cooldownLeftTicks: Long): Nothing {
-        sendCooldown(cooldownLeftTicks)
+    fun sendCooldownAndStop(cooldown: Duration): Nothing {
+        sendCooldown(cooldown)
         stop()
     }
 
@@ -287,7 +291,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     fun getLanguage(pos: Int): Language {
         val name = getArg(pos)
         val code = Language.Code.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE_CODE_FORMAT, "code" to name)
-        val language = LanguagesManager[code] ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE, "code" to name)
+        val language = languageService[code] ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE, "code" to name)
         return language
     }
 
