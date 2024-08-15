@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.v1_12_R1.nms.entity
 
-import dev.nikdekur.minelib.nms.entity.MineEntity
+import dev.nikdekur.minelib.nms.MineEntity
 import dev.nikdekur.ndkore.ext.constructTyped
 import net.minecraft.server.v1_12_R1.*
 import org.bukkit.entity.EntityType

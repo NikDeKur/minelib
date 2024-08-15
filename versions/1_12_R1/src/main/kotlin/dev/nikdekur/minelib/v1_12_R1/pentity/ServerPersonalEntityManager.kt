@@ -1,7 +1,7 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
@@ -12,7 +12,7 @@ import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.ndkore.ext.distanceSquared
 import dev.nikdekur.ndkore.ext.r_GetField
 import dev.nikdekur.ndkore.ext.sqrt
-import dev.nikdekur.ndkore.module.dependencies
+import dev.nikdekur.ndkore.service.dependencies
 import net.minecraft.server.v1_12_R1.PacketPlayInUseEntity
 import net.minecraft.server.v1_12_R1.PacketPlayInUseEntity.EnumEntityUseAction
 import org.bukkit.Bukkit
@@ -25,10 +25,15 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.util.Vector
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
-class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersonalEntityManager, MineLibModule, Listener {
+class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersonalEntityManager, PluginService, Listener {
+
+    override val bindClass: KClass<*>
+        get() = ServerPersonalEntityManager::class
+
     override val dependencies = dependencies {
-        after(InjectProtocolModule::class.java)
+        after(InjectProtocolModule::class)
     }
 
 

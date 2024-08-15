@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.item
 
 import org.bukkit.DyeColor
 import org.bukkit.Material
-import dev.nikdekur.minelib.i18n.DefaultMSG
+import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 
 object Patterns {
     val EMPTY_SLOT_PATTERN = ItemPattern.from(Material.STAINED_GLASS_PANE)

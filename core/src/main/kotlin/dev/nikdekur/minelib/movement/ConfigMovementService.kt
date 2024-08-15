@@ -3,17 +3,33 @@
 package dev.nikdekur.minelib.movement
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.ext.online
 import dev.nikdekur.minelib.ext.runSync
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.reflect.KClass
 
-class ConfigMovementService(override val app: MineLib) : MovementService, MineLibModule {
+class ConfigMovementService(override val app: MineLib) : MovementService, PluginService {
+
+    override val bindClass: KClass<*>
+        get() = MovementService::class
 
     val lastLocationMap = HashMap<UUID, Location>()
+
+    override fun onLoad() {
+        val config = app.loadConfig<MovementConfig>("movement")
+        val delayTicks = config.movementUpdateDelay
+        app.scheduler.runTaskTimerAsynchronously(delayTicks) {
+            online.forEach(::update)
+        }
+    }
+
+    override fun onUnload() {
+        lastLocationMap.clear()
+    }
 
     // NOTE: ASYNC
     fun update(player: Player) {
@@ -71,15 +87,5 @@ class ConfigMovementService(override val app: MineLib) : MovementService, MineLi
 
 
 
-    override fun onLoad() {
-        val config = app.loadConfig<MovementConfig>("movement")
-        val delayTicks = config.movementUpdateDelay
-        app.scheduler.runTaskTimerAsynchronously(delayTicks) {
-            online.forEach { update(it) }
-        }
-    }
 
-    override fun onUnload() {
-        lastLocationMap.clear()
-    }
 }

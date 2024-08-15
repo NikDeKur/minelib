@@ -3,7 +3,7 @@
 package dev.nikdekur.minelib.item
 
 import dev.nikdekur.minelib.ext.*
-import dev.nikdekur.minelib.i18n.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.ndkore.ext.toTArray
 import org.bukkit.Color
 import org.bukkit.DyeColor

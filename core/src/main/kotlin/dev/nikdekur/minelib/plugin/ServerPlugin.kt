@@ -2,10 +2,12 @@ package dev.nikdekur.minelib.plugin
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import dev.nikdekur.minelib.MineLibModule
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.command.ServerCommand
 import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.ext.warning
+import dev.nikdekur.minelib.koin.MineLibKoinComponent
+import dev.nikdekur.minelib.koin.MineLibKoinContext
 import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.utils.ClassUtils
 import dev.nikdekur.ndkore.ext.forEachSafe
@@ -13,10 +15,10 @@ import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.loadConfig
 import dev.nikdekur.ndkore.ext.tryEverything
 import dev.nikdekur.ndkore.extra.Tools.jarFile
-import dev.nikdekur.ndkore.module.Module
-import dev.nikdekur.ndkore.module.ModulesManager
 import dev.nikdekur.ndkore.reflect.ClassFinder
 import dev.nikdekur.ndkore.reflect.Reflect
+import dev.nikdekur.ndkore.service.KoinServicesManager
+import dev.nikdekur.ndkore.service.ServicesManager
 import kotlinx.serialization.encodeToString
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
@@ -31,7 +33,7 @@ import kotlin.properties.Delegates
 
 
 @Suppress("unused")
-abstract class ServerPlugin : JavaPlugin() {
+abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
 
 
 
@@ -56,7 +58,7 @@ abstract class ServerPlugin : JavaPlugin() {
      *
      * Modules must be registered in [components] property.
      */
-    lateinit var modulesManager: ModulesManager<ServerPlugin>
+    lateinit var servicesManager: ServicesManager<ServerPlugin>
 
     /**
      * Private set of listeners provided by the plugin.
@@ -69,8 +71,6 @@ abstract class ServerPlugin : JavaPlugin() {
     val loader: ClassLoader = classLoader
 
     override fun onEnable() {
-        modulesManager = ModulesManager()
-
         registerComponents()
 
         stopReload()
@@ -92,8 +92,7 @@ abstract class ServerPlugin : JavaPlugin() {
         // Unregister absolutely all listeners
         HandlerList.unregisterAll(this)
 
-        modulesManager.unloadAll()
-        modulesManager.tasks.clear()
+        servicesManager.unloadAll()
     }
 
     /**
@@ -102,7 +101,7 @@ abstract class ServerPlugin : JavaPlugin() {
      * Executes [afterReload] and executes all necessary actions to prepare the plugin after reloading.
      */
     open fun stopReload() {
-        modulesManager.loadAll()
+        servicesManager.loadAll()
 
         // Register all listeners
         listeners.forEach(::registerListener)
@@ -153,10 +152,10 @@ abstract class ServerPlugin : JavaPlugin() {
             registered = true
         }
 
-        if (component is Module<*>) {
+        if (component is PluginService) {
             component.app as? ServerPlugin ?: return false
             @Suppress("UNCHECKED_CAST")
-            modulesManager.addModule(component as Module<ServerPlugin>)
+            servicesManager.registerService(component, component.bindClass)
             registered = true
         }
 
@@ -164,7 +163,8 @@ abstract class ServerPlugin : JavaPlugin() {
     }
 
     override fun onLoad() {
-        loadAllPluginClasses()
+        // loadAllPluginClasses()
+        servicesManager = KoinServicesManager(MineLibKoinContext, this)
         this@ServerPlugin.scheduler = Scheduler(this)
         setupStaticFields()
         whenLoad()
@@ -302,7 +302,8 @@ abstract class ServerPlugin : JavaPlugin() {
         else
             loadFile(configName, folder)
 
-        //Check if the file is empty
+        // Check if the file is empty
+        // loadFile ensures that the file exists
         if (file.length() == 0L) {
             val config = T::class.java.newInstance()
             saveConfig(configName, config, folder)
@@ -339,6 +340,6 @@ abstract class ServerPlugin : JavaPlugin() {
     }
 
     private val defaultComponents by lazy {
-        listOf<MineLibModule>()
+        listOf<PluginService>()
     }
 }

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package dev.nikdekur.minelib.i18n.parts
+package dev.nikdekur.minelib.i18n.msg
 
 import dev.nikdekur.ndkore.placeholder.Placeholder
 import org.bukkit.command.CommandSender

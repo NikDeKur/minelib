@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.v1_12_R1.nms.track
 
-import dev.nikdekur.minelib.nms.entity.MineEntity
+import dev.nikdekur.minelib.nms.MineEntity
 import dev.nikdekur.minelib.v1_12_R1.ext.nms
 import dev.nikdekur.minelib.v1_12_R1.nms.entity.MineEntityType
 import net.minecraft.server.v1_12_R1.Entity

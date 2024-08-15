@@ -2,10 +2,10 @@ package dev.nikdekur.minelib.v1_12_R1.nms.protocol
 
 import com.google.common.collect.MapMaker
 import com.mojang.authlib.GameProfile
-import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.call
-import dev.nikdekur.minelib.nms.protocol.ProtocolModule
+import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketSendEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.early.EarlyPacketReceiveEvent
@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
+import kotlin.reflect.KClass
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -29,7 +30,7 @@ import java.util.logging.Level
  * @author Kristian
  * @author [Modified] Nik De Kur
  */
-class InjectProtocolModule(override val app: MineLib) : ProtocolModule, Listener {
+class InjectProtocolModule(override val app: ServerPlugin) : PluginService, Listener {
 
     override fun onLoad() {
         try {

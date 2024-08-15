@@ -4,7 +4,7 @@ package dev.nikdekur.minelib.command
 
 import dev.nikdekur.minelib.command.ServerCommand.StopCommand
 import dev.nikdekur.minelib.ext.sendLangMsg
-import dev.nikdekur.minelib.i18n.DefaultMSG
+import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.copyPartialMatches

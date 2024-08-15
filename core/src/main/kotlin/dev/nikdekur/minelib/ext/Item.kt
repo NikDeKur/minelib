@@ -4,7 +4,8 @@ package dev.nikdekur.minelib.ext
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
-import dev.nikdekur.minelib.MineLib
+import de.tr7zw.changeme.nbtapi.NBT
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT
 import dev.nikdekur.ndkore.ext.r_SetField
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -27,89 +28,32 @@ inline fun ItemStack.setStackAmount(amount: Int): ItemStack {
 
 
 
+fun <T> ItemStack.editNBT(func: ReadWriteItemNBT.() -> T) = NBT.modify(this, func)
 
 
-fun ItemStack.setTag(tag: String, value: Any): ItemStack {
-    MineLib.versionAdapter.setTag(this, tag, value)
+fun ItemStack.setTag(key: String, value: Any): ItemStack {
+    editNBT {
+        when (value) {
+            is String -> setString(key, value)
+            is Int -> setInteger(key, value)
+            is Double -> setDouble(key, value)
+            is Float -> setFloat(key, value)
+            is Long -> setLong(key, value)
+            is Short -> setShort(key, value)
+            is Byte -> setByte(key, value)
+            is ByteArray -> setByteArray(key, value)
+            is IntArray -> setIntArray(key, value)
+            is LongArray -> setLongArray(key, value)
+            is Boolean -> setBoolean(key, value)
+            is ItemStack -> setItemStack(key, value)
+            is UUID -> setUUID(key, value)
+            is Enum<*> -> setEnum(key, value)
+
+            else -> throw IllegalArgumentException("Unsupported type: ${value::class.java}")
+        }
+    }
     return this
 }
-
-
-fun ItemStack.getTag(tag: String): Any? {
-    return MineLib.versionAdapter.getTag(this, tag)
-}
-
-
-fun ItemStack.getStringTag(tag: String): String? {
-    val tagValue = getTag(tag)
-    return if (tagValue is String?)
-        return if (tagValue.isNullOrEmpty())
-            null
-        else
-            tagValue
-    else
-        tagValue.toString()
-}
-
-fun ItemStack.getByteTag(tag: String): Byte? {
-    val tagValue = getTag(tag)
-    return tagValue as? Byte
-}
-
-fun ItemStack.getByteArrayTag(tag: String): ByteArray? {
-    val tagValue = getTag(tag)
-    return tagValue as? ByteArray
-}
-
-fun ItemStack.getShortTag(tag: String): Short? {
-    val tagValue = getTag(tag)
-    return tagValue as? Short
-}
-
-fun ItemStack.getIntTag(tag: String): Int? {
-    val tagValue = getTag(tag)
-    return tagValue as? Int
-}
-
-fun ItemStack.getIntArrayTag(tag: String): IntArray? {
-    val tagValue = getTag(tag)
-    return tagValue as? IntArray
-}
-
-fun ItemStack.getFloatTag(tag: String): Float? {
-    val tagValue = getTag(tag)
-    return tagValue as? Float
-}
-
-fun ItemStack.getDoubleTag(tag: String): Double? {
-    val tagValue = getTag(tag)
-    return tagValue as? Double
-}
-
-fun ItemStack.getLongTag(tag: String): Long? {
-    val tagValue = getTag(tag)
-    return tagValue as? Long
-}
-
-fun ItemStack.getBooleanTag(tag: String): Boolean? {
-    return getTag(tag) as? Boolean
-}
-
-fun ItemStack.removeTag(tag: String): ItemStack {
-    MineLib.versionAdapter.removeTag(this, tag)
-    return this
-}
-
-fun ItemStack.hasTag(tag: String): Boolean {
-    return MineLib.versionAdapter.hasTag(this, tag)
-}
-
-val ItemStack.tags: Collection<String>
-    get() = MineLib.versionAdapter.getTags(this)
-
-@Suppress("UNCHECKED_CAST")
-val ItemStack.tagsMap: Map<String, Any>
-    get() = MineLib.versionAdapter.getTagsMap(this)
 
 
 inline fun ItemStack.editMeta(func: ItemMeta.() -> Unit) {
@@ -169,10 +113,13 @@ inline var ItemStack.lore: MutableList<String>
 
 
 fun ItemStack.setHideAttributes(state: Boolean): ItemStack {
-    return if (state)
-        this.setTag("HideFlags", 6)
-    else
-        removeTag("HideFlags")
+    editNBT {
+        if (state)
+            setByte("HideFlags", 6)
+        else
+            removeKey("HideFlags")
+    }
+    return this
 }
 
 
@@ -192,12 +139,15 @@ inline fun ItemStack.setSkullTexture(texture: String?) {
 }
 
 
-fun ItemStack.setTouchable(state: Boolean) = this.setTag("touchable", state)
+fun ItemStack.setTouchable(state: Boolean) = editNBT {
+    setBoolean("touchable", state)
+}
 /**
  * @return true by default, false if item is not droppable
  */
-fun ItemStack.isTouchable() = getBooleanTag("touchable") != false
-
+fun ItemStack.isTouchable() = editNBT {
+    getBoolean("touchable") != false
+}
 
 inline val Material.isAir: Boolean
     get() = this == Material.AIR

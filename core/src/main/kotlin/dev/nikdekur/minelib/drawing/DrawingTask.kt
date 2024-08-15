@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.drawing
 
 import org.bukkit.scheduler.BukkitRunnable
 
-data class DrawingTask(val manager: DrawingServiceImpl, val shape: DrawingShape) : BukkitRunnable() {
+data class DrawingTask(val manager: SchedulerDrawingService, val shape: DrawingShape) : BukkitRunnable() {
 
     val endTime = System.currentTimeMillis() + shape.liveTime
 

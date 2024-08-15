@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 package dev.nikdekur.minelib.rpg.stat
 
-import dev.nikdekur.minelib.i18n.DefaultMSG
+import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 
 /**
  * Uses high-scaled values speed-value.

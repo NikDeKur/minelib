@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.i18n
+package dev.nikdekur.minelib.i18n.msg
 
 enum class DefaultMSG(override val defaultText: String) : MSGHolder {
     /**
@@ -93,7 +93,7 @@ enum class DefaultMSG(override val defaultText: String) : MSGHolder {
     ;
 
 
+    override val bundle: String = "default"
     override val id = name
-
 
 }

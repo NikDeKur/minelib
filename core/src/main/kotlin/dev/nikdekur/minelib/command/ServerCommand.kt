@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.i18n.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import org.bukkit.command.CommandSender
 import kotlin.time.Duration

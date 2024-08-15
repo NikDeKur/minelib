@@ -12,7 +12,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import java.util.*
 
-class GUIServiceImpl : GUIService, Listener {
+class RuntimeGUIService : GUIService, Listener {
 
     val guis = HashMap<UUID, GUI>()
 

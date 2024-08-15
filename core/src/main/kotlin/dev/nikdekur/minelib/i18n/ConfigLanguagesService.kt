@@ -2,24 +2,33 @@
 
 package dev.nikdekur.minelib.i18n
 
-import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
-import dev.nikdekur.minelib.ext.bLogger
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.ext.pairs
+import dev.nikdekur.minelib.i18n.bundle.Bundle
+import dev.nikdekur.minelib.i18n.bundle.ConfigBundle
+import dev.nikdekur.minelib.i18n.locale.Locale
+import dev.nikdekur.minelib.i18n.locale.LocaleConfig
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.addById
-import dev.nikdekur.ndkore.ext.map
+import dev.nikdekur.ndkore.map.multi.MultiHashMap
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
+import kotlin.reflect.KClass
 
-class ConfigLanguagesService(override val app: MineLib) : LanguagesService, MineLibModule {
-    val languages = HashMap<Language.Code, Language>()
+class ConfigLanguagesService(override val app: ServerPlugin) : LanguagesService, PluginService {
 
-    val defaultDataProvider = BukkitLanguageDataProvider
+    override val bindClass: KClass<*>
+        get() = LanguagesService::class
+
+    val bundles = HashMap<String, Bundle>()
+
+    val defaultDataProvider = BukkitPlayerLocaleProvider
 
     var dataProviderId: String? = null
-    private var _dataProvider: LanguageDataProvider? = null
-    val dataProvider: LanguageDataProvider
+    private var _dataProvider: PlayerLocaleProvider? = null
+    val dataProvider: PlayerLocaleProvider
         get() = _dataProvider ?: run {
             if (dataProviderId == null) {
                 app.logger.severe("Language data provider not found! Using $defaultDataProvider!")
@@ -35,160 +44,93 @@ class ConfigLanguagesService(override val app: MineLib) : LanguagesService, Mine
             }
         }
 
-    lateinit var defaultLang: Language
-    lateinit var defaultLangCode: Language.Code
+    lateinit var defaultLang: Locale
+    lateinit var defaultLangCode: Locale
 
-    val dataProviders = HashMap<String, LanguageDataProvider>()
+    val dataProviders = HashMap<String, PlayerLocaleProvider>()
 
-    val messages = HashMap<String, MSGHolder>()
-    val defaultMessages = HashMap<String, String>()
+    val messages = MultiHashMap<Locale, String, String>()
 
 
 
     override fun onLoad() {
-        importEnumMessages(DefaultMSG::class.java)
-
         // Go back from plugin folder to the server folder
         val containerDir = app.dataFolder.parentFile.parentFile
-        val languagesDir = File(containerDir, "languages")
-        val config = app.loadConfig<LanguagesConfig>("config", languagesDir)
+        val i18nDir = File(containerDir, "i18n")
+        val config = app.loadConfig<LocaleConfig>("config", i18nDir)
 
-        config.dataProvider?.let {
-            dataProviderId = it
-        }
 
-        val files = languagesDir.listFiles {
+        addDataProvider(BukkitPlayerLocaleProvider)
+
+        dataProviderId = config.dataProvider
+
+        val bundlesDir = File(i18nDir, "bundles")
+
+        val bundlesDirs = bundlesDir.listFiles {
+            it.isDirectory
+        } ?: emptyArray()
+
+        bundlesDirs.forEach(::loadBundle)
+
+
+        // Get the default language code and if language not found, use the first found language code.
+        val defaultLangCodeStr = config.defaultLocale
+        this.defaultLangCode = defaultLangCodeStr.let(Locale::fromCodeOrThrow)
+    }
+
+    fun loadBundle(file: File) {
+        val files = file.listFiles {
             it.extension == "yml"
         } ?: emptyArray()
 
-        files.forEach(::loadLanguage)
+        files.forEach {
+            val locale = Locale.fromFileName(it.name) ?: return
+            val langConfig: YamlConfiguration = YamlConfiguration.loadConfiguration(file)
 
-
-        // Add the default english language if it's enabled or no languages loaded
-        val enableDefaultEnglish = config.enableDefaultEnglish || languages.isEmpty()
-        if (enableDefaultEnglish)
-            addLanguage(defaultEnglish)
-
-        // Get the default language code and if language not found, use the first found language code.
-        val defaultLangCodeStr = config.defaultLanguage
-        var defaultLangCode = defaultLangCodeStr?.let(Language.Code::fromCode)
-        if (defaultLangCode == null) {
-            defaultLangCode = languages.keys.first()
-            if (defaultLangCodeStr == null)
-                bLogger.warning("Default language code not specified in settings! Using '$defaultLangCode'!")
-            else
-                bLogger.warning("Default language code specified in settings ($defaultLangCodeStr is not correct) Example of correct: en_us, ru_ru! Using '$defaultLangCode'!")
-        }
-
-        // Set default language to language found by code set
-        // If language by code not found (could occur only with user code), report and use the first language found
-        val defLangTemp = languages[defaultLangCode]
-        if (defLangTemp == null) {
-            defaultLang = languages.values.first()
-            bLogger.warning("Selected default language '$defaultLangCodeStr' not found! Using '${defaultLang.code}'!")
-        } else {
-            defaultLang = defLangTemp
-        }
-        this.defaultLangCode = defaultLang.code
-    }
-
-    fun loadLanguage(file: File) {
-        val fileName = file.name
-        if (fileName == "config.yml") return
-        if (!fileName.endsWith(".yml")) return
-        val code = Language.Code.fromFileName(fileName) ?: return
-        val langConfig: YamlConfiguration = YamlConfiguration.loadConfiguration(file)
-        val messagesMap = langConfig.pairs.toMutableMap()
-            .map({it.key}, {
-                return@map when (val o = it.value) {
+            langConfig.pairs.forEach {
+                val key = it.key
+                val message = when (val o = it.value) {
                     is String -> o
                     is List<*> -> o.joinToString("\n")
                     else -> null
-                }
-            })
-        val language = StringLanguage(code, messagesMap)
-        addLanguage(language)
+                } ?: return@forEach
+                messages.put(locale, key, message)
+            }
+        }
     }
 
     override fun onUnload() {
-        languages.clear()
+        bundles.clear()
+        messages.clear()
     }
 
 
-    override fun addDataProvider(provider: LanguageDataProvider) {
+
+
+    override fun addDataProvider(provider: PlayerLocaleProvider) {
         dataProviders.addById(provider)
     }
 
-    override fun getDataProvider(id: String): LanguageDataProvider? {
+    override fun getDataProvider(id: String): PlayerLocaleProvider? {
         return dataProviders[id]
     }
 
 
-    override fun addLanguage(language: Language) {
-        languages[language.code] = language
+
+
+
+    override fun newBundle(id: String, messages: Collection<MSGHolder>) {
+        bundles[id] = ConfigBundle(id, messages, this.messages)
     }
 
-    fun getLanguage(code: Language.Code): Language? {
-        return languages[code]
-    }
-
-
-
-
-
-
-
-    val languageCodes: Set<Language.Code>
-        get() = languages.keys
-
-    val languageObjects: Collection<Language>
-        get() = languages.values
-
-    override operator fun get(id: Language.Code): Language? {
-        return languages[id]
+    override fun getBundle(id: String): Bundle? {
+        return bundles[id]
     }
 
 
-    fun addMessage(holder: MSGHolder) {
-        messages.addById(holder)
-        defaultMessages[holder.id] = holder.defaultText
-    }
-    fun hasDefaultMessage(id: String): Boolean {
-        return defaultMessages.containsKey(id)
-    }
-    fun getMessage(id: String): MSGHolder? {
-        return messages[id]
-    }
 
-    /**
-     * Get the default message by id
-     *
-     * If the message is not found, it will return the id
-     *
-     * @param id id of the message
-     * @return The message or the id if not found
-     */
-    fun getDefaultMessage(id: String): String {
-        return defaultMessages[id] ?: id
-    }
-
-    override fun getLanguage(sender: CommandSender): Language {
+    override fun getLanguage(sender: CommandSender): Locale {
         return dataProvider.getLanguage(sender) ?: defaultLang
     }
 
-    override fun setLanguage(sender: CommandSender, language: Language) {
-        dataProvider.setLanguage(sender, language)
-    }
-
-    fun <E : Enum<out MSGHolder>> importEnumMessages(enum: Class<E>) {
-        require(enum.isEnum) { "importFromEnum function can only import messages from enum" }
-        @Suppress("UNCHECKED_CAST")
-        val entries = enum.enumConstants as Array<out MSGHolder>
-        entries.forEach(::addMessage)
-    }
-
-    val defaultEnglish = StringLanguage(
-        Language.Code.EN_US,
-        defaultMessages
-    )
 }

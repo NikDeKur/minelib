@@ -2,7 +2,7 @@
 
 package dev.nikdekur.minelib.rpg.buff
 
-import dev.nikdekur.minelib.i18n.parts.MSGNameHolder
+import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.`interface`.Snowflake
 import java.util.*

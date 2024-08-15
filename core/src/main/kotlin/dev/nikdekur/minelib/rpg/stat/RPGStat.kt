@@ -2,8 +2,8 @@
 
 package dev.nikdekur.minelib.rpg.stat
 
-import dev.nikdekur.minelib.i18n.MSGHolder
-import dev.nikdekur.minelib.i18n.parts.MSGNameHolder
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
 import dev.nikdekur.ndkore.ext.randDouble
 import dev.nikdekur.ndkore.ext.randFloat

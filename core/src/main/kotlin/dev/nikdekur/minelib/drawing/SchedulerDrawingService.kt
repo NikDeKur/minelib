@@ -1,12 +1,16 @@
 package dev.nikdekur.minelib.drawing
 
-import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.drawing.shape.Shape
+import dev.nikdekur.minelib.plugin.ServerPlugin
 import java.util.*
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
-class DrawingServiceImpl(override val app: MineLib) : DrawingService, MineLibModule {
+class SchedulerDrawingService(override val app: ServerPlugin) : DrawingService, PluginService {
+
+    override val bindClass: KClass<*>
+        get() = DrawingService::class
 
     val shapes = HashMap<UUID, DrawingShape>()
     val tasks = HashMap<UUID, DrawingTask>()

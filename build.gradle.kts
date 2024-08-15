@@ -30,7 +30,12 @@ allprojects {
             url = uri("https://repo.dmulloy2.net/repository/public/")
         }
         maven {
+            name = "DestroyStokyo"
             url = uri("https://repo.destroystokyo.com/repository/maven-public/")
+        }
+        maven {
+            name = "CodeMC"
+            url = uri("https://repo.codemc.io/repository/maven-public/")
         }
         maven("https://repo.aikar.co/nexus/content/repositories/aikar-release/")
     }
@@ -52,8 +57,6 @@ allprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-
-        withSourcesJar()
     }
 
     kotlin {
@@ -64,7 +67,13 @@ allprojects {
 
 
 
-
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    // Include all output directories and runtime classpath from all subprojects
+    allprojects.forEach { project ->
+        from(project.sourceSets.main.get().allSource)
+    }
+}
 
 
 license {
@@ -76,8 +85,14 @@ license {
 }
 
 
+val repoUsernameProp = "NDK_REPO_USERNAME"
+val repoPasswordProp = "NDK_REPO_PASSWORD"
+val repoUsername = System.getenv(repoUsernameProp)
+val repoPassword = System.getenv(repoPasswordProp)
 
-
+if (repoUsername.isNullOrBlank() || repoPassword.isNullOrBlank()) {
+    throw GradleException("Environment variables $repoUsernameProp and $repoPasswordProp must be set.")
+}
 
 publishing {
     publications {
@@ -99,14 +114,31 @@ publishing {
                 val shadowJar = tasks.findByName("shadowJar")
                 if (shadowJar == null) from(components["java"])
                 else artifact(shadowJar)
+
+                // Source jar
+                artifact(tasks.named("sourcesJar", Jar::class.java))
             }
         }
+    }
+
+    repositories {
+        maven {
+            name = "ndk-repo"
+            url = uri("https://repo.nikdekur.tech/releases")
+            credentials {
+                username = repoUsername
+                password = repoPassword
+            }
+        }
+
+        mavenLocal()
     }
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
 
 
 // Collect all in 1 jar
@@ -118,6 +150,8 @@ tasks.withType<ShadowJar> {
         from(project.sourceSets.main.get().output)
         configurations.add(project.configurations.runtimeClasspath.get())
     }
+
+    relocate("de.tr7zw.changeme.nbtapi", "dev.nikdekur.nbtapi")
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

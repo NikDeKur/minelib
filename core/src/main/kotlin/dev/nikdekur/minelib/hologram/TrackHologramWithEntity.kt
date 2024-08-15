@@ -23,7 +23,7 @@ data class EntityWithHologramImpl(
     override fun spawn(player: Player): Iterable<Entity> {
         val entities = entity.spawn(player)
         hologram.spawn(player)
-        hologram.teleport(player, hologram.getLocation(player).clone().add(hologramOffset(player)))
+        hologram.teleport(player, hologram.getLocation(player).copy().add(hologramOffset(player)))
         return entities
     }
 
@@ -45,7 +45,7 @@ data class EntityWithHologramImpl(
     override fun teleport(player: Player, location: AbstractLocation) {
         entity.teleport(player, location)
         val offset = hologramOffset(player)
-        hologram.teleport(player, location.clone().add(offset))
+        hologram.teleport(player, location.copy().add(offset))
     }
 
     override fun getEntities(player: Player): Collection<Entity> {

@@ -2,27 +2,27 @@ package dev.nikdekur.minelib.scoreboard
 
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
 import dev.nikdekur.ndkore.cooldown.Cooldown
 import dev.nikdekur.ndkore.cooldown.GrowPolicy
 import dev.nikdekur.ndkore.cooldown.GrowingCooldownManager
-import dev.nikdekur.ndkore.module.dependencies
+import dev.nikdekur.ndkore.service.Dependencies
 import org.bukkit.Bukkit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter) : MineLibModule {
+class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter) : PluginService {
+
+    override val bindClass = ScoreboardManager::class
 
     // ScoreboardManager will be loaded after all possibly displayable data is loaded
     // And unloaded first before all possibly displayable data is unloaded
     
-    override val dependencies = dependencies {
-        last = true
-    }
+    override val dependencies = Dependencies.last()
 
     var thread: AssembleThread? = null
     var listeners: AssembleListener = AssembleListener(this)

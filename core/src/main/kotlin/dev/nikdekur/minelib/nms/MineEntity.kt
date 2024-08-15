@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.nms.entity
+package dev.nikdekur.minelib.nms
 
 import org.bukkit.entity.EntityType
 

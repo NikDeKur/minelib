@@ -4,18 +4,20 @@ package dev.nikdekur.minelib.rpg
 
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.MineLibModule
-import dev.nikdekur.minelib.ext.getLangMsg
-import dev.nikdekur.minelib.rpg.buff.RPGBuff
+import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.ext.getInstanceFieldOrNull
 import dev.nikdekur.ndkore.extra.Tools
-import org.bukkit.command.CommandSender
 import java.util.*
+import kotlin.reflect.KClass
 
-class DefaultRPGService(override val app: MineLib) : RPGService, MineLibModule {
+class DefaultRPGService(override val app: MineLib) : RPGService, PluginService {
+
+    override val bindClass: KClass<*>
+        get() = RPGService::class
+
     val stats = HashMap<String, RPGStat<*>>()
 
     override fun onLoad() {
@@ -42,35 +44,9 @@ class DefaultRPGService(override val app: MineLib) : RPGService, MineLibModule {
         return stats[id] as? RPGStat<T>
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private inline fun <T : Comparable<T>> unsafePlus(stat: RPGStat<T>, a: Any, b: Any): Any {
-        return stat.plus(a as T, b as T)
-    }
 
-    fun formatToLore(buffs: Iterable<RPGBuff<*>>, player: CommandSender): ArrayList<String> {
-        val res = ArrayList<String>()
-        val stats = HashMap<RPGStat<*>, Any>()
-        buffs.forEach {
-            stats.compute(it.stat) { _, v ->
-                if (v == null) it.value
-                else unsafePlus(it.stat, it.value, v)
-            }
-        }
 
-        stats.forEach { (stat, value) ->
-            val message = player.getLangMsg(
-                stat.nameBuffMSG,
-                "stat" to stat.getPlaceholder(player),
-                "buff" to listOf(
-                    "value", value,
-                    "name", player.getLangMsg(stat.nameMSG).text
-                )
-            )
 
-            res.add(message.text)
-        }
-        return res
-    }
 
 
     val rpgProfiles = HashMap<UUID, RPGProfile>()

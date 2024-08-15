@@ -1,10 +1,10 @@
 package dev.nikdekur.minelib.command
 
 import dev.nikdekur.minelib.ext.sendLangMsg
-import dev.nikdekur.minelib.i18n.DefaultMSG
-import dev.nikdekur.minelib.i18n.Language
 import dev.nikdekur.minelib.i18n.LanguagesService
-import dev.nikdekur.minelib.i18n.MSGHolder
+import dev.nikdekur.minelib.i18n.locale.Locale
+import dev.nikdekur.minelib.i18n.msg.DefaultMSG
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
@@ -36,6 +36,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     var commandResult: CommandResult = CommandResult.SUCCESS
     val argsSize: Int = args.size
     val maxIndex: Int = argsSize - 1
+    
+    val position: Int = 0
 
     fun stop(): Nothing = throw ServerCommand.StopCommand()
 
@@ -58,9 +60,10 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
 
 
-    fun getArgOrNull(pos: Int) = args.getOrNull(pos)
-    fun getArg(pos: Int): String {
-        return getArgOrNull(pos) ?: throwUsage()
+    fun getStringOrNull() = args.getOrNull(position)
+    
+    fun getString(): String {
+        return getStringOrNull() ?: throwUsage()
     }
 
 
@@ -90,12 +93,6 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     ): Boolean {
         return !isExists(collection, o, onFalse, onTrue, *pair)
     }
-//
-//    fun hasBannedSymbols(input: String) {
-//        val result = !Tools.hasOnlyLetNumHypUs(input)
-//        if (result)
-//            sendError(DefaultMSG.HAS_BANNED_SYMBOLS, "string" to input)
-//    }
 
     fun tabComplete(associated: Map<Int, Collection<String>>): Collection<String>? {
         return associated[args.size - 1]
@@ -106,11 +103,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
     @Contract("_, _, _, !null -> !null")
-    fun checkInteger(argsPosition: Int, def: Int?): Int? {
-        if (argsPosition >= args.size) {
-            return def
-        }
-        val intStr = args[argsPosition]
+    fun checkInteger(def: Int?): Int? {
+        val intStr = getStringOrNull() ?: return def
         val number = intStr.toIntOrNull()
         return if (number == null && def == null) {
             sendError(DefaultMSG.INCORRECT_NUMBER, "number" to intStr)
@@ -118,11 +112,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
     @Contract("_, _, _, !null -> !null")
-    fun checkDouble(argsPosition: Int, def: Double?): Double? {
-        if (argsPosition >= args.size) {
-            return def
-        }
-        val str = args[argsPosition]
+    fun checkDouble(def: Double?): Double? {
+        val str = getStringOrNull() ?: return def
         val number = str.toDoubleOrNull()
         return if (number == null && def == null) {
             sendError(DefaultMSG.INCORRECT_NUMBER, "number" to str)
@@ -183,34 +174,32 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         sendError(DefaultMSG.INTERNAL_ERROR, "time" to Tools.packDateTimeBeautiful(), "comment" to comment)
     }
 
-    fun getByteOrNull(pos: Int) = getArgOrNull(pos)?.toByteOrNull()
-    fun getByte(pos: Int) = getByteOrNull(pos) ?: throwUsage()
+    fun getByteOrNull() = getStringOrNull()?.toByteOrNull()
+    fun getByte() = getByteOrNull() ?: throwUsage()
 
-    fun getShortOrNull(pos: Int) = getArgOrNull(pos)?.toShortOrNull()
-    fun getShort(pos: Int) = getShortOrNull(pos) ?: throwUsage()
+    fun getShortOrNull() = getStringOrNull()?.toShortOrNull()
+    fun getShort() = getShortOrNull() ?: throwUsage()
 
-    fun getIntOrNull(pos: Int) = getArgOrNull(pos)?.toIntOrNull()
-    fun getInt(pos: Int) = getIntOrNull(pos) ?: throwUsage()
+    fun getIntOrNull() = getStringOrNull()?.toIntOrNull()
+    fun getInt() = getIntOrNull() ?: throwUsage()
 
-    fun getLongOrNull(pos: Int) = getArgOrNull(pos)?.toLongOrNull()
-    fun getLong(pos: Int) = getLongOrNull(pos) ?: throwUsage()
+    fun getLongOrNull() = getStringOrNull()?.toLongOrNull()
+    fun getLong() = getLongOrNull() ?: throwUsage()
 
-    fun getFloatOrNull(pos: Int) = getArgOrNull(pos)?.toFloatOrNull()
-    fun getFloat(pos: Int) = getFloatOrNull(pos) ?: throwUsage()
+    fun getFloatOrNull() = getStringOrNull()?.toFloatOrNull()
+    fun getFloat() = getFloatOrNull() ?: throwUsage()
 
-    fun getDoubleOrNull(pos: Int) = getArgOrNull(pos)?.toDoubleOrNull()
-    fun getDouble(pos: Int) = getDoubleOrNull(pos) ?: throwUsage()
+    fun getDoubleOrNull() = getStringOrNull()?.toDoubleOrNull()
+    fun getDouble() = getDoubleOrNull() ?: throwUsage()
 
-    fun getBigIntegerOrNull(pos: Int) = getArgOrNull(pos)?.toBigIntegerOrNull()
-    fun getBigInteger(pos: Int) = getBigIntegerOrNull(pos) ?: throwUsage()
+    fun getBigIntegerOrNull() = getStringOrNull()?.toBigIntegerOrNull()
+    fun getBigInteger() = getBigIntegerOrNull() ?: throwUsage()
 
-    fun getBigDecimalOrNull(pos: Int) = getArgOrNull(pos)?.toBigDecimalOrNull()
-    fun getBigDecimal(pos: Int) = getBigDecimalOrNull(pos) ?: throwUsage()
+    fun getBigDecimalOrNull() = getStringOrNull()?.toBigDecimalOrNull()
+    fun getBigDecimal() = getBigDecimalOrNull() ?: throwUsage()
 
-    fun getBooleanOrNull(pos: Int): Boolean? {
-        if (maxIndex < pos) return null
-
-        val string = getArgOrNull(pos)?.lowercase() ?: return null
+    fun getBooleanOrNull(): Boolean? {
+        val string = getStringOrNull()?.lowercase() ?: return null
         if (string == "true")
             return true
         else if (string == "false")
@@ -228,13 +217,13 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
         return null
     }
-    fun getBoolean(pos: Int) = getBooleanOrNull(pos) ?: throwUsage()
+    fun getBoolean() = getBooleanOrNull() ?: throwUsage()
 
-    fun getCharOrNull(pos: Int) = getArgOrNull(pos)?.firstOrNull()
-    fun getChar(pos: Int) = getCharOrNull(pos) ?: throwUsage()
+    fun getCharOrNull() = getStringOrNull()?.firstOrNull()
+    fun getChar() = getCharOrNull() ?: throwUsage()
 
-    fun getDataType(pos: Int, default: SimpleDataType? = SimpleDataType.STRING): SimpleDataType {
-        val value = getArgOrNull(pos)
+    fun getDataType(default: SimpleDataType? = SimpleDataType.STRING): SimpleDataType {
+        val value = getStringOrNull()
             ?: return default ?: run {
                 sendError(DefaultMSG.UNKNOWN_DATATYPE, "type" to "null")
             }
@@ -250,8 +239,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
 
-    fun getOfflinePlayerOrNull(argsPosition: Int): OfflinePlayer? {
-        val offlinePlayerName = getArgOrNull(argsPosition) ?: return null
+    fun getOfflinePlayerOrNull(): OfflinePlayer? {
+        val offlinePlayerName = getStringOrNull() ?: return null
 
         if (offlinePlayerName.isBlankOrEmpty()) {
             unknownPlayer(offlinePlayerName)
@@ -271,8 +260,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         return offlinePlayer
     }
     @Suppress("DEPRECATION")
-    fun getOfflinePlayer(argsPosition: Int): OfflinePlayer {
-        val offlinePlayerName = getArg(argsPosition)
+    fun getOfflinePlayer(): OfflinePlayer {
+        val offlinePlayerName = getString()
         val offlinePlayer: OfflinePlayer = Bukkit.getOfflinePlayer(offlinePlayerName)
         if (offlinePlayer is Player) {
             return offlinePlayer
@@ -282,17 +271,15 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         }
         return offlinePlayer
     }
-    fun getOnlinePlayer(pos: Int): Player {
-        val name = getArg(pos)
+    fun getOnlinePlayer(): Player {
+        val name = getString()
         val player = Bukkit.getPlayer(name) ?: sendError(DefaultMSG.UNKNOWN_PLAYER, "name" to name)
         return player
     }
 
-    fun getLanguage(pos: Int): Language {
-        val name = getArg(pos)
-        val code = Language.Code.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE_CODE_FORMAT, "code" to name)
-        val language = languageService[code] ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE, "code" to name)
-        return language
+    fun getLocale(): Locale {
+        val name = getString()
+        return Locale.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE_CODE_FORMAT, "code" to name)
     }
 
 

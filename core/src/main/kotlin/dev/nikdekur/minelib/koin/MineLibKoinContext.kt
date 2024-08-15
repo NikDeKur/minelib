@@ -5,7 +5,7 @@ package dev.nikdekur.minelib.koin
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.KoinContext
-import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -47,7 +47,7 @@ object MineLibKoinContext : KoinContext {
      */
     private fun register(koinApplication: KoinApplication) {
         if (koin != null) {
-            throw KoinAppAlreadyStartedException("Target Koin Application has already been started")
+            throw KoinApplicationAlreadyStartedException("Target Koin Application has already been started")
         }
 
         koinApp = koinApplication

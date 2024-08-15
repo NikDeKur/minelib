@@ -60,7 +60,7 @@ inline fun Player.getTargetUpLocation(maxDistance: Int, transparent: Set<Materia
  * @param speed the speed to set (from 0 to 1)
  */
 inline fun Player.setHighWalkSpeed(speed: Float) {
-    MineLib.versionAdapter.setWalkSpeed(this, speed)
+    MineLib.versionAdapter.setHighWalkSpeed(this, speed)
 }
 
 /**
@@ -71,7 +71,7 @@ inline fun Player.setHighWalkSpeed(speed: Float) {
  * @param speed the speed to set (from 0 to 1)
  */
 inline fun Player.setHighFlySpeed(speed: Float) {
-    MineLib.versionAdapter.setFlySpeed(this, speed)
+    MineLib.versionAdapter.setHighFlySpeed(this, speed)
 }
 
 /**

@@ -1,11 +1,11 @@
-package dev.nikdekur.minelib.i18n.parts
+package dev.nikdekur.minelib.i18n.msg
 
 import org.bukkit.command.CommandSender
 import dev.nikdekur.minelib.ext.getLangMsg
 
 interface MSGNameHolder : MSGPartHolder {
 
-    val nameMSG: dev.nikdekur.minelib.i18n.MSGHolder
+    val nameMSG: MSGHolder
 
     fun getName(sender: CommandSender): String {
         return sender.getLangMsg(nameMSG).text

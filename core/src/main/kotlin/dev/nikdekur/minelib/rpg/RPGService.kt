@@ -24,3 +24,5 @@ interface RPGService {
     fun removeProfile(profileId: UUID)
     fun getProfile(profileId: UUID): RPGProfile?
 }
+
+

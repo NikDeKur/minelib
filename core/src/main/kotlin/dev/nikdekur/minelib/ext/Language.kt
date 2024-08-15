@@ -2,20 +2,19 @@
 
 package dev.nikdekur.minelib.ext
 
-import dev.nikdekur.minelib.i18n.Language
 import dev.nikdekur.minelib.i18n.LanguagesService
-import dev.nikdekur.minelib.i18n.MSGHolder
 import dev.nikdekur.minelib.i18n.Message
+import dev.nikdekur.minelib.i18n.locale.Locale
+import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.koin.getKoin
 import org.bukkit.command.CommandSender
 
 
-inline var CommandSender.language: Language
+inline val CommandSender.locale: Locale
     get() = getKoin().get<LanguagesService>().getLanguage(this)
-    set(value) = getKoin().get<LanguagesService>().setLanguage(this, value)
 
 inline fun CommandSender.getLangMsg(msg: MSGHolder): Message {
-    return language[msg]
+    return getKoin().get<LanguagesService>().getBundle(msg.id)?.getMessage(locale, msg) ?: Message(msg.defaultText)
 }
 
 inline fun CommandSender.getLangMsg(msg: MSGHolder, vararg placeholders: Pair<String, Any?>): Message {

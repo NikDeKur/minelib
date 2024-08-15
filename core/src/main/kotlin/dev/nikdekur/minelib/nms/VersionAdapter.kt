@@ -4,9 +4,7 @@ import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.ndkore.ext.getInstanceField
 import org.bukkit.World
 import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 interface VersionAdapter {
 
@@ -28,30 +26,19 @@ interface VersionAdapter {
      */
     fun expandBB(entity: Entity, x: Float, y: Float, z: Float)
 
-
-    fun setTag(item: ItemStack, tag: String, value: Any)
-    fun getTag(item: ItemStack, tag: String): Any?
-    fun removeTag(item: ItemStack, tag: String)
-    fun hasTag(item: ItemStack, tag: String): Boolean
-    fun getTags(item: ItemStack): Collection<String>
-    fun getTagsMap(item: ItemStack): Map<String, Any>
-
-
-    fun setWalkSpeed(player: Player, speed: Float)
-    fun setFlySpeed(player: Player, speed: Float)
-
-    fun <T : Entity> createEntity(world: World, type: EntityType): T
+    fun setHighWalkSpeed(player: Player, speed: Float)
+    fun setHighFlySpeed(player: Player, speed: Float)
 
 
     companion object {
 
-        fun getForVersion(version: String): VersionAdapter? {
-            val clazz = try {
-                Class.forName("dev.nikdekur.minelib.nms.VersionAdapter_$version")
+        fun findAdapter(version: String): VersionAdapter? {
+            val adapterClazz = try {
+                Class.forName("dev.nikdekur.minelib.$version.VersionAdapter")
             } catch (_: ClassNotFoundException) {
                 return null
             }
-            val instance = clazz.getInstanceField() as? VersionAdapter ?: return null
+            val instance = adapterClazz.getInstanceField() as? VersionAdapter ?: return null
             return instance
         }
     }

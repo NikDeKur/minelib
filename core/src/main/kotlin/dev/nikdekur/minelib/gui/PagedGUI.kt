@@ -1,13 +1,13 @@
 package dev.nikdekur.minelib.gui
 
+import dev.nikdekur.minelib.ext.addItems
+import dev.nikdekur.minelib.ext.cancel
+import dev.nikdekur.minelib.ext.editNBT
+import dev.nikdekur.minelib.item.Patterns
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import dev.nikdekur.minelib.ext.addItems
-import dev.nikdekur.minelib.ext.cancel
-import dev.nikdekur.minelib.ext.getStringTag
-import dev.nikdekur.minelib.item.Patterns
 
 abstract class PagedGUI(
     player: Player,
@@ -117,7 +117,7 @@ abstract class PagedGUI(
     override fun onClick(event: InventoryClickEvent) {
         val item = event.currentItem
         if (item != null) {
-            val itemTag = item.getStringTag("ITEM")
+            val itemTag = item.editNBT { getString("item") }
             if (itemTag != null) {
                 if (itemTag == "ARROW_PREVIOUS" && event.slot == previousArrowPos) {
                     page--
