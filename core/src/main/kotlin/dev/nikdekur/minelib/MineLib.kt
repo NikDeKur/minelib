@@ -1,5 +1,6 @@
 package dev.nikdekur.minelib
 
+import dev.nikdekur.minelib.command.ReloadCommand
 import dev.nikdekur.minelib.command.RuntimeCommandService
 import dev.nikdekur.minelib.drawing.SchedulerDrawingService
 import dev.nikdekur.minelib.gui.RuntimeGUIService
@@ -21,6 +22,8 @@ class MineLib : ServerPlugin() {
 
     override val components: Collection<Any>
         get() = listOf(
+            // Commands
+            ReloadCommand(),
 
             // Services
             SchedulerDrawingService(this),

@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.command
+package dev.nikdekur.minelib.command.api
 
 import org.bukkit.entity.Player
 import kotlin.time.Duration

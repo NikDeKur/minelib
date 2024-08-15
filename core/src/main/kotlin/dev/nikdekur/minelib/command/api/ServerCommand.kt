@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.command
+package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.plugin.ServerPlugin

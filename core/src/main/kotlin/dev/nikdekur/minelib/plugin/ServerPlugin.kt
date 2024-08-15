@@ -3,7 +3,7 @@ package dev.nikdekur.minelib.plugin
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import dev.nikdekur.minelib.PluginService
-import dev.nikdekur.minelib.command.ServerCommand
+import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.ext.warning
 import dev.nikdekur.minelib.koin.MineLibKoinComponent
@@ -153,8 +153,6 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
         }
 
         if (component is PluginService) {
-            component.app as? ServerPlugin ?: return false
-            @Suppress("UNCHECKED_CAST")
             servicesManager.registerService(component, component.bindClass)
             registered = true
         }

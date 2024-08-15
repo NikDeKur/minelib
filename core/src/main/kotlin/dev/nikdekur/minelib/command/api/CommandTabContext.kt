@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package dev.nikdekur.minelib.command
+package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.ext.offlineNames
 import dev.nikdekur.minelib.ext.onlineNames

@@ -1,5 +1,7 @@
 package dev.nikdekur.minelib.command
 
+import dev.nikdekur.minelib.command.api.CommandContext
+import dev.nikdekur.minelib.command.api.CommandTabContext
 import dev.nikdekur.minelib.plugin.ServerPlugin
 
 abstract class ServiceServiceRootCommand : ServiceServerCommand() {

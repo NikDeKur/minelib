@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.command
+package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.ext.sendSimpleMessage

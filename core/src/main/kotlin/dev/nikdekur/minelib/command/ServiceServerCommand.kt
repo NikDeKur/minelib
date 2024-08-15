@@ -2,7 +2,12 @@
 
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.command.ServerCommand.StopCommand
+import dev.nikdekur.minelib.command.api.ServerCommand.StopCommand
+import dev.nikdekur.minelib.command.api.CommandContext
+import dev.nikdekur.minelib.command.api.CommandResult
+import dev.nikdekur.minelib.command.api.CommandService
+import dev.nikdekur.minelib.command.api.CommandTabContext
+import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.koin.MineLibKoinComponent
@@ -106,7 +111,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
     }
 
     private inline fun throwUsage(sender: CommandSender): Boolean {
-        handleCommandResult(CommandResult.THROW_USAGE, sender)
+        handleCommandResult(CommandResult.Companion.THROW_USAGE, sender)
         return true
     }
 
