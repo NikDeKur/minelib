@@ -30,12 +30,12 @@ import java.util.function.Predicate
 import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.properties.Delegates
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @Suppress("unused")
 abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
-
-
 
     /**
      * Returns scheduler wrapper for this plugin
@@ -66,9 +66,17 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
      * The field is used
      * to register all listeners when the plugin is loaded and unregister all listeners when the plugin is unloaded.
      */
-    private val listeners: MutableSet<Listener> = HashSet()
+    private val _listeners: MutableSet<Listener> = HashSet()
+    val listeners: Set<Listener>
+        get() = _listeners
 
-    val loader: ClassLoader = classLoader
+    var startTime: Long = 0
+        private set
+    val uptime: Duration
+        get() = (System.currentTimeMillis() - startTime).milliseconds
+
+    val clazzLoader
+        get() = classLoader
 
     override fun onEnable() {
         registerComponents()
@@ -101,10 +109,11 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
      * Executes [afterReload] and executes all necessary actions to prepare the plugin after reloading.
      */
     open fun stopReload() {
+        startTime = System.currentTimeMillis()
         servicesManager.loadAll()
 
         // Register all listeners
-        listeners.forEach(::registerListener)
+        _listeners.forEach(::registerListener)
 
         afterReload()
     }
@@ -113,18 +122,30 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
 
 
     /**
-* Internal function called once the plugin is enabled to register all components.
-*
-* Function go through [components] and [defaultComponents] and register them via [registerComponent] function.
-*/
+    * Internal function called once the plugin is enabled to register all components.
+    *
+    * Function go through [components] and [defaultComponents] and register them via [registerComponent] function.
+    */
     protected open fun registerComponents() {
         defaultComponents.forEachSafe(
             {e, el -> logger.warning("Failed to register default component $el", e) },
             ::registerComponent
         )
 
+        val components = try {
+            components
+        } catch (e: LinkageError) {
+            logger.severe(
+                "Failed to register plugin components. " +
+                        "Make sure to create all instances in lazy or getter format. " +
+                        "Storing instances in fields can cause bukkit class-loading issues."
+            )
+            e.printStackTrace()
+            return
+        }
+
         components.forEachSafe(
-            {e, el -> logger.warning("Failed to register component $el", e) },
+            { e, el -> logger.warning("Failed to register component $el", e) },
             ::registerComponent
         )
     }
@@ -142,7 +163,7 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
     open fun registerComponent(component: Any): Boolean {
         var registered = false
 
-        if (component is Listener && !listeners.contains(component)) {
+        if (component is Listener && !_listeners.contains(component)) {
             addListener(component)
             registered = true
         }
@@ -265,7 +286,7 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
      * @param listener Listener to add
      */
     fun addListener(listener: Listener) {
-        listeners.add(listener)
+        _listeners.add(listener)
     }
 
 
@@ -328,7 +349,8 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
         return dir
     }
 
-    open val components: Collection<Any> = emptyList()
+    open val components: Collection<Any>
+        get() = emptyList()
 
 
 

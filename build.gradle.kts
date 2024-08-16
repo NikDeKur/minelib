@@ -112,6 +112,7 @@ publishing {
 
             afterEvaluate {
                 val shadowJar = tasks.findByName("shadowJar")
+                println(shadowJar)
                 if (shadowJar == null) from(components["java"])
                 else artifact(shadowJar)
 
@@ -122,6 +123,7 @@ publishing {
     }
 
     repositories {
+        mavenLocal()
         maven {
             name = "ndk-repo"
             url = uri("https://repo.nikdekur.tech/releases")
@@ -131,7 +133,6 @@ publishing {
             }
         }
 
-        mavenLocal()
     }
 }
 
@@ -152,6 +153,7 @@ tasks.withType<ShadowJar> {
     }
 
     relocate("de.tr7zw.changeme.nbtapi", "dev.nikdekur.nbtapi")
+    relocate("kotlin", "dev.nikdekur.kotlin")
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

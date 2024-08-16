@@ -1,8 +1,8 @@
 [versions]
-kotlin = "2.0.0"
+kotlin = "2.0.10"
 kotlinx-serialization = "1.7.1"
 ndkore = "1.2.2"
-kotlinx-coroutine = "1.9.0-RC"
+kotlinx-coroutine = "1.9.0-RC.2"
 google-guava = "33.2.1-jre"
 shadowJar = "8.1.1"
 licenser = "0.6.1"

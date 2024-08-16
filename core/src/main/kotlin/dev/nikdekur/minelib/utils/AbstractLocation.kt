@@ -19,7 +19,7 @@ import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.util.Vector
 
-@Serializable
+@Serializable(AbstractLocation.Serializer::class)
 data class AbstractLocation(
     var x: Double,
     var y: Double,

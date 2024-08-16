@@ -1,7 +1,7 @@
 package dev.nikdekur.minelib
 
-import dev.nikdekur.minelib.command.ReloadCommand
 import dev.nikdekur.minelib.command.RuntimeCommandService
+import dev.nikdekur.minelib.command.ml.MineLibCommand
 import dev.nikdekur.minelib.drawing.SchedulerDrawingService
 import dev.nikdekur.minelib.gui.RuntimeGUIService
 import dev.nikdekur.minelib.i18n.ConfigLanguagesService
@@ -20,10 +20,10 @@ import kotlin.properties.Delegates
 
 class MineLib : ServerPlugin() {
 
-    override val components: Collection<Any>
-        get() = listOf(
+    override val components by lazy {
+        listOf(
             // Commands
-            ReloadCommand(),
+            MineLibCommand(this),
 
             // Services
             SchedulerDrawingService(this),
@@ -33,6 +33,7 @@ class MineLib : ServerPlugin() {
             DefaultRPGService(this),
             RuntimeGUIService()
         )
+    }
 
 
     override fun whenLoad() {

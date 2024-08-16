@@ -1,13 +1,17 @@
-package dev.nikdekur.minelib.command
+package dev.nikdekur.minelib.command.ml
 
 import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.command.ServiceServerCommand
 import dev.nikdekur.minelib.command.api.CommandContext
 import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.format
 import kotlin.system.measureNanoTime
 
-class ReloadCommand : ServiceServerCommand() {
+class ReloadCommand(
+    override val app: ServerPlugin
+) : ServiceServerCommand() {
     override val name = "reload"
     override val permission = "minelib.command.reload"
     override val isConsoleFriendly = true

@@ -2,17 +2,15 @@
 
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.command.api.ServerCommand.StopCommand
 import dev.nikdekur.minelib.command.api.CommandContext
 import dev.nikdekur.minelib.command.api.CommandResult
 import dev.nikdekur.minelib.command.api.CommandService
 import dev.nikdekur.minelib.command.api.CommandTabContext
 import dev.nikdekur.minelib.command.api.ServerCommand
+import dev.nikdekur.minelib.command.api.ServerCommand.StopCommand
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.minelib.plugin.ServerPlugin
-import dev.nikdekur.ndkore.ext.copyPartialMatches
 import dev.nikdekur.ndkore.ext.filterPartialMatches
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -23,21 +21,14 @@ import java.util.*
 import kotlin.time.Duration
 
 @Suppress("unused")
-abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinComponent {
+abstract class ServiceServerCommand : ServerCommand, TabExecutor {
 
     override val service by inject<CommandService>()
 
-    private val subCommands: MutableMap<String, ServiceServerCommand> = HashMap()
-    private val subCommandAliases: MutableMap<String, ServiceServerCommand> = HashMap()
+
     var commandPath = ""
 
-    open fun addSubCommand(command: ServiceServerCommand) {
-        subCommands[command.name] = command
-        val aliases = command.aliases
-        for (alias in aliases) {
-            subCommandAliases[alias] = command
-        }
-    }
+
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<String>): Boolean {
         if (commandPath.isEmpty()) {
@@ -46,7 +37,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
 
         val permission = permission
         if (permission != null && !sender.hasPermission(permission)) {
-            sender.sendLangMsg(DefaultMSG.NOT_ENOUGH_PERMISSIONS)
+            sender.sendLangMsg(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD)
             return true
         }
 
@@ -55,17 +46,6 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
             sender.sendLangMsg(DefaultMSG.ONLY_FOR_PLAYERS)
             return true
         }
-
-//        if (rootCommand) {
-//            if (args.isEmpty()) return handleCommandResult(CommandResult.THROW_USAGE, sender)
-//            val arg0Lower = args[0].lowercase()
-//            val sub = subCommands[arg0Lower] ?: subCommandAliases[arg0Lower]
-//            if (sub != null) {
-//                commandPath += " ${sub.name}"
-//                return sub.onCommand(sender, cmd, label, args.copyOfRange(1, args.size))
-//            }
-//            return throwUsage(sender)
-//        }
 
         if (!commandPath.endsWith(name)) {
             commandPath += " ${this.name}"
@@ -120,13 +100,6 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
         if (permission != null && !sender.hasPermission(permission))
             return emptyList()
 
-        val arg0Lower = args[0].lowercase(Locale.getDefault())
-        if (args.size > 1) {
-            val sub = subCommands[arg0Lower] ?: subCommandAliases[arg0Lower]
-            if (sub != null) {
-                return sub.onTabComplete(sender, cmd, label, args.copyOfRange(1, args.size))
-            }
-        }
         val execution = CommandTabContext(sender, args)
         val completions = try {
             with(execution) {
@@ -140,15 +113,10 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
             return emptyList()
         }
 
-        if (completions == null && args.size == 1) {
-            val matches = ArrayList<String>()
-            subCommands.keys.copyPartialMatches(args.last(), matches)
-            return matches
-        } else completions?.filterPartialMatches(args.last())
+        completions?.filterPartialMatches(args.last())
 
 
-        // Если никаких совпадений не найдено и таб комплитер полностью пустой
-        // Возвращаем абсолютно пустой список.
+        // If no completions are found, return an empty list
         return completions?.ifEmpty { emptyList() } ?: emptyList()
     }
 
@@ -158,7 +126,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor, MineLibKoinCom
     override fun register(plugin: ServerPlugin) {
         try {
             val command = plugin.getCommand(name) ?: run {
-                plugin.logger.warning("Command '$name' not found. Maybe you forgot to register it?")
+                plugin.logger.severe("Command '$name' not found. Maybe you forgot to register it?")
                 return
             }
             command.executor = this

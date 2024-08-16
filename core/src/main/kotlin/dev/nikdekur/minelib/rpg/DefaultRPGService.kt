@@ -21,7 +21,7 @@ class DefaultRPGService(override val app: MineLib) : RPGService, PluginService {
     val stats = HashMap<String, RPGStat<*>>()
 
     override fun onLoad() {
-        val classes = Tools.findClasses(app.loader, STATS_PACKAGE)
+        val classes = Tools.findClasses(app.clazzLoader, STATS_PACKAGE)
         classes.forEach {
             if (!RPGStat::class.java.isAssignableFrom(it)) return@forEach
 

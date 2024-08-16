@@ -1,6 +1,21 @@
 package dev.nikdekur.minelib.i18n.msg
 
-enum class DefaultMSG(override val defaultText: String) : MSGHolder {
+enum class DefaultMSG(vararg text: String) : MSGHolder {
+
+    CMD_MINELIB_USAGE("&cUsage: /minelib <reload>"),
+    CMD_MINELIB_INFO(
+        "&b~~~~~ MineLib &f{version} &7by &bNik De Kur ~~~~~",
+        "",
+        "&7- &bCommands: &f{commands}\n",
+        "&b- &bListeners: &f{listeners}\n",
+        "&7- &bServices: &f{services}\n",
+        "&7- &bUptime: &f{uptime}ms",
+        "",
+        "&7- Sub Commands:",
+        "&7  - &b/minelib reload &7- Reloads the plugin",
+        "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    ),
+
     /**
      * Placeholders:
      * 1. {string}
@@ -45,7 +60,7 @@ enum class DefaultMSG(override val defaultText: String) : MSGHolder {
      */
     COOLDOWN_ON_COMMAND("&cWait &6{seconds} &cseconds before executing this command!"),
 
-    NOT_ENOUGH_PERMISSIONS("&cYou do not have enough permissions!"),
+    NOT_ENOUGH_PERMISSIONS_CMD("&cYou do not have enough permissions to execute this command!"),
     ONLY_FOR_PLAYERS("&cThis command is only available for players!"),
     ONLY_FOR_PLAYERS_SYNTAX("&cThis syntax is only available for players!"),
 
@@ -91,6 +106,8 @@ enum class DefaultMSG(override val defaultText: String) : MSGHolder {
     RPG_STAT_NAME_BUFF_DAMAGE_MULTIPLIER("&f{buff.name}: &6x{buff.value}"),
 
     ;
+
+    override val defaultText = text.joinToString("\n")
 
 
     override val bundle: String = "default"

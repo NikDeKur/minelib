@@ -1,11 +1,14 @@
 package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import org.bukkit.command.CommandSender
 import kotlin.time.Duration
 
-interface ServerCommand {
+interface ServerCommand : MineLibKoinComponent {
+
+    val app: ServerPlugin
 
     val service: CommandService
 
