@@ -296,13 +296,13 @@ value class Scheduler(val plugin: Plugin) {
     }
 
     /**
-     * @param task the task to be run
      * @param delay the ticks to wait before running the task
+     * @param task the task to be run
      * @return a BukkitTask that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLater(task: BukkitRunnable, delay: Long): BukkitTask {
+    fun runTaskLater(delay: Long, task: BukkitRunnable): BukkitTask {
         return Bukkit.getScheduler().runTaskLater(plugin, task, delay)
     }
 
@@ -325,13 +325,13 @@ value class Scheduler(val plugin: Plugin) {
     }
 
     /**
-     * @param task the task to be run
      * @param delay the ticks to wait before running the task
+     * @param task the task to be run
      * @return a BukkitTask that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLaterAsynchronously(task: BukkitRunnable, delay: Long): BukkitTask {
+    fun runTaskLaterAsynchronously(delay: Long, task: BukkitRunnable): BukkitTask {
         return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay)
     }
 
@@ -365,14 +365,14 @@ value class Scheduler(val plugin: Plugin) {
     }
 
     /**
-     * @param task the task to be run
      * @param delay the ticks to wait before running the task
      * @param period the ticks to wait between runs
+     * @param task the task to be run
      * @return a BukkitTask that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimer(task: BukkitRunnable, delay: Long, period: Long): BukkitTask {
+    fun runTaskTimer(delay: Long, period: Long, task: BukkitRunnable): BukkitTask {
         return Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period)
     }
 
@@ -415,15 +415,14 @@ value class Scheduler(val plugin: Plugin) {
     }
 
     /**
-     * @param task the task to be run
-     * @param delay the ticks to wait before running the task for the first
-     * time
+     * @param delay the ticks to wait before running the task for the first time
      * @param period the ticks to wait between runs
+     * @param task the task to be run
      * @return a BukkitTask that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimerAsynchronously(task: BukkitRunnable, delay: Long, period: Long): BukkitTask {
+    fun runTaskTimerAsynchronously(delay: Long, period: Long, task: BukkitRunnable): BukkitTask {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay, period)
     }
 

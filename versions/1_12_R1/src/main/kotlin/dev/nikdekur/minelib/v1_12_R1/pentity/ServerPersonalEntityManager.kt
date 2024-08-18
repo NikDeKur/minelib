@@ -1,7 +1,7 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager

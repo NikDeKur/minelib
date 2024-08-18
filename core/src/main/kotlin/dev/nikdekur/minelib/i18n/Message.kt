@@ -7,11 +7,12 @@ import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.ext.toTArray
-import dev.nikdekur.ndkore.placeholder.PatternPlaceholderParser
+import dev.nikdekur.ndkore.placeholder.PlaceholderParser
+import dev.nikdekur.ndkore.placeholder.parse
 import org.bukkit.command.CommandSender
 import java.util.logging.Level
 
-class Message(var text: String, val prefix : String = "") {
+class Message(var text: String) {
     
     constructor(text: List<String>) : this(text.joinToString("\n"))
 
@@ -19,10 +20,10 @@ class Message(var text: String, val prefix : String = "") {
      * Raw text with prefix
      */
     val chatText: String
-        get() = prefix + text
+        get() = text
 
-    fun parsePlaceholders(vararg placeholders: Pair<String, Any?>): Message {
-        text = PatternPlaceholderParser.CURLY_BRACKET.parse(text, placeholders.toMap())
+    fun parsePlaceholders(parser: PlaceholderParser, vararg placeholders: Pair<String, Any?>): Message {
+        text = parser.parse(text, *placeholders)
         return this
     }
 

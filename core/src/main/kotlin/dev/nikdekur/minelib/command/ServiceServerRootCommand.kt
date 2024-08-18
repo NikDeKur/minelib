@@ -1,5 +1,6 @@
 package dev.nikdekur.minelib.command
 
+import dev.nikdekur.minelib.command.api.CommandContext
 import dev.nikdekur.minelib.command.api.CommandTabContext
 import dev.nikdekur.minelib.command.api.ServerRootCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin
@@ -40,8 +41,8 @@ abstract class ServiceServerRootCommand : ServiceServerCommand(), ServerRootComm
     }
 
     override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String>? {
-        val arg0Lower = args[0].lowercase()
-        if (args.size > 1) {
+        if (args.isNotEmpty()) {
+            val arg0Lower = args[0].lowercase()
             val sub = subCommandsMap[arg0Lower]
             if (sub != null) {
                 return sub.onTabComplete(sender, cmd, label, args.copyOfRange(1, args.size))
@@ -55,6 +56,12 @@ abstract class ServiceServerRootCommand : ServiceServerCommand(), ServerRootComm
             return matches
         }
         return completions
+    }
+
+    override fun CommandContext.onCommand() {
+        // By default, throw usage
+        // But user can override this method to do something else
+        throwUsage()
     }
 
     override fun CommandTabContext.onTabComplete(): MutableList<String>? { return null }

@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.drawing
 
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.drawing.shape.Shape
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import java.util.*

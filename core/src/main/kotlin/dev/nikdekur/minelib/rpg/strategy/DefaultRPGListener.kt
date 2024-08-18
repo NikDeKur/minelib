@@ -1,15 +1,15 @@
 package dev.nikdekur.minelib.rpg.strategy
 
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
+import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.rpg.DefaultRPGService
 import dev.nikdekur.minelib.rpg.combat.DamageSource
+import dev.nikdekur.minelib.service.PluginService
+import dev.nikdekur.ndkore.service.inject
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
-import org.koin.core.component.inject
 
-object DefaultRPGListener : Listener, MineLibKoinComponent {
+class DefaultRPGListener(override val app: ServerPlugin) : PluginService {
 
     val defaultRpgService: DefaultRPGService by inject()
 

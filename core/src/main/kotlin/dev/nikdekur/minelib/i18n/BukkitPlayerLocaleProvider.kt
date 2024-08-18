@@ -1,12 +1,11 @@
 package dev.nikdekur.minelib.i18n
 
 import dev.nikdekur.minelib.i18n.locale.Locale
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object BukkitPlayerLocaleProvider : PlayerLocaleProvider, MineLibKoinComponent {
+object BukkitPlayerLocaleProvider : PlayerLocaleProvider {
 
     override val id = "bukkit"
 

@@ -3,13 +3,14 @@
 package dev.nikdekur.minelib.movement
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.ext.online
 import dev.nikdekur.minelib.ext.runSync
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 class ConfigMovementService(override val app: MineLib) : MovementService, PluginService {
@@ -17,7 +18,7 @@ class ConfigMovementService(override val app: MineLib) : MovementService, Plugin
     override val bindClass: KClass<*>
         get() = MovementService::class
 
-    val lastLocationMap = HashMap<UUID, Location>()
+    val lastLocationMap = ConcurrentHashMap<UUID, Location>()
 
     override fun onLoad() {
         val config = app.loadConfig<MovementConfig>("movement")

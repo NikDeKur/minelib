@@ -1,3 +1,4 @@
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.kotlin.dsl.libs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -21,6 +22,7 @@ allprojects {
     apply {
         plugin(rootProject.libs.plugins.kotlinJvm.get().pluginId)
         plugin(rootProject.libs.plugins.kotlinSerialization.get().pluginId)
+        plugin(rootProject.libs.plugins.shadowJar.get().pluginId)
     }
 
     repositories {
@@ -62,6 +64,8 @@ allprojects {
     kotlin {
         jvmToolchain(8)
     }
+
+
 }
 
 
@@ -134,15 +138,23 @@ publishing {
         }
 
     }
+
+
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun ShadowJar.reloc(path: String) {
+    val name = path.substringAfterLast(".")
+    val newPath = "dev.nikdekur.minelib.shaded.$name"
+    println("Relocating `$path` to `$newPath`")
+    relocate(path, newPath)
+}
 
-
-// Collect all in 1 jar
+// Основная конфигурация
 tasks.withType<ShadowJar> {
     archiveClassifier.set("")
 
@@ -152,8 +164,26 @@ tasks.withType<ShadowJar> {
         configurations.add(project.configurations.runtimeClasspath.get())
     }
 
-    relocate("de.tr7zw.changeme.nbtapi", "dev.nikdekur.nbtapi")
-    relocate("kotlin", "dev.nikdekur.kotlin")
+//    println("Relocating dependencies")
+//
+//    // Shared
+//    reloc("de.tr7zw.changeme.nbtapi")
+//    reloc("dev.nikdekur.ndkore")
+//    reloc("org.koin")
+//
+//    // Core
+//    reloc("co.touchlab.stately")
+//    reloc("com.charleskorn.kaml")
+//    reloc("com.google")
+//    reloc("com.benasher44.uuid")
+//    reloc("javax.annotation")
+//    reloc("kotlinx")
+//    reloc("org.checkerframework")
+//    reloc("org.snakeyaml")
+//    reloc("org.intellij")
+//    reloc("org.jetbrains")
+
+    reloc("de.tr7zw.changeme.nbtapi")
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

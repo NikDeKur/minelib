@@ -2,7 +2,6 @@
 
 package dev.nikdekur.minelib.i18n
 
-import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.ext.pairs
 import dev.nikdekur.minelib.i18n.bundle.Bundle
 import dev.nikdekur.minelib.i18n.bundle.ConfigBundle
@@ -10,8 +9,10 @@ import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.locale.LocaleConfig
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.map.multi.MultiHashMap
+import dev.nikdekur.ndkore.placeholder.PlaceholderParser
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -57,7 +58,7 @@ class ConfigLanguagesService(override val app: ServerPlugin) : LanguagesService,
         // Go back from plugin folder to the server folder
         val containerDir = app.dataFolder.parentFile.parentFile
         val i18nDir = File(containerDir, "i18n")
-        val config = app.loadConfig<LocaleConfig>("config", i18nDir)
+        val config = app.loadConfig<LocaleConfig>("config", folder = i18nDir)
 
 
         addDataProvider(BukkitPlayerLocaleProvider)
@@ -127,6 +128,16 @@ class ConfigLanguagesService(override val app: ServerPlugin) : LanguagesService,
         return bundles[id]
     }
 
+    override fun getMessage(
+        locale: Locale,
+        key: MSGHolder,
+        vararg placeholders: Pair<String, Any?>,
+        parser: PlaceholderParser
+    ): Message {
+        val bundle = getBundle(key.bundle)
+        val message = bundle?.getMessage(locale, key, *placeholders, parser = parser)
+        return message ?: Message(key.defaultText).parsePlaceholders(parser, *placeholders)
+    }
 
 
     override fun getLanguage(sender: CommandSender): Locale {

@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.command.api.CommandService
 import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin

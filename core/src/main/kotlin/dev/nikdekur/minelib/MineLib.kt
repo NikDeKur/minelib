@@ -1,5 +1,6 @@
 package dev.nikdekur.minelib
 
+import de.tr7zw.changeme.nbtapi.NBT
 import dev.nikdekur.minelib.command.RuntimeCommandService
 import dev.nikdekur.minelib.command.ml.MineLibCommand
 import dev.nikdekur.minelib.drawing.SchedulerDrawingService
@@ -53,6 +54,10 @@ class MineLib : ServerPlugin() {
         versionAdapter = adapter
     }
 
+
+    override fun afterReload() {
+        NBT.preloadApi()
+    }
 
 
     companion object {

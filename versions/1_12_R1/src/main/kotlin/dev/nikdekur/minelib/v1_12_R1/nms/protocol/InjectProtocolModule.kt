@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.v1_12_R1.nms.protocol
 
 import com.google.common.collect.MapMaker
 import com.mojang.authlib.GameProfile
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.plugin.ServerPlugin
@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
-import kotlin.reflect.KClass
 
 /**
  * Represents a very tiny alternative to ProtocolLib.

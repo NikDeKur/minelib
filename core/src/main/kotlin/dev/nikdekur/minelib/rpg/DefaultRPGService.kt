@@ -4,7 +4,7 @@ package dev.nikdekur.minelib.rpg
 
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.ext.addById

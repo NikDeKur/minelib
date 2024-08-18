@@ -2,13 +2,13 @@ package dev.nikdekur.minelib.plugin
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import dev.nikdekur.minelib.PluginService
 import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.ext.warning
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.minelib.koin.MineLibKoinContext
 import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.service.PluginComponent
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.utils.ClassUtils
 import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.ext.format
@@ -35,7 +35,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 
 @Suppress("unused")
-abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
+abstract class ServerPlugin : JavaPlugin(), PluginComponent {
 
     /**
      * Returns scheduler wrapper for this plugin
@@ -59,6 +59,9 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
      * Modules must be registered in [components] property.
      */
     lateinit var servicesManager: ServicesManager<ServerPlugin>
+
+    override val app: ServerPlugin
+        get() = this
 
     /**
      * Private set of listeners provided by the plugin.
@@ -182,7 +185,7 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
     }
 
     override fun onLoad() {
-        // loadAllPluginClasses()
+        loadAllPluginClasses()
         servicesManager = KoinServicesManager(MineLibKoinContext, this)
         this@ServerPlugin.scheduler = Scheduler(this)
         setupStaticFields()
@@ -315,7 +318,11 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
         )
     }
 
-    inline fun <reified T> loadConfig(configName: String, folder: File = dataFolder): T {
+    inline fun <reified T> loadConfig(
+        configName: String,
+        requireFilled: Boolean = false,
+        folder: File = dataFolder
+    ): T {
         val file = if (!configName.endsWith(".yml"))
             loadFile("$configName.yml", folder)
         else
@@ -324,7 +331,18 @@ abstract class ServerPlugin : JavaPlugin(), MineLibKoinComponent {
         // Check if the file is empty
         // loadFile ensures that the file exists
         if (file.length() == 0L) {
-            val config = T::class.java.newInstance()
+            check(!requireFilled) {
+                "Config file `$configName` is empty while it should be filled."
+            }
+
+            val config = try {
+                 T::class.java.newInstance()
+            } catch (_: NoSuchMethodException) {
+                throw IllegalArgumentException(
+                    "Cannot create a default instance of ${T::class.simpleName}. " +
+                        "Make sure the class has a no-args constructor or enable `requireFilled`."
+                )
+            }
             saveConfig(configName, config, folder)
             return config
         }

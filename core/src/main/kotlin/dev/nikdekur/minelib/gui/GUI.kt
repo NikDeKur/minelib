@@ -3,18 +3,18 @@
 package dev.nikdekur.minelib.gui
 
 import dev.nikdekur.minelib.ext.applyColors
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
+import dev.nikdekur.minelib.service.PluginComponent
+import dev.nikdekur.ndkore.service.inject
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.*
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.InventoryView
-import org.koin.core.component.inject
 import java.util.*
 
 @Suppress("LeakingThis")
-abstract class GUI(val player: Player, val size: Int) : InventoryHolder, MineLibKoinComponent {
+abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginComponent {
 
     val service by inject<GUIService>()
 

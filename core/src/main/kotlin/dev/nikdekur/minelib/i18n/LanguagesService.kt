@@ -4,6 +4,7 @@ package dev.nikdekur.minelib.i18n
 import dev.nikdekur.minelib.i18n.bundle.Bundle
 import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.ndkore.placeholder.PlaceholderParser
 import org.bukkit.command.CommandSender
 
 interface LanguagesService {
@@ -13,6 +14,13 @@ interface LanguagesService {
 
     fun newBundle(id: String, messages: Collection<MSGHolder>)
     fun getBundle(id: String): Bundle?
+
+    fun getMessage(
+        locale: Locale,
+        key: MSGHolder,
+        vararg placeholders: Pair<String, Any?>,
+        parser: PlaceholderParser
+    ): Message
 
     fun getLanguage(sender: CommandSender): Locale
 }

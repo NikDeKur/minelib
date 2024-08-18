@@ -1,4 +1,4 @@
-group = "dev.nikdekur.minelib"
+group = "dev.nikdekur"
 version = "1.0.0"
 
 dependencies {

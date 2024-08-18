@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.scoreboard
 
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.PluginService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
 import dev.nikdekur.ndkore.cooldown.Cooldown

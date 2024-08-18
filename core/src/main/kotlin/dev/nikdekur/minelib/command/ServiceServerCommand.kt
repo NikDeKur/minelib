@@ -12,11 +12,11 @@ import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.filterPartialMatches
+import dev.nikdekur.ndkore.service.inject
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.koin.core.component.inject
 import java.util.*
 import kotlin.time.Duration
 
@@ -24,7 +24,6 @@ import kotlin.time.Duration
 abstract class ServiceServerCommand : ServerCommand, TabExecutor {
 
     override val service by inject<CommandService>()
-
 
     var commandPath = ""
 

@@ -1,11 +1,9 @@
 package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.ext.sendLangMsg
-import dev.nikdekur.minelib.i18n.LanguagesService
 import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.i18n.msg.MSGHolder
-import dev.nikdekur.minelib.koin.MineLibKoinComponent
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
 import dev.nikdekur.ndkore.extra.Tools
@@ -14,30 +12,31 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
-import org.koin.core.component.inject
 import java.text.DecimalFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
 
 open class CommandContext(val sender: CommandSender, val args: Array<String>)
-    : CommandSender by sender, MineLibKoinComponent
-{
-
-    val languageService: LanguagesService by inject()
+    : CommandSender by sender {
 
 
-    val isPlayer = sender is Player
-    val isConsole = !isPlayer
-
-
-    val player: Player
-        get() = if (sender is Player) sender else error("CommandSender is not a Player")
     var commandResult: CommandResult = CommandResult.SUCCESS
-    val argsSize: Int = args.size
-    val maxIndex: Int = argsSize - 1
+
+    val isPlayer
+        get() = sender is Player
+    val isConsole
+        get() = !isPlayer
+
+    val player
+        get() = if (sender is Player) sender else error("CommandSender is not a Player")
+
+    val argsSize
+        get() = args.size
+    val maxIndex
+        get() = argsSize - 1
     
-    val position: Int = 0
+    var position: Int = 0
 
     fun stop(): Nothing = throw ServerCommand.StopCommand()
 
@@ -60,7 +59,11 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
 
 
-    fun getStringOrNull() = args.getOrNull(position)
+    fun getStringOrNull(): String? {
+        return args.getOrNull(position).also {
+            position++
+        }
+    }
     
     fun getString(): String {
         return getStringOrNull() ?: throwUsage()
