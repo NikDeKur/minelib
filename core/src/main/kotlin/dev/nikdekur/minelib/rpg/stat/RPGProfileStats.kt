@@ -2,26 +2,26 @@
 
 package dev.nikdekur.minelib.rpg.stat
 
-import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.rpg.event.RPGStatChangeEvent
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.ndkore.ext.forEachSafe
-import dev.nikdekur.ndkore.map.list.ListsHashMap
+import dev.nikdekur.ndkore.map.MutableListsMap
+import java.util.LinkedList
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class RPGProfileStats(val profile: RPGProfile) {
 
-    val beforeStatChangeProcessors = ListsHashMap<RPGStat<*>, StatChangeProcessor<*>>()
+    val beforeStatChangeProcessors: MutableListsMap<RPGStat<*>, StatChangeProcessor<*>> = LinkedHashMap()
     fun <T : Comparable<T>> beforeStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>) {
         @Suppress("UNCHECKED_CAST")
-        (beforeStatChangeProcessors[stat] as MutableList<StatChangeProcessor<T>>).add(action)
+        (beforeStatChangeProcessors.getOrPut(stat, ::LinkedList) as MutableList<StatChangeProcessor<T>>).add(action)
     }
 
-    val afterStatChangeProcessors = ListsHashMap<RPGStat<*>, StatChangeProcessor<*>>()
+    val afterStatChangeProcessors: MutableListsMap<RPGStat<*>, StatChangeProcessor<*>> = LinkedHashMap()
     fun <T : Comparable<T>> afterStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>) {
         @Suppress("UNCHECKED_CAST")
-        (afterStatChangeProcessors[stat] as MutableList<StatChangeProcessor<T>>).add(action)
+        (afterStatChangeProcessors.getOrPut(stat, ::LinkedList) as MutableList<StatChangeProcessor<T>>).add(action)
     }
 
 
@@ -31,7 +31,7 @@ class RPGProfileStats(val profile: RPGProfile) {
             beforeStatChangeProcessors[stat]
         else
             afterStatChangeProcessors[stat]
-        processors.forEachSafe({e, _ -> e.printStackTrace()}) {
+        processors?.forEachSafe({e, _ -> e.printStackTrace()}) {
             @Suppress("UNCHECKED_CAST")
             val processor = it as StatChangeProcessor<T>
             processor.invoke(event)
@@ -73,7 +73,7 @@ class RPGProfileStats(val profile: RPGProfile) {
 
         val event = RPGStatChangeEvent(profile, stat, oldValue, newValue)
         processStatChange(true, event)
-        if (!event.isCancelled) event.call()
+        // if (!event.isCancelled) event.call()
         if (event.isCancelled) return false
 
         val value = event.newValue

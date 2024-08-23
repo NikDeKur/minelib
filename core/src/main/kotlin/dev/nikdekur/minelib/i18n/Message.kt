@@ -64,4 +64,8 @@ class Message(var text: String) {
     inline fun log(level: Level = Level.INFO) {
         bLogger.log(level, chatText)
     }
+
+    override fun toString(): String {
+        return "Message(text='$chatText')"
+    }
 }

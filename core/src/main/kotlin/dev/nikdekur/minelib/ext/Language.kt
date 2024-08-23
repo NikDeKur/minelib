@@ -3,10 +3,10 @@
 package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.i18n.LanguagesService
+import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.Message
 import dev.nikdekur.minelib.i18n.locale.Locale
-import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.ndkore.placeholder.PatternPlaceholderParser
 import dev.nikdekur.ndkore.placeholder.PlaceholderParser
 import dev.nikdekur.ndkore.service.getService
@@ -14,20 +14,20 @@ import org.bukkit.command.CommandSender
 
 
 inline val CommandSender.locale: Locale
-    get() = MineLib.instance.servicesManager.getService<LanguagesService>().getLanguage(this)
+    get() = MineLib.instance.servicesManager.getService<I18nService>().getLocale(this)
 
 inline fun CommandSender.getLangMsg(
-    msg: MSGHolder,
+    msg: MessageReference,
     vararg placeholders: Pair<String, Any?>,
     parser: PlaceholderParser = PatternPlaceholderParser.CURLY_BRACKET
 ): Message {
-    val service = MineLib.instance.servicesManager.getService<LanguagesService>()
+    val service = MineLib.instance.servicesManager.getService<I18nService>()
     return service.getMessage(locale, msg, *placeholders, parser = parser)
 }
 
 
 inline fun CommandSender.sendLangMsg(
-    msg: MSGHolder,
+    msg: MessageReference,
     vararg placeholders: Pair<String, Any?>,
     parser: PlaceholderParser = PatternPlaceholderParser.CURLY_BRACKET,
 ) {
@@ -36,7 +36,7 @@ inline fun CommandSender.sendLangMsg(
 
 
 inline fun CommandSender.sendTitleLangMsg(
-    msg: MSGHolder,
+    msg: MessageReference,
     vararg placeholders: Pair<String, Any?>,
     parser: PlaceholderParser = PatternPlaceholderParser.CURLY_BRACKET
 ) {

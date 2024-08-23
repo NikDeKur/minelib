@@ -15,7 +15,14 @@ import org.bukkit.util.Vector
 object Utils {
 
     fun debug(vararg messageParts: Any?) {
+        val server = Bukkit.getServer()
         val msg = messageParts.joinToString(" | ") { it.toString() }
+
+        if (server == null) {
+            println("[DEBUG] $msg")
+            return
+        }
+
         Bukkit.getOnlinePlayers().forEach {
             if (!it.isOp) return
             sendDebug(it, msg)
@@ -63,9 +70,13 @@ object Utils {
      *
      * Returns the location with the world set to null and the coordinates set to 0.
      */
-    val zeroLocation = Location(null, 0.0, 0.0, 0.0)
+    val zeroLocation by lazy {
+        Location(null, 0.0, 0.0, 0.0)
+    }
 
-    val zeroVector = Vector(0, 0, 0)
+    val zeroVector by lazy {
+        Vector(0, 0, 0)
+    }
 }
 
 /**

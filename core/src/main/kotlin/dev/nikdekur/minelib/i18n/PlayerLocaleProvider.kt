@@ -5,5 +5,5 @@ import dev.nikdekur.ndkore.`interface`.Snowflake
 import org.bukkit.command.CommandSender
 
 interface PlayerLocaleProvider : Snowflake<String> {
-    fun getLanguage(sender: CommandSender): Locale?
+    fun getLocale(sender: CommandSender): Locale?
 }

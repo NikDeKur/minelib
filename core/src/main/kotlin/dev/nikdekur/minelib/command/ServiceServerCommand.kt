@@ -94,7 +94,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor {
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String>? {
+    override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String> {
         val permission = permission
         if (permission != null && !sender.hasPermission(permission))
             return emptyList()
@@ -113,7 +113,6 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor {
         }
 
         completions?.filterPartialMatches(args.last())
-
 
         // If no completions are found, return an empty list
         return completions?.ifEmpty { emptyList() } ?: emptyList()

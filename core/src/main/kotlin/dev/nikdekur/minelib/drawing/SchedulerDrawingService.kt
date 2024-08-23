@@ -1,15 +1,13 @@
 package dev.nikdekur.minelib.drawing
 
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.drawing.shape.Shape
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import java.util.*
-import kotlin.reflect.KClass
 import kotlin.time.Duration
 
-class SchedulerDrawingService(override val app: ServerPlugin) : DrawingService, PluginService {
+class SchedulerDrawingService(override val app: ServerPlugin) : DrawingService {
 
-    override val bindClass: KClass<*>
+    override val bindClass
         get() = DrawingService::class
 
     val shapes = HashMap<UUID, DrawingShape>()
@@ -35,7 +33,7 @@ class SchedulerDrawingService(override val app: ServerPlugin) : DrawingService, 
     }
 
 
-    override fun onUnload() {
+    override fun onDisable() {
         tasks.values.forEach { it.cancel() }
         shapes.clear()
         tasks.clear()

@@ -2,8 +2,8 @@
 
 package dev.nikdekur.minelib.rpg.stat
 
-import dev.nikdekur.minelib.i18n.msg.MSGHolder
 import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
+import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
 import dev.nikdekur.ndkore.ext.randDouble
 import dev.nikdekur.ndkore.ext.randFloat
@@ -16,9 +16,11 @@ val random = java.util.Random()
 
 abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparable<T>, T : Any {
     abstract val defaultValue: T
+    abstract val staticValue: T
+
     abstract val clazz: KClass<T>
 
-    abstract val nameBuffMSG: MSGHolder
+    abstract val nameBuffMSG: MessageReference
 
     fun isInstance(value: Any): kotlin.Boolean {
         return clazz.isInstance(value)
@@ -58,7 +60,9 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
 
 
     abstract class Double : RPGStat<kotlin.Double>() {
-        override val defaultValue: kotlin.Double = 0.0
+        override val defaultValue = 0.0
+        override val staticValue = 0.0
+
         override val clazz: KClass<kotlin.Double> = kotlin.Double::class
         override fun plus(value: kotlin.Double, other: kotlin.Double): kotlin.Double {
             return value + other
@@ -77,7 +81,9 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     }
 
     abstract class Float : RPGStat<kotlin.Float>() {
-        override val defaultValue: kotlin.Float = 0f
+        override val defaultValue = 0f
+        override val staticValue = 0f
+
         override val clazz: KClass<kotlin.Float> = kotlin.Float::class
         override fun plus(value: kotlin.Float, other: kotlin.Float): kotlin.Float {
             return value + other
@@ -97,7 +103,9 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     }
 
     abstract class Int : RPGStat<kotlin.Int>() {
-        override val defaultValue: kotlin.Int = 0
+        override val defaultValue = 0
+        override val staticValue = 0
+
         override val clazz: KClass<kotlin.Int> = kotlin.Int::class
         override fun plus(value: kotlin.Int, other: kotlin.Int): kotlin.Int {
             return value + other
@@ -116,7 +124,9 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     }
 
     abstract class BigInteger : RPGStat<java.math.BigInteger>() {
-        override val defaultValue: java.math.BigInteger = java.math.BigInteger.ZERO
+        override val defaultValue = java.math.BigInteger.ZERO
+        override val staticValue = java.math.BigInteger.ZERO
+
         override val clazz: KClass<java.math.BigInteger> = java.math.BigInteger::class
         override fun plus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
             return value + other
@@ -135,8 +145,10 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     }
 
     abstract class Boolean : RPGStat<kotlin.Boolean>() {
-        override val defaultValue: kotlin.Boolean = false
+        override val defaultValue = false
+        override val staticValue = false
         override val clazz: KClass<kotlin.Boolean> = kotlin.Boolean::class
+
         override fun plus(value: kotlin.Boolean, other: kotlin.Boolean): kotlin.Boolean {
             return value || other
         }

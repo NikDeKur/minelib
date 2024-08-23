@@ -1,15 +1,11 @@
 package dev.nikdekur.minelib.rpg.profile
 
-import dev.nikdekur.minelib.ext.call
-import dev.nikdekur.minelib.rpg.buff.AttachableBuffsListImpl
+import dev.nikdekur.minelib.rpg.buff.MapAttachableBuffsList
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
 import dev.nikdekur.minelib.rpg.combat.DamageSource
-import dev.nikdekur.minelib.rpg.event.RPGDamageEvent
-import dev.nikdekur.minelib.rpg.event.RPGKillEvent
 import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGMaxHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGProfileStats
-import dev.nikdekur.minelib.rpg.strategy.DefaultDamageStrategy
 import dev.nikdekur.minelib.rpg.update.FixedRateUpdater
 import java.util.*
 
@@ -19,10 +15,8 @@ abstract class RPGSimpleProfile : RPGProfile {
         RPGProfileStats(this)
     }
 
-    override val strategy = DefaultDamageStrategy
 
-
-    override val buffs = object : AttachableBuffsListImpl() {
+    override val buffs = object : MapAttachableBuffsList() {
         override fun <T : Comparable<T>> afterAddBuff(buff: RPGBuff<T>) {
             stats.add(buff.stat, buff.value)
         }
@@ -63,15 +57,12 @@ abstract class RPGSimpleProfile : RPGProfile {
     }
 
     override fun damage(source: DamageSource): Double  {
-        var finalDamage = damage
-        if (finalDamage > health) {
-            finalDamage = health
-        }
+        val damage = strategy.calculateDamage(this, source)
 
-        val event = RPGDamageEvent(this, source, finalDamage)
-        event.call()
-        if (event.isCancelled) return 0.0
-        finalDamage = event.damage
+//        val event = RPGDamageEvent(this, source, damage)
+//        event.call()
+//        if (event.isCancelled) return 0.0
+        val finalDamage = damage
 
         if (health - finalDamage <= 0.0) {
             kill(source)
@@ -85,7 +76,7 @@ abstract class RPGSimpleProfile : RPGProfile {
 
     override fun kill(source: DamageSource) {
         stats[RPGHealthStat] = 0.0
-        RPGKillEvent(this, source).call()
+        // RPGKillEvent(this, source).call()
     }
 
 

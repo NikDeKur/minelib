@@ -1,10 +1,11 @@
 package dev.nikdekur.minelib.drawing
 
 import dev.nikdekur.minelib.drawing.shape.Shape
+import dev.nikdekur.minelib.service.PluginService
 import java.util.UUID
 import kotlin.time.Duration
 
-interface DrawingService {
+interface DrawingService : PluginService {
 
     /**
      * Add shape to drawing manager

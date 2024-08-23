@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.command.api
 
-import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginComponent
 import org.bukkit.command.CommandSender
@@ -22,7 +22,7 @@ interface ServerCommand : PluginComponent {
     val permission: String?
     val isConsoleFriendly: Boolean
     val argsRequirement: Int?
-    val usageMSG: MSGHolder?
+    val usageMSG: MessageReference?
 
 
     fun CommandContext.onCommand()

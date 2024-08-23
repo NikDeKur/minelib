@@ -39,7 +39,7 @@ class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter)
     val isHook = false
     val isCallEvents = true
 
-    override fun onLoad() {
+    override fun onEnable() {
 
         val config = app.loadConfig<ScoreboardConfig>("scoreboard")
         ticks = config.updateDelay
@@ -76,7 +76,7 @@ class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter)
     }
 
 
-    override fun onUnload() {
+    override fun onDisable() {
         if (this.thread != null) {
             thread!!.stop()
             this.thread = null

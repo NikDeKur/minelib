@@ -1,0 +1,56 @@
+CMD_MINELIB_USAGE: "&cИспользование: /minelib <reload>"
+CMD_MINELIB_INFO:
+  - "&b~~~~~ MineLib &f{version} &7от &bNik De Kur ~~~~~~~~~~~"
+  - ""
+  - "&7- &bКоманды: &f{commands}"
+  - "&7- &bСлушатели: &f{listeners}"
+  - "&7- &bСервисы: &f{services}"
+  - "&7- &bВремя работы: &f{uptime}"
+  - ""
+  - "&7- &bПодкоманды:"
+  - "&7  - &b/minelib reload &7- Перезагружает плагин"
+  - "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+HAS_BANNED_SYMBOLS: "&cСтрока '{string}&c' содержит запрещенные символы!"
+INCORRECT_NUMBER: "&cЧисло '{number}&c' не распознано!"
+UNKNOWN_PLAYER: "&cИгрок '{name}&c' не найден!"
+UNKNOWN_PLAYER_NO_NAME: "&cИгрок не найден!"
+
+UNKNOWN_DATATYPE: "&cТип данных '{type}&c' не найден!"
+INTERNAL_ERROR: "&cПроизошла внутренняя ошибка! Свяжитесь с администрацией! [{time}] {comment}"
+COMMAND_TAB_ERROR: "&cПроизошла неизвестная ошибка при автозаполнении команды. Свяжитесь с администрацией! {time}"
+COMMAND_ERROR: "&cПроизошла неизвестная ошибка при выполнении команды. Свяжитесь с администрацией! {time}"
+COOLDOWN_ON_COMMAND: "&cПодождите &6{seconds} &cсекунд перед выполнением этой команды!"
+
+NOT_ENOUGH_PERMISSIONS_CMD: "&cУ вас недостаточно прав для выполнения этой команды!"
+ONLY_FOR_PLAYERS: "&cЭта команда доступна только для игроков!"
+ONLY_FOR_PLAYERS_SYNTAX: "&cЭтот синтаксис доступен только для игроков!"
+
+UNKNOWN_LOCALE_FORMAT: "&cНеизвестный формат кода локали '{code}'! Пример правильного формата: 'en_us', 'en_gb'!"
+
+ARROW_NEXT: "&6Следующая страница"
+ARROW_PREV: "&6Предыдущая страница"
+
+RPG_STAT_NAME_SPEED_BONUS: "Скорость"
+RPG_STAT_NAME_BUFF_SPEED_BONUS: "&f{buff.name} &6+{buff.value}"
+
+RPG_STAT_NAME_HEALTH: "Макс. здоровье"
+RPG_STAT_NAME_BUFF_HEALTH: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_MAX_HEALTH: "Макс. здоровье"
+RPG_STAT_NAME_BUFF_MAX_HEALTH: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_ARMOR: "Броня"
+RPG_STAT_NAME_BUFF_ARMOR: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_REGENERATION: "Регенерация"
+RPG_STAT_NAME_BUFF_REGENERATION: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_REGENERATION_MULTIPLIER: "Регенерация"
+RPG_STAT_NAME_BUFF_REGENERATION_MULTIPLIER: "&f{buff.name}: &6x{buff.value}"
+
+RPG_STAT_NAME_DAMAGE: "Урон"
+RPG_STAT_NAME_BUFF_DAMAGE: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_DAMAGE_MULTIPLIER: "Урон"
+RPG_STAT_NAME_BUFF_DAMAGE_MULTIPLIER: "&f{buff.name}: &6x{buff.value}"

@@ -47,6 +47,12 @@ allprojects {
     dependencies {
         implementation(rootProject.libs.ndkore)
         implementation(rootProject.libs.koin)
+
+        testImplementation(kotlin("test"))
+        testImplementation(rootProject.libs.junit.jupiter.api)
+        testImplementation(rootProject.libs.junit.jupiter.engine)
+        testImplementation(rootProject.libs.junit.jupiter.params)
+        testImplementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     }
 
     // Remove Java compatibility made by params non-null assertions
@@ -65,7 +71,9 @@ allprojects {
         jvmToolchain(8)
     }
 
-
+    tasks.test {
+        useJUnitPlatform()
+    }
 }
 
 
@@ -116,7 +124,6 @@ publishing {
 
             afterEvaluate {
                 val shadowJar = tasks.findByName("shadowJar")
-                println(shadowJar)
                 if (shadowJar == null) from(components["java"])
                 else artifact(shadowJar)
 
@@ -142,9 +149,7 @@ publishing {
 
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
+
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun ShadowJar.reloc(path: String) {

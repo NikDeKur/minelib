@@ -14,14 +14,15 @@ data class Locale(
     val id: String,
     val region: String
 ) {
-    override fun toString() = "Language.Code($code)"
+    override fun toString() = "Locale(code='$code')"
 
     val code: String
         get() = "${id}_$region"
 
     companion object {
+
         /**
-         * Reads the language code from the language code string.
+         * Reads the locale from the locale code string.
          *
          * Example code: en_us, ru_ru
          *
@@ -32,20 +33,16 @@ data class Locale(
          */
         @JvmStatic
         fun fromCode(code: String): Locale? {
-            try {
-                val languageData = code.split('_')
-                if (languageData.size != 2) return null
-                val name = languageData[0]
-                val region = languageData[1]
-                if (name.isEmpty() || region.isEmpty()) return null
-                return Locale(name, region)
-            } catch (e: Exception) {
-                return null
-            }
+            val codeData = code.split('_')
+            if (codeData.size != 2) return null
+            val name = codeData[0]
+            val region = codeData[1]
+            if (name.isEmpty() || region.isEmpty()) return null
+            return Locale(name, region)
         }
 
         /**
-         * Reads the language code from the language code string.
+         * Reads the locale from the locale code string.
          *
          * Example code: en_us, ru_ru
          *
@@ -57,21 +54,6 @@ data class Locale(
         fun fromCodeOrThrow(code: String): Locale {
             return fromCode(code) ?: throw IllegalArgumentException("Invalid language code: $code")
         }
-
-        /**
-         * Reads the language code from the file name.
-         *
-         * @param fileName The file name to read the language code from.
-         * @return The language code, language id and language region.
-         */
-        @JvmStatic
-        fun fromFileName(fileName: String): Locale? {
-            val languageCode = fileName.substringBefore('.')
-            return fromCode(languageCode)
-        }
-
-
-        val EN_US = Locale("en", "us")
     }
 
 

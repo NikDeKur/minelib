@@ -1,19 +1,19 @@
 package dev.nikdekur.minelib.i18n.msg
 
-enum class DefaultMSG(vararg text: String) : MSGHolder {
+enum class DefaultMSG(vararg text: String) : I18nMessage, MessageReference {
 
     CMD_MINELIB_USAGE("&cUsage: /minelib <reload>"),
     CMD_MINELIB_INFO(
         "&b~~~~~ MineLib &f{version} &7by &bNik De Kur ~~~~~",
         "",
-        "&7- &bCommands: &f{commands}\n",
-        "&b- &bListeners: &f{listeners}\n",
-        "&7- &bServices: &f{services}\n",
-        "&7- &bUptime: &f{uptime}ms",
+        "&7- &bCommands: &f{commands}",
+        "&7- &bListeners: &f{listeners}",
+        "&7- &bServices: &f{services}",
+        "&7- &bUptime: &f{uptime}",
         "",
-        "&7- Sub Commands:",
+        "&b- &bSub Commands:",
         "&7  - &b/minelib reload &7- Reloads the plugin",
-        "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     ),
 
     /**
@@ -68,13 +68,8 @@ enum class DefaultMSG(vararg text: String) : MSGHolder {
      * Placeholders:
      * 1. {code}
      */
-    UNKNOWN_LANGUAGE_CODE_FORMAT("&cUnknown language code format '{code}'! Example of correct format: 'en_us' or 'ru_ru'!"),
+    UNKNOWN_LOCALE_FORMAT("&cUnknown locale code format '{code}'! Example of correct format: 'en_us', 'en_gb'!"),
 
-    /**
-     * Placeholders:
-     * 1. {code}
-     */
-    UNKNOWN_LANGUAGE("&cLanguage with '{code}' not found!"),
 
     ARROW_NEXT("&6Next page"),
     ARROW_PREV("&6Previous page"),
@@ -99,6 +94,9 @@ enum class DefaultMSG(vararg text: String) : MSGHolder {
     RPG_STAT_NAME_REGENERATION_MULTIPLIER("Regeneration"),
     RPG_STAT_NAME_BUFF_REGENERATION_MULTIPLIER("&f{buff.name}: &6x{buff.value}"),
 
+    RPG_STAT_NAME_REGENERATION_DELAY("Regeneration Delay"),
+    RPG_STAT_NAME_BUFF_REGENERATION_DELAY("&f{buff.name}: &6-{buff.value}"),
+
     RPG_STAT_NAME_DAMAGE("Damage"),
     RPG_STAT_NAME_BUFF_DAMAGE("&f{buff.name}: &6+{buff.value}"),
 
@@ -107,10 +105,9 @@ enum class DefaultMSG(vararg text: String) : MSGHolder {
 
     ;
 
-    override val defaultText = text.joinToString("\n")
 
-
-    override val bundle: String = "default"
+    override val msg = this
+    override val bundleId: String = "default"
     override val id = name
-
+    override val defaultText: String = text.joinToString("\n")
 }

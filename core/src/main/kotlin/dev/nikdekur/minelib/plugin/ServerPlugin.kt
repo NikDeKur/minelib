@@ -14,8 +14,6 @@ import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.loadConfig
 import dev.nikdekur.ndkore.ext.tryEverything
-import dev.nikdekur.ndkore.extra.Tools.jarFile
-import dev.nikdekur.ndkore.reflect.ClassFinder
 import dev.nikdekur.ndkore.reflect.Reflect
 import dev.nikdekur.ndkore.service.KoinServicesManager
 import dev.nikdekur.ndkore.service.ServicesManager
@@ -23,18 +21,55 @@ import kotlinx.serialization.encodeToString
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-import org.koin.core.annotation.KoinInternalApi
 import java.io.File
 import java.io.IOException
-import java.util.function.Predicate
-import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 
-@Suppress("unused")
+/**
+ * # ServerPlugin
+ *
+ * Abstract class that represents a plugin for the server (Should be used instead of [JavaPlugin]).
+ * Provides a lot of useful features for the plugin.
+ *
+ * ### Functionality:
+ * - [Scheduler] for the plugin that doesn't require to pass the plugin instance
+ * - Components system for registering listeners, commands and services (from ndkore)
+ * - Loading files/directories from the plugin directory
+ * - Loading and saving configuration files
+ * - Reloading the plugin and all components
+ * - Loading all classes from the plugin jar to avoid class-loading issues on reloading
+ * - Setting static fields of the plugin for your subclass (not recommended, use services instead)
+ *
+ * ### Example Usage:
+ * ```kotlin
+ * class MyPlugin : ServerPlugin() {
+ *    override val components by lazy {
+ *        listOf(
+ *            // Services
+ *            MyService(this),
+ *
+ *            // Commands
+ *            MyCommand(this),
+ *
+ *            // Listeners
+ *            MyListener(this)
+ *         )
+ *     }
+ *
+ *     override fun whenLoad() {
+ *         // Do something when the plugin is loaded
+ *     }
+ *
+ *     override fun whenEnabled() {
+ *         // Do something when the plugin is enabled
+ *     }
+ * }
+ * ```
+ */
 abstract class ServerPlugin : JavaPlugin(), PluginComponent {
 
     /**
@@ -51,14 +86,14 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
         private set
 
     /**
-     * Returns [ModulesManager] for this plugin.
+     * Returns [ServicesManager] for this plugin.
      *
-     * It's a manager for all [PluginModule].
-     * It can be used for getting modules / registering modules tasks.
+     * It's a manager for all [PluginService].
+     * It can be used for getting or registering services.
      *
-     * Modules must be registered in [components] property.
+     * Services is recommended to be registered in [components].
      */
-    lateinit var servicesManager: ServicesManager<ServerPlugin>
+    lateinit var servicesManager: ServicesManager
 
     override val app: ServerPlugin
         get() = this
@@ -103,7 +138,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
         // Unregister absolutely all listeners
         HandlerList.unregisterAll(this)
 
-        servicesManager.unloadAll()
+        servicesManager.disable()
     }
 
     /**
@@ -113,7 +148,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
      */
     open fun stopReload() {
         startTime = System.currentTimeMillis()
-        servicesManager.loadAll()
+        servicesManager.enable()
 
         // Register all listeners
         _listeners.forEach(::registerListener)
@@ -157,12 +192,11 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
     /**
      * Register a new plugin component.
      *
-     * Function could register [Listener], [ServerCommand] or [PluginModule].
+     * Function could register [Listener], [ServerCommand] or [PluginService].
      *
      * @param component Component to register
      * @return has the component been registered?
      */
-    @OptIn(KoinInternalApi::class)
     open fun registerComponent(component: Any): Boolean {
         var registered = false
 
@@ -186,7 +220,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
 
     override fun onLoad() {
         loadAllPluginClasses()
-        servicesManager = KoinServicesManager(MineLibKoinContext, this)
+        servicesManager = KoinServicesManager(MineLibKoinContext)
         this@ServerPlugin.scheduler = Scheduler(this)
         setupStaticFields()
         whenLoad()
@@ -195,7 +229,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
     /**
      * Try to set the static fields of the plugin.
      *
-     * Function is called in [onLoad] method.
+     * Function is called in [onEnable] method.
      * If you wish to override it, be aware of this.
      *
      * It tries to set the following fields:
@@ -257,10 +291,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
             }
             true
         } catch (e: IOException) {
-            logger.log(
-                Level.WARNING, "Could not load classes from jar file '" + jarFile.path
-                        + "'.", e
-            )
+            logger.warning("Could not load classes from jar file", e)
             false
         }
 
@@ -268,11 +299,6 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
             val time = (System.nanoTime() - startNanos).nanosToMs().format(2)
             logger.info("Loaded all plugin classes in $time ms")
         }
-    }
-
-
-    protected fun registerCommand(name: String, command: ServerCommand) {
-        command.register(this)
     }
 
     /**
@@ -351,11 +377,8 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
     }
 
     inline fun <reified T> saveConfig(configName: String, config: T, folder: File = dataFolder) {
-        val file = if (!configName.endsWith(".yml"))
-            loadFile("$configName.yml", folder)
-        else
-            loadFile(configName, folder)
-
+        val name = if (!configName.endsWith(".yml")) "$configName.yml" else configName
+        val file = loadFile(name, folder)
         file.writeText(yaml.encodeToString(config))
     }
 
@@ -370,12 +393,6 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
     open val components: Collection<Any>
         get() = emptyList()
 
-
-
-
-    fun newClassFinder(packageName: String, filter: Predicate<Class<*>>): ClassFinder {
-        return ClassFinder.new(packageName, classLoader, filter)
-    }
 
     private val defaultComponents by lazy {
         listOf<PluginService>()

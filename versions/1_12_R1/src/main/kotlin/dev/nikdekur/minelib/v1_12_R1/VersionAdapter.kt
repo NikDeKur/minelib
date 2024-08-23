@@ -11,7 +11,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 // Class is found in Runtime so there is no usage of it in the code
-@Suppress("ClassName", "unused")
+@Suppress("unused")
 object VersionAdapter : VersionAdapter {
 
     override fun init(plugin: MineLib) {

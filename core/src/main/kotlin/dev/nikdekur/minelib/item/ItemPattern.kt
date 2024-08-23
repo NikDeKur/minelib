@@ -3,7 +3,7 @@
 package dev.nikdekur.minelib.item
 
 import dev.nikdekur.minelib.ext.*
-import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.ndkore.ext.toTArray
 import org.bukkit.Color
 import org.bukkit.DyeColor
@@ -54,16 +54,14 @@ class ItemPattern {
 
 
 
-    var displayNameMSG: MSGHolder? = null
-    fun setDisplayName(msgEnum: MSGHolder?): ItemPattern {
-        setTag("displayNameMSG", msgEnum?.id)
+    var displayNameMSG: MessageReference? = null
+    fun setDisplayName(msgEnum: MessageReference?): ItemPattern {
         this.displayNameMSG = msgEnum
         return this
     }
 
-    var loreMSG: MSGHolder? = null
-    fun setLore(msgEnum: MSGHolder?): ItemPattern {
-        setTag("loreMSG", msgEnum?.id)
+    var loreMSG: MessageReference? = null
+    fun setLore(msgEnum: MessageReference?): ItemPattern {
         this.loreMSG = msgEnum
         // Gets calling plugin
         return this

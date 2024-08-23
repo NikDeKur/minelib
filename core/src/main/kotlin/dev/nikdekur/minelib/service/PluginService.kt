@@ -6,6 +6,5 @@ import kotlin.reflect.KClass
 
 interface PluginService : Service<ServerPlugin>, PluginComponent {
 
-    val bindClass: KClass<*>
-        get() = this::class
+    val bindClass: KClass<out Service<*>>
 }

@@ -140,13 +140,13 @@ inline fun ItemStack.setSkullTexture(texture: String?) {
 
 
 fun ItemStack.setTouchable(state: Boolean) = editNBT {
-    setBoolean("touchable", state)
+    setBoolean("untouchable", !state)
 }
 /**
- * @return true by default, false if item is not droppable
+ * @return true by default, false if item is not touchable.
  */
 fun ItemStack.isTouchable() = editNBT {
-    getBoolean("touchable") != false
+    !getBoolean("untouchable")
 }
 
 inline val Material.isAir: Boolean

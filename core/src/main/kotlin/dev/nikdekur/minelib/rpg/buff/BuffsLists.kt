@@ -1,98 +1,32 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.nikdekur.minelib.rpg.buff
 
-import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import java.util.*
 
-interface BuffsList : Comparable<BuffsList> {
-
-    fun getBuffs(): Collection<RPGBuff<*>>
+interface BuffsList : Iterable<RPGBuff<*>> {
 
     fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>>
     fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<*>?
 
-
     fun <T : Comparable<T>> getBuffValueOrNull(type: RPGStat<T>): T?
     fun <T : Comparable<T>> getBuffValue(type: RPGStat<T>): T
 
-
-    fun <T : Comparable<T>> addBuff(type: RPGStat<T>, value: T)
-    fun <T : Comparable<T>> addBuff(buff: RPGBuff<T>)
-    fun <T : Comparable<T>> addBuffs(buffs: Iterable<RPGBuff<T>>) {
-        buffs.forEach { addBuff(it) }
-    }
-    fun addBuffs(buffs: ImaginaryBuffsList) {
-        buffs.forEachBuff { addBuff(it) }
-    }
-
-    fun <T : Comparable<T>> removeBuffs(type: RPGStat<T>): Collection<RPGBuff<T>>
-    fun <T : Comparable<T>> removeBuff(buff: RPGBuff<T>)
-
-
-    fun <T : Comparable<T>> beforeAddBuff(buff: RPGBuff<T>) {
-        // Do nothing by default
-    }
-    fun <T : Comparable<T>> afterAddBuff(buff: RPGBuff<T>) {
-        // Do nothing by default
-    }
-
-    fun <T : Comparable<T>> beforeRemoveBuff(buff: RPGBuff<T>) {
-        // Do nothing by default
-    }
-    fun <T : Comparable<T>> afterRemoveBuff(buff: RPGBuff<T>) {
-        // Do nothing by default
-    }
-
-    fun beforeClear() {
-        // Do nothing by default
-    }
-    fun clear()
-    fun afterClear() {
-        // Do nothing by default
-    }
+    fun hasBuff(type: RPGBuff<*>): Boolean
 
     fun forEachStat(action: (RPGStat<*>) -> Unit)
-    fun forEachBuff(action: (RPGBuff<*>) -> Unit)
 
-    fun updateConditional(profile: RPGProfile)
-
-    /**
-     * Compare this BuffsList with other BuffsList by buffs value
-     *
-     * Take all buffs from this BuffsList and compare them with buffs from other BuffsList
-     *
-     * If this BuffsList has more buffs with higher value than other BuffsList, return positive number
-     *
-     * If this BuffsList has more buffs with lower value than other BuffsList, return negative number
-     *
-     * @param other BuffsList to compare with
-     */
-    fun compareByBuffsValue(other: BuffsList): Int
-
-
-    /**
-     * Compare this BuffsList with other BuffsList
-     *
-     * By default, use [compareByBuffsValue] to compare
-     */
-    override fun compareTo(other: BuffsList): Int {
-        return compareByBuffsValue(other)
+    object Empty : BuffsList {
+        override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuff<T>> = emptyList()
+        override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuff<T>? = null
+        override fun <T : Comparable<T>> getBuffValueOrNull(type: RPGStat<T>): T? = null
+        override fun <T : Comparable<T>> getBuffValue(type: RPGStat<T>): T = type.defaultValue
+        override fun hasBuff(type: RPGBuff<*>) = false
+        override fun forEachStat(action: (RPGStat<*>) -> Unit) {}
+        override fun iterator() = emptyList<RPGBuff<*>>().iterator()
     }
 }
 
-interface ImaginaryBuffsList : BuffsList {
-    fun addTo(buffsList: BuffsList): List<RPGBuff<*>>
-}
 
 
-data class AttachedBuffsList(val id: String, val buffs: List<RPGBuff<*>>)
-
-interface AttachableBuffsList : BuffsList {
-    val attaches: Iterable<AttachedBuffsList>
-
-    fun getAttached(id: String): AttachedBuffsList?
-
-    fun attach(id: String, buffs: ImaginaryBuffsList)
-    fun detach(id: String)
-    fun detachAll()
-}

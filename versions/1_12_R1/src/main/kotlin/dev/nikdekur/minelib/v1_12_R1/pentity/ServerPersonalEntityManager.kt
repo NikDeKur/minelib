@@ -1,7 +1,6 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
 import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
@@ -25,11 +24,10 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.util.Vector
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
 
-class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersonalEntityManager, PluginService, Listener {
+class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersonalEntityManager, Listener {
 
-    override val bindClass: KClass<*>
+    override val bindClass
         get() = ServerPersonalEntityManager::class
 
     override val dependencies = dependencies {
@@ -137,7 +135,7 @@ class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersona
 
 
 
-    override fun onUnload() {
+    override fun onDisable() {
         managers.values.forEach(PersonalEntityManager::unload)
         managers.clear()
     }

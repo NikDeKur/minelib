@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender
 
 interface MSGDescriptionHolder : MSGPartHolder {
 
-    val descriptionMSG: MSGHolder
+    val descriptionMSG: MessageReference
 
     fun getDescription(sender: CommandSender): String {
         return sender.getLangMsg(descriptionMSG).text

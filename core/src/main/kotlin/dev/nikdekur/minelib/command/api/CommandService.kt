@@ -1,9 +1,10 @@
 package dev.nikdekur.minelib.command.api
 
+import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.entity.Player
 import kotlin.time.Duration
 
-interface CommandService {
+interface CommandService : PluginService {
 
     /**
      * Gets player's cooldown in milliseconds left.

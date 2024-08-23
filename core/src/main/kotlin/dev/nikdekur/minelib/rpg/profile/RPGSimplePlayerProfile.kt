@@ -1,7 +1,12 @@
 package dev.nikdekur.minelib.rpg.profile
 
+import dev.nikdekur.minelib.rpg.strategy.DamageStrategy
 import org.bukkit.entity.Player
 
 open class RPGSimplePlayerProfile(
-    override val player: Player
-) : RPGSimpleOfflinePlayerProfile(player), RPGPlayerProfile
+    override val player: Player,
+    strategy: DamageStrategy,
+) : RPGSimpleLivingEntityProfile(player, strategy), RPGPlayerProfile {
+    override val entity: Player
+        get() = player
+}

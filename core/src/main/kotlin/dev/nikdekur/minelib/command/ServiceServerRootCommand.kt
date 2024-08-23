@@ -2,14 +2,14 @@ package dev.nikdekur.minelib.command
 
 import dev.nikdekur.minelib.command.api.CommandContext
 import dev.nikdekur.minelib.command.api.CommandTabContext
-import dev.nikdekur.minelib.command.api.ServerRootCommand
+import dev.nikdekur.minelib.command.api.RootServerCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.copyPartialMatches
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import java.util.LinkedList
 
-abstract class ServiceServerRootCommand : ServiceServerCommand(), ServerRootCommand {
+abstract class ServiceServerRootCommand : ServiceServerCommand(), RootServerCommand {
 
     private val subCommandsMap = HashMap<String, ServiceServerCommand>()
 
@@ -40,21 +40,17 @@ abstract class ServiceServerRootCommand : ServiceServerCommand(), ServerRootComm
         return super.onCommand(sender, cmd, label, args)
     }
 
-    override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String>? {
+    override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<String>): List<String> {
         if (args.isNotEmpty()) {
             val arg0Lower = args[0].lowercase()
             val sub = subCommandsMap[arg0Lower]
-            if (sub != null) {
+            if (sub != null)
                 return sub.onTabComplete(sender, cmd, label, args.copyOfRange(1, args.size))
-            }
         }
 
         val completions = super<ServiceServerCommand>.onTabComplete(sender, cmd, label, args)
-        if (completions == null && args.size == 1) {
-            val matches = LinkedList<String>()
-            subCommandsMap.keys.copyPartialMatches(args.last(), matches)
-            return matches
-        }
+        if (completions.isEmpty() && args.isNotEmpty())
+            return LinkedList<String>().copyPartialMatches(args[0], subCommandsMap.keys)
         return completions
     }
 

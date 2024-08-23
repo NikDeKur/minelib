@@ -12,7 +12,7 @@ class StatsMap {
         val raw = getRaw(stat) ?: return null
         @Suppress("UNCHECKED_CAST") // Type erasure, real cast is safe
         return if (stat.isInstance(raw))
-            raw as T
+            stat.plus(raw as T, stat.staticValue)
         else null
     }
 

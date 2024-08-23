@@ -2,14 +2,15 @@ package dev.nikdekur.minelib.v1_12_R1.nms.protocol
 
 import com.google.common.collect.MapMaker
 import com.mojang.authlib.GameProfile
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketSendEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.early.EarlyPacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.early.EarlyPacketSendEvent
+import dev.nikdekur.ndkore.service.Service
 import io.netty.channel.*
 import net.minecraft.server.v1_12_R1.Packet
 import org.bukkit.Bukkit
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
+import kotlin.reflect.KClass
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -31,7 +33,10 @@ import java.util.logging.Level
  */
 class InjectProtocolModule(override val app: ServerPlugin) : PluginService, Listener {
 
-    override fun onLoad() {
+    override val bindClass: KClass<out Service<*>>
+        get() = InjectProtocolModule::class
+
+    override fun onEnable() {
         try {
             registerChannelHandler()
             registerPlayers()
@@ -47,7 +52,7 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
     }
 
 
-    override fun onUnload() {
+    override fun onDisable() {
         if (!closed) {
             closed = true
 

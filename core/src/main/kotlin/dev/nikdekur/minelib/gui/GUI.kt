@@ -13,7 +13,6 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.InventoryView
 import java.util.*
 
-@Suppress("LeakingThis")
 abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginComponent {
 
     val service by inject<GUIService>()
@@ -35,13 +34,10 @@ abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginC
 
 
 
-    init {
-        service.registerGUI(this)
-    }
-
     var initialized = false
     fun init() {
         inv = Bukkit.createInventory(this, size, titleFinal)
+        service.registerGUI(this)
         onCreate()
     }
     inline fun checkInit() {

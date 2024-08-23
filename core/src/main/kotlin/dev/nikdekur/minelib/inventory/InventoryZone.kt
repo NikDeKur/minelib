@@ -11,13 +11,6 @@ value class InventoryZone(val slots: MutableSet<Int>) {
     }
 
     companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val zone = ofShape(12, 41)
-            zone.remove(39)
-            zone.remove(41)
-            println(zone)
-        }
 
         @JvmStatic
         fun ofShape(corner1: Int, corner2: Int): InventoryZone {

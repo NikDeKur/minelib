@@ -3,7 +3,7 @@ package dev.nikdekur.minelib.command.api
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
-import dev.nikdekur.minelib.i18n.msg.MSGHolder
+import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
 import dev.nikdekur.ndkore.extra.Tools
@@ -45,12 +45,16 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         stop()
     }
 
+    fun selfAsPlayer(): Player {
+        return sender as? Player ?: sendError(DefaultMSG.ONLY_FOR_PLAYERS_SYNTAX)
+    }
 
-    fun send(msg: MSGHolder, vararg pairs: Pair<String, Any?>) {
+
+    fun send(msg: MessageReference, vararg pairs: Pair<String, Any?>) {
         sender.sendLangMsg(msg, *pairs)
     }
 
-    fun sendError(msg: MSGHolder, vararg pairs: Pair<String, Any?>): Nothing {
+    fun sendError(msg: MessageReference, vararg pairs: Pair<String, Any?>): Nothing {
         send(msg, *pairs)
         stop()
     }
@@ -75,8 +79,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     fun <T> isExists(
         collection: Collection<T>,
         obj: T,
-        onTrue: MSGHolder,
-        onFalse: MSGHolder,
+        onTrue: MessageReference,
+        onFalse: MessageReference,
         vararg pair: Pair<String, Any>
     ): Boolean {
         val result = collection.contains(obj)
@@ -90,8 +94,8 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     fun <T> isNotExists(
         collection: Collection<T>,
         o: T,
-        onTrue: MSGHolder,
-        onFalse: MSGHolder,
+        onTrue: MessageReference,
+        onFalse: MessageReference,
         vararg pair: Pair<String, Any>
     ): Boolean {
         return !isExists(collection, o, onFalse, onTrue, *pair)
@@ -123,8 +127,11 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         } else number ?: def
     }
 
-    fun unknownPlayer(playerName: String) {
-        send(DefaultMSG.UNKNOWN_PLAYER, "name" to playerName)
+    fun unknownPlayer(playerName: String?) {
+        if (playerName == null || playerName.isBlankOrEmpty())
+            send(DefaultMSG.UNKNOWN_PLAYER_NO_NAME)
+        else
+            send(DefaultMSG.UNKNOWN_PLAYER, "name" to playerName)
     }
 
 
@@ -142,7 +149,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
     fun sendCooldown(
         cooldown: Duration,
-        cooldownMSG: MSGHolder = DefaultMSG.COOLDOWN_ON_COMMAND,
+        cooldownMSG: MessageReference = DefaultMSG.COOLDOWN_ON_COMMAND,
         vararg placeholders: Pair<String, Any?>
     ) {
         val format = formatSecondsValue(cooldown.inWholeMilliseconds)
@@ -163,11 +170,11 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
 
-    fun timedError(message: MSGHolder) {
+    fun timedError(message: MessageReference) {
         return send(message, "time" to datetimeFormatter.format(OffsetDateTime.now()))
     }
 
-    fun timedErrorAndStop(message: MSGHolder): Nothing {
+    fun timedErrorAndStop(message: MessageReference): Nothing {
         timedError(message)
         stop()
     }
@@ -274,6 +281,17 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         }
         return offlinePlayer
     }
+
+    fun getOnlinePlayerOrNull(): Player? {
+        val name = getStringOrNull() ?: return null
+        val player = Bukkit.getPlayer(name)
+        if (player == null) {
+            unknownPlayer(name)
+            stop()
+        }
+        return player
+    }
+
     fun getOnlinePlayer(): Player {
         val name = getString()
         val player = Bukkit.getPlayer(name) ?: sendError(DefaultMSG.UNKNOWN_PLAYER, "name" to name)
@@ -282,7 +300,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
     fun getLocale(): Locale {
         val name = getString()
-        return Locale.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LANGUAGE_CODE_FORMAT, "code" to name)
+        return Locale.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LOCALE_FORMAT, "code" to name)
     }
 
 

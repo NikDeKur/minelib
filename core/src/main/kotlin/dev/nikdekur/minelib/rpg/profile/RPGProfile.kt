@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.rpg.profile
 
-import dev.nikdekur.minelib.rpg.DefaultRPGService
+import dev.nikdekur.minelib.rpg.RuntimeRPGService
 import dev.nikdekur.minelib.rpg.buff.AttachableBuffsList
 import dev.nikdekur.minelib.rpg.combat.DamageSource
 import dev.nikdekur.minelib.rpg.stat.*
@@ -26,12 +26,6 @@ interface RPGProfile : Snowflake<UUID> {
     var maxHealth: Double
         get() = stats[RPGMaxHealthStat]
         set(value) { stats[RPGMaxHealthStat] = value }
-    var speed: Int
-        get() = stats[RPGSpeedStat]
-        set(value) { stats[RPGSpeedStat] = value }
-    var damage: Double
-        get() = stats[RPGDamageStat]
-        set(value) { stats[RPGDamageStat] = value }
 
 
 
@@ -83,7 +77,7 @@ interface RPGProfile : Snowflake<UUID> {
     /**
      * Kill the profile
      *
-     * Calls [RPGKillEvent] and remove profile from the [DefaultRPGService]
+     * Calls [RPGKillEvent] and remove profile from the [RuntimeRPGService]
      *
      * @param source The source of the damage
      */

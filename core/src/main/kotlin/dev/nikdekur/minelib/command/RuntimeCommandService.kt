@@ -1,17 +1,15 @@
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.command.api.CommandService
 import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import org.bukkit.entity.Player
-import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-class RuntimeCommandService(override val app: ServerPlugin) : CommandService, PluginService {
+class RuntimeCommandService(override val app: ServerPlugin) : CommandService {
 
-    override val bindClass: KClass<*>
+    override val bindClass
         get() = CommandService::class
 
     val cooldownMap: MutableMap<Player, MutableMap<ServerCommand, Long>> = mutableMapOf()

@@ -1,0 +1,57 @@
+CMD_MINELIB_USAGE: "&cUsage: /minelib <reload>"
+CMD_MINELIB_INFO:
+  - "&b~~~~~ MineLib &f{version} &7by &bNik De Kur ~~~~~~~~~~~"
+  - ""
+  - "&7- &bCommands: &f{commands}"
+  - "&7- &bListeners: &f{listeners}"
+  - "&7- &bServices: &f{services}"
+  - "&7- &bUptime: &f{uptime}"
+  - ""
+  - "&7- &bSub Commands:"
+  - "&7  - &b/minelib reload &7- Reloads the plugin"
+  - "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+HAS_BANNED_SYMBOLS: "&cThe string '{string}&c' contains forbidden symbols!"
+INCORRECT_NUMBER: "&cThe number '{number}&c' is not recognized!"
+UNKNOWN_PLAYER: "&cPlayer '{name}&c' not found!"
+UNKNOWN_PLAYER_NO_NAME: "&cPlayer not found!"
+
+UNKNOWN_DATATYPE: "&cData type '{type}&c' not found!"
+INTERNAL_ERROR: "&cAn internal error occurred! Contact the administration! [{time}] {comment}"
+COMMAND_TAB_ERROR: "&cAn unknown error occurred while tab-completing the command. Contact the administration! {time}"
+COMMAND_ERROR: "&cAn unknown error occurred while executing the command. Contact the administration! {time}"
+COOLDOWN_ON_COMMAND: "&cWait &6{seconds} &cseconds before executing this command!"
+
+NOT_ENOUGH_PERMISSIONS_CMD: "&cYou do not have enough permissions to execute this command!"
+ONLY_FOR_PLAYERS: "&cThis command is only available for players!"
+ONLY_FOR_PLAYERS_SYNTAX: "&cThis syntax is only available for players!"
+
+UNKNOWN_LOCALE_FORMAT: "&cUnknown locale code format '{code}'! Example of correct format: 'en_us', 'en_gb'!"
+
+ARROW_NEXT: "&6Next page"
+ARROW_PREV: "&6Previous page"
+
+RPG_STAT_NAME_SPEED_BONUS: "Speed"
+RPG_STAT_NAME_BUFF_SPEED_BONUS: "&f{buff.name} &6+{buff.value}"
+
+RPG_STAT_NAME_HEALTH: "Max Health"
+RPG_STAT_NAME_BUFF_HEALTH: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_MAX_HEALTH: "Max Health"
+RPG_STAT_NAME_BUFF_MAX_HEALTH: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_ARMOR: "Armor"
+RPG_STAT_NAME_BUFF_ARMOR: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_REGENERATION: "Regeneration"
+RPG_STAT_NAME_BUFF_REGENERATION: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_REGENERATION_MULTIPLIER: "Regeneration"
+RPG_STAT_NAME_BUFF_REGENERATION_MULTIPLIER: "&f{buff.name}: &6x{buff.value}"
+
+RPG_STAT_NAME_DAMAGE: "Damage"
+RPG_STAT_NAME_BUFF_DAMAGE: "&f{buff.name}: &6+{buff.value}"
+
+RPG_STAT_NAME_DAMAGE_MULTIPLIER: "Damage"
+RPG_STAT_NAME_BUFF_DAMAGE_MULTIPLIER: "&f{buff.name}: &6x{buff.value}"
+

@@ -13,13 +13,6 @@ open class RPGBuff<T : Comparable<T>>(
 ) : Snowflake<UUID>, MSGNameHolder {
     override val id: UUID = UUID.randomUUID()
 
-
-    open fun beforeAdd(buffsList: BuffsList) {}
-    open fun afterAdd(buffsList: BuffsList) {}
-
-    open fun beforeRemove(buffsList: BuffsList) {}
-    open fun afterRemove(buffsList: BuffsList) {}
-
     override val nameMSG = stat.nameBuffMSG
 
     override fun toString(): String {
