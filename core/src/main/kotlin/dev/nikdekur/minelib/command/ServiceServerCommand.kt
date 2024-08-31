@@ -36,7 +36,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor {
 
         val permission = permission
         if (permission != null && !sender.hasPermission(permission)) {
-            sender.sendLangMsg(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD)
+            sender.sendLangMsg(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD, "permission" to permission)
             return true
         }
 

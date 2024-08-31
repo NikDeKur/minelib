@@ -5,7 +5,6 @@ import com.charleskorn.kaml.YamlConfiguration
 import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.ext.warning
-import dev.nikdekur.minelib.koin.MineLibKoinContext
 import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.service.PluginComponent
 import dev.nikdekur.minelib.service.PluginService
@@ -14,6 +13,7 @@ import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.loadConfig
 import dev.nikdekur.ndkore.ext.tryEverything
+import dev.nikdekur.ndkore.koin.SimpleKoinContext
 import dev.nikdekur.ndkore.reflect.Reflect
 import dev.nikdekur.ndkore.service.KoinServicesManager
 import dev.nikdekur.ndkore.service.ServicesManager
@@ -220,7 +220,7 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
 
     override fun onLoad() {
         loadAllPluginClasses()
-        servicesManager = KoinServicesManager(MineLibKoinContext)
+        servicesManager = KoinServicesManager(SimpleKoinContext())
         this@ServerPlugin.scheduler = Scheduler(this)
         setupStaticFields()
         whenLoad()

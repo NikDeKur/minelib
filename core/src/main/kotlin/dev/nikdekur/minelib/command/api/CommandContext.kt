@@ -303,6 +303,11 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         return Locale.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LOCALE_FORMAT, "code" to name)
     }
 
+    fun checkPermission(permission: String) {
+        if (sender.hasPermission(permission)) return
+        sendError(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD, "permission" to permission)
+    }
+
 
     companion object {
         @JvmStatic
