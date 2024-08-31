@@ -4,12 +4,19 @@ package dev.nikdekur.minelib.rpg.stat
 
 import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
 import dev.nikdekur.minelib.i18n.msg.MessageReference
-import dev.nikdekur.minelib.rpg.buff.RPGBuff
+import dev.nikdekur.minelib.rpg.RPGService
 import dev.nikdekur.ndkore.ext.randDouble
 import dev.nikdekur.ndkore.ext.randFloat
 import dev.nikdekur.ndkore.ext.randInt
 import dev.nikdekur.ndkore.ext.toBooleanSmartOrNull
 import dev.nikdekur.ndkore.`interface`.Snowflake
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.reflect.KClass
 
 val random = java.util.Random()
@@ -40,10 +47,7 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
 
     abstract fun read(value: String): T?
 
-
-    inline fun new(value: T = defaultValue): RPGBuff<T> {
-        return RPGBuff(this, value)
-    }
+    abstract fun valueSerializer(): KSerializer<T>
 
     override fun toString(): String {
         return "RPGStat(id=$id)"
@@ -59,6 +63,7 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     }
 
 
+    @Serializable
     abstract class Double : RPGStat<kotlin.Double>() {
         override val defaultValue = 0.0
         override val staticValue = 0.0
@@ -78,8 +83,11 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
         override fun read(value: String): kotlin.Double? {
             return value.toDoubleOrNull()
         }
+
+        override fun valueSerializer() = kotlin.Double.serializer()
     }
 
+    @Serializable
     abstract class Float : RPGStat<kotlin.Float>() {
         override val defaultValue = 0f
         override val staticValue = 0f
@@ -100,8 +108,10 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
             return value.toFloatOrNull()
         }
 
+        override fun valueSerializer() = kotlin.Float.serializer()
     }
 
+    @Serializable
     abstract class Int : RPGStat<kotlin.Int>() {
         override val defaultValue = 0
         override val staticValue = 0
@@ -121,6 +131,8 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
         override fun read(value: String): kotlin.Int? {
             return value.toIntOrNull()
         }
+
+        override fun valueSerializer() = kotlin.Int.serializer()
     }
 
     abstract class BigInteger : RPGStat<java.math.BigInteger>() {
@@ -142,8 +154,20 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
         override fun read(value: String): java.math.BigInteger? {
             return value.toBigIntegerOrNull()
         }
+
+        override fun valueSerializer() = object : KSerializer<java.math.BigInteger> {
+            override val descriptor = PrimitiveSerialDescriptor("java.math.BigInteger", PrimitiveKind.STRING)
+            override fun serialize(encoder: Encoder, value: java.math.BigInteger) {
+                encoder.encodeString(value.toString())
+            }
+
+            override fun deserialize(decoder: Decoder): java.math.BigInteger {
+                return decoder.decodeString().toBigInteger()
+            }
+        }
     }
 
+    @Serializable
     abstract class Boolean : RPGStat<kotlin.Boolean>() {
         override val defaultValue = false
         override val staticValue = false
@@ -163,6 +187,26 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
 
         override fun read(value: String): kotlin.Boolean? {
             return value.toBooleanSmartOrNull()
+        }
+
+        override fun valueSerializer() = kotlin.Boolean.serializer()
+    }
+
+
+    class Serializer(val service: RPGService) : KSerializer<RPGStat<*>> {
+        override val descriptor = PrimitiveSerialDescriptor("RPGStat", PrimitiveKind.STRING)
+        override fun serialize(encoder: Encoder, value: RPGStat<*>) {
+            println("Serializing stat ${value.id}")
+            encoder.encodeString(value.id)
+        }
+
+        override fun deserialize(decoder: Decoder): RPGStat<*> {
+            val id = decoder.decodeString()
+            return service.getStat(id) ?: error("Stat $id not found")
+        }
+
+        override fun toString(): String {
+            return "RPGStat.Serializer(service=$service)"
         }
     }
 }

@@ -13,15 +13,19 @@ open class MapAttachableBuffsList : MapActiveBuffsList(), AttachableBuffsList {
         return attachesMap[id]
     }
 
-    override fun attach(id: String, buffs: BuffsList) {
-        val added = LinkedList<RPGBuff<*>>()
-        buffs.forEach {
-            added.add(it)
-            addBuff(it)
+    override fun attach(id: String, buffs: ImaginaryBuffsList) {
+        val added = LinkedList<RPGBuffData>()
+        buffs.forEach { (buff, parameters) ->
+            added.add(
+                add(buff, parameters)
+            )
         }
         val attached = AttachedBuffsList(id, added)
         attachesMap[id] = attached
     }
+
+    fun <T : Comparable<T>> add(buff: RPGBuff<T>, parameters: BuffParameters = BuffParameters()) =
+        addBuff(buff.stat, buff.value, parameters)
 
 
     override fun detach(id: String) {

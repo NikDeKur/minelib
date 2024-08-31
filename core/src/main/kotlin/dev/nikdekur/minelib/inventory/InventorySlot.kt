@@ -1,11 +1,14 @@
 package dev.nikdekur.minelib.inventory
 
-import org.bukkit.Material
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-enum class InventorySlot(val slot: Int) {
+@Serializable(InventorySlot.Serializer::class)
+enum class InventorySlot(val index: Int) {
     // ARMOR
     HELMET(103),
     CHESTPLATE(102),
@@ -69,60 +72,18 @@ enum class InventorySlot(val slot: Int) {
 
     // Hands
     HAND(-1),
-    OFF_HAND(-1);
+    OFF_HAND(-2);
 
 
-    fun get(inventory: Inventory): ItemStack? {
-        val item: ItemStack?
-        val slot = slot
-        if (slot != -1) {
-            return inventory.getItem(slot)
-        } else {
-            item = if (inventory is PlayerInventory) {
-                when (this) {
-                    HAND -> inventory.itemInMainHand
-                    OFF_HAND -> inventory.itemInOffHand
-                    else -> null
-                }
-            } else null
+    object Serializer : KSerializer<InventorySlot> {
+        override val descriptor = PrimitiveSerialDescriptor("InventorySlot", PrimitiveKind.INT)
+
+        override fun serialize(encoder: Encoder, value: InventorySlot) {
+            encoder.encodeInt(value.index)
         }
 
-        if (item == null || item.type == Material.AIR) {
-            return null
+        override fun deserialize(decoder: Decoder): InventorySlot {
+            return InventorySlot.entries.first { it.index == decoder.decodeInt() }
         }
-
-        return item
-    }
-
-
-    companion object {
-
-
-        val inventorySlots: List<InventorySlot> = listOf(
-                HELMET, CHESTPLATE, LEGGINGS, BOOTS,
-
-                R4_1, R4_2, R4_3, R4_4, R4_5, R4_6, R4_7, R4_8, R4_9,
-                R3_1, R3_2, R3_3, R3_4, R3_5, R3_6, R3_7, R3_8, R3_9,
-                R2_1, R2_2, R2_3, R2_4, R2_5, R2_6, R2_7, R2_8, R2_9,
-                R1_1, R1_2, R1_3, R1_4, R1_5, R1_6, R1_7, R1_8, R1_9
-            )
-
-        val allPlayerSlots: List<InventorySlot> = listOf(
-                HELMET, CHESTPLATE, LEGGINGS, BOOTS,
-
-                R4_1, R4_2, R4_3, R4_4, R4_5, R4_6, R4_7, R4_8, R4_9,
-                R3_1, R3_2, R3_3, R3_4, R3_5, R3_6, R3_7, R3_8, R3_9,
-                R2_1, R2_2, R2_3, R2_4, R2_5, R2_6, R2_7, R2_8, R2_9,
-                R1_1, R1_2, R1_3, R1_4, R1_5, R1_6, R1_7, R1_8, R1_9,
-
-                HAND, OFF_HAND
-            )
-
-
-        val allEntitySlots: List<InventorySlot> = listOf(
-                HELMET, CHESTPLATE, LEGGINGS, BOOTS,
-
-                HAND, OFF_HAND
-            )
     }
 }

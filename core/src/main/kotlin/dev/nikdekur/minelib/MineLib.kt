@@ -17,6 +17,7 @@ import dev.nikdekur.minelib.nms.VersionAdapter
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.rpg.RuntimeRPGProfilesService
 import dev.nikdekur.minelib.rpg.RuntimeRPGService
+import dev.nikdekur.minelib.rpg.condition.DefaultConditionsListener
 import dev.nikdekur.minelib.rpg.strategy.FullRPGListener
 import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.utils.ClassUtils
@@ -51,7 +52,8 @@ class MineLib : ServerPlugin() {
             RuntimeGUIService(this),
 
             // Listeners
-            FullRPGListener(this)
+            FullRPGListener(this),
+            DefaultConditionsListener(this)
         )
     }
 
@@ -130,7 +132,6 @@ class MineLib : ServerPlugin() {
     companion object {
         @JvmStatic
         lateinit var instance: MineLib
-            private set
 
         @JvmStatic
         @get:JvmName("getSchedulerInstance")

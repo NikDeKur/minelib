@@ -2,6 +2,7 @@ package dev.nikdekur.minelib.rpg.profile
 
 import dev.nikdekur.minelib.rpg.buff.MapAttachableBuffsList
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
+import dev.nikdekur.minelib.rpg.buff.RPGBuffData
 import dev.nikdekur.minelib.rpg.combat.DamageSource
 import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGMaxHealthStat
@@ -17,13 +18,12 @@ abstract class RPGSimpleProfile : RPGProfile {
 
 
     override val buffs = object : MapAttachableBuffsList() {
-        override fun <T : Comparable<T>> afterAddBuff(buff: RPGBuff<T>) {
-            stats.add(buff.stat, buff.value)
-        }
 
-        override fun <T : Comparable<T>> afterRemoveBuff(buff: RPGBuff<T>) {
-            stats.take(buff.stat, buff.value)
-        }
+        override fun afterAddBuff(buff: RPGBuffData) = add(buff.buff)
+        fun <T : Comparable<T>> add(buff: RPGBuff<T>) { stats.add(buff.stat, buff.value) }
+
+        override fun afterRemoveBuff(buff: RPGBuffData) = take(buff.buff)
+        fun <T : Comparable<T>> take(buff: RPGBuff<T>) { stats.take(buff.stat, buff.value) }
     }
 
 

@@ -4,6 +4,7 @@ package dev.nikdekur.minelib.rpg
 
 
 import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.rpg.condition.Condition
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.ext.getInstanceFieldOrNull
@@ -16,6 +17,7 @@ class RuntimeRPGService(override val app: MineLib) : RPGService {
         get() = RPGService::class
 
     val stats = HashMap<String, RPGStat<*>>()
+    val conditions = HashMap<String, Class<out Condition<*>>>()
 
     override fun onEnable() {
         ClassPathClassFinder.find(app.clazzLoader, STATS_PACKAGE) { it: Class<*> ->
@@ -35,14 +37,17 @@ class RuntimeRPGService(override val app: MineLib) : RPGService {
         stats.addById(type)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Comparable<T>> getStat(id: String): RPGStat<T>? {
-        return stats[id] as? RPGStat<T>
+    override fun getStat(id: String): RPGStat<*>? {
+        return stats[id]
     }
 
+    override fun registerCondition(clazz: Class<out Condition<*>>, id: String) {
+        conditions[id] = clazz
+    }
 
-
-
+    override fun getCondition(id: String): Class<out Condition<*>>? {
+        return conditions[id]
+    }
 
 
     companion object {

@@ -2,6 +2,7 @@
 package dev.nikdekur.minelib.rpg.stat
 
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
+import kotlinx.serialization.Serializable
 
 /**
  * Uses high-scaled values speed-value.
@@ -10,6 +11,7 @@ import dev.nikdekur.minelib.i18n.msg.DefaultMSG
  *
  * The default speed-value is 20 (high-scaled) and 0.2 (minecraft)
  */
+@Serializable
 object RPGSpeedStat : RPGStat.Int() {
     override val id: String = "speed"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_SPEED_BONUS
@@ -22,6 +24,7 @@ object RPGSpeedStat : RPGStat.Int() {
 // HEALTH
 // ----------------------------
 
+@Serializable
 object RPGHealthStat : RPGStat.Double() {
     override val id: String = "health"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_HEALTH
@@ -29,6 +32,7 @@ object RPGHealthStat : RPGStat.Double() {
     override val defaultValue = 20.0
 }
 
+@Serializable
 object RPGMaxHealthStat : RPGStat.Double() {
     override val id: String = "max_health"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_MAX_HEALTH
@@ -39,6 +43,7 @@ object RPGMaxHealthStat : RPGStat.Double() {
 // ----------------------------
 // HEALTH
 // ----------------------------
+@Serializable
 object RPGProtectionStat : RPGStat.Double() {
     override val id: String = "armor"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_ARMOR
@@ -50,6 +55,7 @@ object RPGProtectionStat : RPGStat.Double() {
 // ----------------------------
 // REGENERATION
 // ----------------------------
+@Serializable
 object RPGRegenStat : RPGStat.BigInteger() {
     override val id: String = "regeneration"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION
@@ -57,6 +63,7 @@ object RPGRegenStat : RPGStat.BigInteger() {
     override val defaultValue = 1.toBigInteger()
 }
 
+@Serializable
 object RPGRegenMultiplierStat : RPGStat.Double() {
     override val id: String = "regeneration_multiplier"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION_MULTIPLIER
@@ -64,6 +71,7 @@ object RPGRegenMultiplierStat : RPGStat.Double() {
     override val defaultValue = 1.0
 }
 
+@Serializable
 object RPGRegenDelayStat : RPGStat.Int() {
     override val id: String = "regeneration_delay"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION_DELAY
@@ -75,6 +83,7 @@ object RPGRegenDelayStat : RPGStat.Int() {
 // ----------------------------
 // DAMAGE
 // ----------------------------
+@Serializable
 object RPGDamageStat : RPGStat.Double() {
     override val id: String = "damage"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_DAMAGE
@@ -82,6 +91,7 @@ object RPGDamageStat : RPGStat.Double() {
     override val defaultValue = 1.0
 }
 
+@Serializable
 object RPGDamageMultiplierStat : RPGStat.Double() {
     override val id: String = "damage_multiplier"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_DAMAGE_MULTIPLIER

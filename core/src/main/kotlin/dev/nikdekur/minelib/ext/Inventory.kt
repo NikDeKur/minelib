@@ -3,9 +3,14 @@
 package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.gui.GUI
+import dev.nikdekur.minelib.inventory.InventorySlot
+import dev.nikdekur.minelib.inventory.InventorySlot.HAND
+import dev.nikdekur.minelib.inventory.InventorySlot.OFF_HAND
+import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 
 
 /**
@@ -139,4 +144,26 @@ inline fun Inventory.removeByAppearance(itemStack: ItemStack?) {
             this.remove(item)
         }
     }
+}
+
+
+inline fun Inventory.get(slot: InventorySlot): ItemStack? {
+    val item: ItemStack?
+    val index = slot.index
+    if (index > -1) {
+        return getItem(index)
+    } else {
+        item = if (this is PlayerInventory) {
+            when (slot) {
+                HAND -> itemInMainHand
+                OFF_HAND -> itemInOffHand
+                else -> null
+            }
+        } else null
+    }
+
+    if (item == null || item.type == Material.AIR)
+        return null
+
+    return item
 }

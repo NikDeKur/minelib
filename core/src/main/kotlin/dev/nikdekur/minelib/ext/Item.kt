@@ -26,8 +26,6 @@ inline fun ItemStack.setStackAmount(amount: Int): ItemStack {
     return this
 }
 
-
-
 fun <T> ItemStack.editNBT(func: ReadWriteItemNBT.() -> T) = NBT.modify(this, func)
 
 
@@ -51,6 +49,13 @@ fun ItemStack.setTag(key: String, value: Any): ItemStack {
 
             else -> throw IllegalArgumentException("Unsupported type: ${value::class.java}")
         }
+    }
+    return this
+}
+
+fun ItemStack.removeTag(key: String): ItemStack {
+    editNBT {
+        removeKey(key)
     }
     return this
 }

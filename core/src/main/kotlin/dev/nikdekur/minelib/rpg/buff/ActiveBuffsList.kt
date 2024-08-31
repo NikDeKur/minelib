@@ -7,27 +7,18 @@ import dev.nikdekur.minelib.rpg.stat.RPGStat
 
 interface ActiveBuffsList : BuffsList {
 
-    fun addBuff(buff: RPGBuff<*>)
+    fun <T : Comparable<T>> addBuff(stat: RPGStat<T>, value: T, parameters: BuffParameters = BuffParameters()): RPGBuffData
 
-    fun removeBuff(buff: RPGBuff<*>)
+    fun removeBuff(buff: RPGBuffData)
 
-    fun updateConditional(type: ConditionType)
+    fun <C> updateConditional(type: ConditionType<C>, context: C)
 
     fun clear()
 
-    fun <T : Comparable<T>> afterAddBuff(buff: RPGBuff<T>) {
+    fun afterAddBuff(buff: RPGBuffData) {
         // Do nothing
     }
-    fun <T : Comparable<T>> afterRemoveBuff(buff: RPGBuff<T>) {
+    fun afterRemoveBuff(buff: RPGBuffData) {
         // Do nothing
-    }
-}
-
-inline fun ActiveBuffsList.addBuffs(buffs: Iterable<RPGBuff<*>>) = buffs.forEach(::addBuff)
-inline fun ActiveBuffsList.addBuffs(buffs: BuffsList) = buffs.forEach(::addBuff)
-
-inline fun <T : Comparable<T>> ActiveBuffsList.removeBuffs(stat: RPGStat<T>): Collection<RPGBuff<T>> {
-    return getBuffs(stat).also {
-        it.forEach(this::removeBuff)
     }
 }

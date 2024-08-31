@@ -1,10 +1,10 @@
 [versions]
-kotlin = "2.0.10"
+kotlin = "2.0.20"
 kotlinx-serialization = "1.7.1"
-ndkore = "1.2.4"
+shadowJar = "8.1.1"
+ndkore = "1.2.5"
 kotlinx-coroutine = "1.9.0-RC.2"
 google-guava = "33.2.1-jre"
-shadowJar = "8.1.1"
 licenser = "0.6.1"
 kaml = "0.57.0"
 authlib = "1.11"
@@ -16,6 +16,7 @@ jupiter = "5.11.0"
 ndkore = { module = "dev.nikdekur:ndkore", version.ref = "ndkore" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutine" }
 google-guava = { module = "com.google.guava:guava", version.ref = "google-guava" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
