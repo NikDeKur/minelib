@@ -21,6 +21,7 @@ import kotlinx.serialization.encodeToString
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.koin.environmentProperties
 import java.io.File
 import java.io.IOException
 import java.util.logging.Logger
@@ -220,7 +221,11 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
 
     override fun onLoad() {
         loadAllPluginClasses()
-        servicesManager = KoinServicesManager(SimpleKoinContext())
+
+        val koinContext = SimpleKoinContext()
+        koinContext.startKoin { environmentProperties() }
+        servicesManager = KoinServicesManager(koinContext)
+
         this@ServerPlugin.scheduler = Scheduler(this)
         setupStaticFields()
         whenLoad()

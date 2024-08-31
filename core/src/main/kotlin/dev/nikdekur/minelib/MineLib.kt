@@ -10,7 +10,6 @@ import dev.nikdekur.minelib.i18n.config.ConfigI18nService
 import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.i18n.msg.I18nMessage
-import dev.nikdekur.minelib.koin.MineLibKoinContext
 import dev.nikdekur.minelib.movement.ConfigMovementService
 import dev.nikdekur.minelib.nms.DefaultVersionAdapter
 import dev.nikdekur.minelib.nms.VersionAdapter
@@ -28,7 +27,6 @@ import dev.nikdekur.ndkore.map.put
 import dev.nikdekur.ndkore.service.inject
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
-import org.koin.environmentProperties
 import java.util.jar.JarFile
 import java.util.logging.Level
 import kotlin.properties.Delegates
@@ -59,11 +57,6 @@ class MineLib : ServerPlugin() {
 
 
     override fun whenLoad() {
-        MineLibKoinContext.stopKoin()
-        MineLibKoinContext.startKoin {
-            environmentProperties()
-        }
-
         val packageName = Bukkit.getServer().javaClass.`package`.name
         val versionStr = packageName.substring(packageName.lastIndexOf('.') + 1)
         logger.log(Level.INFO, "Looking for version adapter on version: $versionStr")
