@@ -2,7 +2,7 @@
 kotlin = "2.0.20"
 kotlinx-serialization = "1.7.2"
 shadowJar = "8.1.1"
-ndkore = "1.2.5"
+ndkore = "1.3.0"
 kotlinx-coroutine = "1.9.0-RC.2"
 google-guava = "33.3.0-jre"
 licenser = "0.6.1"
@@ -11,6 +11,7 @@ authlib = "1.11"
 koin = "4.0.0-RC1"
 nbtapi = "2.13.2"
 jupiter = "5.11.0"
+slf4j = "2.0.16"
 
 [libraries]
 ndkore = { module = "dev.nikdekur:ndkore", version.ref = "ndkore" }
@@ -26,6 +27,7 @@ nbtapi = { module = "de.tr7zw:item-nbt-api", version.ref = "nbtapi" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "jupiter" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

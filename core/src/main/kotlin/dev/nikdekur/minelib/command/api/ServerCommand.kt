@@ -4,9 +4,10 @@ import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginComponent
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
 import kotlin.time.Duration
 
-interface ServerCommand : PluginComponent {
+interface ServerCommand : TabExecutor, PluginComponent {
 
     val service: CommandService
 

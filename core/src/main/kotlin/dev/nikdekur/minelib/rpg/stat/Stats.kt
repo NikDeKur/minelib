@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  * The default speed-value is 20 (high-scaled) and 0.2 (minecraft)
  */
 @Serializable
-object RPGSpeedStat : RPGStat.Int() {
+object RPGSpeedStat : RPGIntStat() {
     override val id: String = "speed"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_SPEED_BONUS
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_SPEED_BONUS
@@ -25,7 +25,7 @@ object RPGSpeedStat : RPGStat.Int() {
 // ----------------------------
 
 @Serializable
-object RPGHealthStat : RPGStat.Double() {
+object RPGHealthStat : RPGDoubleStat() {
     override val id: String = "health"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_HEALTH
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_HEALTH
@@ -33,7 +33,7 @@ object RPGHealthStat : RPGStat.Double() {
 }
 
 @Serializable
-object RPGMaxHealthStat : RPGStat.Double() {
+object RPGMaxHealthStat : RPGDoubleStat() {
     override val id: String = "max_health"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_MAX_HEALTH
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_MAX_HEALTH
@@ -44,7 +44,7 @@ object RPGMaxHealthStat : RPGStat.Double() {
 // HEALTH
 // ----------------------------
 @Serializable
-object RPGProtectionStat : RPGStat.Double() {
+object RPGProtectionStat : RPGDoubleStat() {
     override val id: String = "armor"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_ARMOR
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_ARMOR
@@ -56,7 +56,7 @@ object RPGProtectionStat : RPGStat.Double() {
 // REGENERATION
 // ----------------------------
 @Serializable
-object RPGRegenStat : RPGStat.BigInteger() {
+object RPGRegenStat : RPGBigIntegerStat() {
     override val id: String = "regeneration"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_REGENERATION
@@ -64,7 +64,7 @@ object RPGRegenStat : RPGStat.BigInteger() {
 }
 
 @Serializable
-object RPGRegenMultiplierStat : RPGStat.Double() {
+object RPGRegenMultiplierStat : RPGDoubleStat() {
     override val id: String = "regeneration_multiplier"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION_MULTIPLIER
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_REGENERATION_MULTIPLIER
@@ -72,7 +72,7 @@ object RPGRegenMultiplierStat : RPGStat.Double() {
 }
 
 @Serializable
-object RPGRegenDelayStat : RPGStat.Int() {
+object RPGRegenDelayStat : RPGIntStat() {
     override val id: String = "regeneration_delay"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_REGENERATION_DELAY
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_REGENERATION_DELAY
@@ -84,7 +84,7 @@ object RPGRegenDelayStat : RPGStat.Int() {
 // DAMAGE
 // ----------------------------
 @Serializable
-object RPGDamageStat : RPGStat.Double() {
+object RPGDamageStat : RPGDoubleStat() {
     override val id: String = "damage"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_DAMAGE
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_DAMAGE
@@ -92,7 +92,7 @@ object RPGDamageStat : RPGStat.Double() {
 }
 
 @Serializable
-object RPGDamageMultiplierStat : RPGStat.Double() {
+object RPGDamageMultiplierStat : RPGDoubleStat() {
     override val id: String = "damage_multiplier"
     override val nameMSG = DefaultMSG.RPG_STAT_NAME_DAMAGE_MULTIPLIER
     override val nameBuffMSG = DefaultMSG.RPG_STAT_NAME_BUFF_DAMAGE_MULTIPLIER

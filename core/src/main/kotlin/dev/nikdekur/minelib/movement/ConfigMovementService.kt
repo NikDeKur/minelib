@@ -2,16 +2,20 @@
 
 package dev.nikdekur.minelib.movement
 
-import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.ext.online
 import dev.nikdekur.minelib.ext.runSync
+import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.plugin.loadConfig
+import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class ConfigMovementService(override val app: MineLib) : MovementService {
+class ConfigMovementService(
+    override val app: ServerPlugin
+) : PluginService(), MovementService {
 
     override val bindClass
         get() = MovementService::class
@@ -30,26 +34,25 @@ class ConfigMovementService(override val app: MineLib) : MovementService {
         lastLocationMap.clear()
     }
 
-    // NOTE: ASYNC
+    inline fun isChanged(old: Location, new: Location): Boolean {
+        return old.world != new.world || old.x != new.x || old.y != new.y || old.z != new.z
+    }
+
+    // REMEMBER: ASYNC
     fun update(player: Player) {
         val location = player.location
         val lastLocation = lastLocationMap[player.uniqueId]
-        val event = if (lastLocation == null) {
-            null
-        } else if (lastLocation.x != location.x || lastLocation.y != location.y || lastLocation.z != location.z || lastLocation.world != location.world) {
-            OptiPlayerMoveEvent(player, lastLocation.clone(), location.clone())
-        } else {
-            null
-        }
+        val event =
+            if (lastLocation == null) null
+            else if (isChanged(lastLocation, location)) OptiPlayerMoveEvent(player, lastLocation.clone(), location.clone())
+            else null
 
         event?.call()
 
-        if (event != null && event.isCancelled) {
-            processCancel(event)
-            return
-        }
 
-        if (event == null || !event.isCancelled)
+        if (event?.isCancelled == true)
+            processCancel(event)
+        else
             lastLocationMap[player.uniqueId] = location
     }
 

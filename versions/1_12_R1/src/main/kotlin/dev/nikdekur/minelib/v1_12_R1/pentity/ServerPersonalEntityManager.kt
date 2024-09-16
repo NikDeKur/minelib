@@ -5,6 +5,9 @@ import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
 import dev.nikdekur.minelib.pentity.ServerPersonalEntityManager
+import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.service.PluginListener
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.utils.Utils.debug
 import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolModule
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
@@ -25,7 +28,9 @@ import org.bukkit.util.Vector
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class ServerPersonalEntityManagerImpl(override val app: MineLib) : ServerPersonalEntityManager, Listener {
+class ServerPersonalEntityManagerImpl(
+    override val app: ServerPlugin
+) : PluginService(), ServerPersonalEntityManager, PluginListener {
 
     override val bindClass
         get() = ServerPersonalEntityManager::class

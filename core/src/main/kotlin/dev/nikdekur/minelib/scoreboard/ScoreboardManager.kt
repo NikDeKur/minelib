@@ -1,10 +1,11 @@
 package dev.nikdekur.minelib.scoreboard
 
 
-import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.ext.bLogger
+import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.plugin.loadConfig
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.cooldown.Cooldown
 import dev.nikdekur.ndkore.cooldown.GrowPolicy
 import dev.nikdekur.ndkore.cooldown.GrowingCooldownManager
@@ -15,7 +16,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter) : PluginService {
+class ScoreboardManager(
+    override val app: ServerPlugin,
+    val adapter: AssembleAdapter
+) : PluginService() {
 
     override val bindClass = ScoreboardManager::class
 
@@ -45,7 +49,6 @@ class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter)
         ticks = config.updateDelay
         style = config.style
 
-
         // Register Events
         app.addListener(listeners)
 
@@ -56,7 +59,7 @@ class ScoreboardManager(override val app: MineLib, val adapter: AssembleAdapter)
         }
 
         // Register new boards for existing online players.
-        for (player in app.server.onlinePlayers) {
+        for (player in app.onlinePlayers) {
             // Call Events if enabled.
 
             if (this.isCallEvents) {

@@ -1,9 +1,8 @@
 package dev.nikdekur.minelib.pentity
 
-import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.World
 
-interface ServerPersonalEntityManager : PluginService {
+interface ServerPersonalEntityManager {
 
     fun getManager(world: World): PersonalEntityManager
 }

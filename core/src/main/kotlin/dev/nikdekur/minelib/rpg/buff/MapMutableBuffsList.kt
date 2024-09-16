@@ -2,27 +2,26 @@ package dev.nikdekur.minelib.rpg.buff
 
 import dev.nikdekur.minelib.rpg.condition.Condition
 import dev.nikdekur.minelib.rpg.condition.ConditionType
-import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.map.MutableSetsMap
 import dev.nikdekur.ndkore.map.add
 import dev.nikdekur.ndkore.map.put
 import dev.nikdekur.ndkore.map.remove
 import java.util.UUID
 
-open class MapActiveBuffsList : MapBuffsList(), ActiveBuffsList {
+open class MapMutableBuffsList : MapBuffsList(), MutableBuffsList {
 
-    val conditionToBuffsMap: MutableSetsMap<ConditionType<*>, RPGBuffData> = HashMap()
+    val conditionToBuffsMap: MutableSetsMap<ConditionType<*>, RPGBuffData<*>> = HashMap()
 
-    protected fun <T : Comparable<T>> buildData(stat: RPGStat<T>, value: T, parameters: BuffParameters): RPGBuffData {
+    protected fun <T : Comparable<T>> buildData(buff: RPGBuff<T>, parameters: BuffParameters): RPGBuffData<T> {
         return RPGBuffData(
             id = UUID.randomUUID(),
-            buff = RPGBuff(stat, value),
+            buff = buff,
+            System.currentTimeMillis(),
             parameters = parameters,
-            System.currentTimeMillis()
         )
     }
 
-    protected open fun addBuffData(data: RPGBuffData) {
+    fun apply(data: RPGBuffData<*>) {
         map.put(data.buff.stat, data.id, data)
 
         data.parameters.conditions.forEach {
@@ -33,13 +32,19 @@ open class MapActiveBuffsList : MapBuffsList(), ActiveBuffsList {
         }
     }
 
-    override fun <T : Comparable<T>> addBuff(stat: RPGStat<T>, value: T, parameters: BuffParameters): RPGBuffData {
-        val data = buildData(stat, value, parameters)
-        addBuffData(data)
+    override fun addBuff(data: RPGBuffData<*>) {
+        apply(data)
+        onBuffAdd(data)
+    }
+
+
+    override fun <T : Comparable<T>> addBuff(buff: RPGBuff<T>, parameters: BuffParameters): RPGBuffData<T> {
+        val data = buildData(buff, parameters)
+        addBuff(data)
         return data
     }
 
-    override fun removeBuff(data: RPGBuffData) {
+     fun deApply(data: RPGBuffData<*>) {
         map.remove(data.buff.stat, data.id)
         data.parameters.conditions.forEach { entry ->
             val type = entry.key
@@ -48,6 +53,11 @@ open class MapActiveBuffsList : MapBuffsList(), ActiveBuffsList {
                 conditionToBuffsMap.remove(type, data)
             }
         }
+    }
+
+    override fun removeBuff(buff: RPGBuffData<*>) {
+        onBuffRemove(buff)
+        deApply(buff)
     }
 
 
@@ -73,10 +83,9 @@ open class MapActiveBuffsList : MapBuffsList(), ActiveBuffsList {
                 }
             }
 
-            if (states.allMet())
-                addBuffData(data)
-            else
-                removeBuff(data)
+            val met = states.allMet()
+            if (met) apply(data)
+            else deApply(data)
         }
     }
 
@@ -84,5 +93,9 @@ open class MapActiveBuffsList : MapBuffsList(), ActiveBuffsList {
     override fun clear() {
         map.clear()
         conditionToBuffsMap.clear()
+    }
+
+    override fun toString(): String {
+        return "MapMutableBuffsList(buffs=${toList()})"
     }
 }

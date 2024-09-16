@@ -3,55 +3,18 @@
 package dev.nikdekur.minelib.rpg.stat
 
 import dev.nikdekur.minelib.rpg.event.RPGStatChangeEvent
-import dev.nikdekur.minelib.rpg.profile.RPGProfile
-import dev.nikdekur.ndkore.ext.forEachSafe
-import dev.nikdekur.ndkore.map.MutableListsMap
-import java.util.LinkedList
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class RPGProfileStats(val profile: RPGProfile) {
+interface RPGProfileStats {
 
-    val beforeStatChangeProcessors: MutableListsMap<RPGStat<*>, StatChangeProcessor<*>> = LinkedHashMap()
-    fun <T : Comparable<T>> beforeStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>) {
-        @Suppress("UNCHECKED_CAST")
-        (beforeStatChangeProcessors.getOrPut(stat, ::LinkedList) as MutableList<StatChangeProcessor<T>>).add(action)
-    }
+    fun <T : Comparable<T>> beforeStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>)
+    fun <T : Comparable<T>> afterStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>)
 
-    val afterStatChangeProcessors: MutableListsMap<RPGStat<*>, StatChangeProcessor<*>> = LinkedHashMap()
-    fun <T : Comparable<T>> afterStatChange(stat: RPGStat<T>, action: StatChangeProcessor<T>) {
-        @Suppress("UNCHECKED_CAST")
-        (afterStatChangeProcessors.getOrPut(stat, ::LinkedList) as MutableList<StatChangeProcessor<T>>).add(action)
-    }
+    fun getRaw(stat: RPGStat<*>): Any?
+    fun <T : Comparable<T>> getOrNull(stat: RPGStat<T>): T?
+    operator fun <T : Comparable<T>> get(stat: RPGStat<T>): T
 
-
-    private fun <T : Comparable<T>> processStatChange(before: Boolean, event: RPGStatChangeEvent<T>) {
-        val stat = event.stat
-        val processors = if (before)
-            beforeStatChangeProcessors[stat]
-        else
-            afterStatChangeProcessors[stat]
-        processors?.forEachSafe({e, _ -> e.printStackTrace()}) {
-            @Suppress("UNCHECKED_CAST")
-            val processor = it as StatChangeProcessor<T>
-            processor.invoke(event)
-        }
-    }
-
-
-    val map = StatsMap()
-
-    inline fun getRaw(stat: RPGStat<*>): Any? {
-        return map.getRaw(stat)
-    }
-
-    inline fun <T : Comparable<T>> getOrNull(stat: RPGStat<T>): T? {
-        return map.getOrNull(stat)
-    }
-
-    inline operator fun <T : Comparable<T>> get(stat: RPGStat<T>): T {
-        return map[stat]
-    }
 
     /**
      * Set the stat value
@@ -67,48 +30,35 @@ class RPGProfileStats(val profile: RPGProfile) {
      * @see beforeStatChange
      * @see RPGStatChangeEvent
      */
-    operator fun <T : Comparable<T>> set(stat: RPGStat<T>, newValue: T): Boolean {
-        val oldValue = map[stat]
-        if (oldValue == newValue) return false
-
-        val event = RPGStatChangeEvent(profile, stat, oldValue, newValue)
-        processStatChange(true, event)
-        // if (!event.isCancelled) event.call()
-        if (event.isCancelled) return false
-
-        val value = event.newValue
-        map[stat] = value
-
-        processStatChange(false, event)
-
-        return true
-    }
+    operator fun <T : Comparable<T>> set(stat: RPGStat<T>, newValue: T): Boolean
 
 
-    fun <T : Comparable<T>> add(stat: RPGStat<T>, value: T): Boolean {
-        val old = this[stat]
-        val new = stat.plus(old, value)
-        return set(stat, new)
-    }
-
-    fun <T : Comparable<T>> take(stat: RPGStat<T>, value: T): Boolean {
-        val old = this[stat]
-        val new = stat.minus(old, value)
-        return set(stat, new)
-    }
+    fun clear()
+}
 
 
-    fun <T : Comparable<T>> boundVar(stat: RPGStat<T>): ReadWriteProperty<Any, T> {
-        return object : ReadWriteProperty<Any, T> {
-            override fun getValue(thisRef: Any, property: KProperty<*>) = get(stat)
-            override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-                set(stat, value)
-            }
+inline fun <T : Comparable<T>> RPGProfileStats.add(stat: RPGStat<T>, value: T): Boolean {
+    val old = getOrNull(stat)
+
+    val new =
+        if (old == null) value
+        else stat.plus(old, value)
+
+    return set(stat, new)
+}
+
+inline fun <T : Comparable<T>> RPGProfileStats.take(stat: RPGStat<T>, value: T): Boolean {
+    val old = getOrNull(stat) ?: return false
+    val new = stat.minus(old, value)
+    return set(stat, new)
+}
+
+
+inline fun <T : Comparable<T>> RPGProfileStats.boundVar(stat: RPGStat<T>): ReadWriteProperty<Any, T> {
+    return object : ReadWriteProperty<Any, T> {
+        override fun getValue(thisRef: Any, property: KProperty<*>) = get(stat)
+        override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+            set(stat, value)
         }
-    }
-
-
-    fun clear() {
-        map.clear()
     }
 }

@@ -13,7 +13,7 @@ import dev.nikdekur.minelib.i18n.msg.I18nMessage
 import dev.nikdekur.minelib.movement.ConfigMovementService
 import dev.nikdekur.minelib.nms.DefaultVersionAdapter
 import dev.nikdekur.minelib.nms.VersionAdapter
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.plugin.AbstractServerPlugin
 import dev.nikdekur.minelib.rpg.RuntimeRPGProfilesService
 import dev.nikdekur.minelib.rpg.RuntimeRPGService
 import dev.nikdekur.minelib.rpg.condition.DefaultConditionsListener
@@ -31,7 +31,7 @@ import java.util.jar.JarFile
 import java.util.logging.Level
 import kotlin.properties.Delegates
 
-class MineLib : ServerPlugin() {
+class MineLib : AbstractServerPlugin() {
 
     val i18n: I18nService by inject()
 
@@ -64,7 +64,7 @@ class MineLib : ServerPlugin() {
             ClassUtils.logger.log(Level.WARNING, "No version adapter found for version: $versionStr. Using default adapter.")
             DefaultVersionAdapter
         }
-        adapter.init(instance)
+        adapter.init(this)
         versionAdapter = adapter
     }
 

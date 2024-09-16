@@ -10,7 +10,6 @@ import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketSendEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.early.EarlyPacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.early.EarlyPacketSendEvent
-import dev.nikdekur.ndkore.service.Service
 import io.netty.channel.*
 import net.minecraft.server.v1_12_R1.Packet
 import org.bukkit.Bukkit
@@ -21,7 +20,6 @@ import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
-import kotlin.reflect.KClass
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -31,9 +29,11 @@ import kotlin.reflect.KClass
  * @author Kristian
  * @author [Modified] Nik De Kur
  */
-class InjectProtocolModule(override val app: ServerPlugin) : PluginService, Listener {
+class InjectProtocolModule(
+    override val app: ServerPlugin
+) : PluginService(), Listener {
 
-    override val bindClass: KClass<out Service<*>>
+    override val bindClass
         get() = InjectProtocolModule::class
 
     override fun onEnable() {
@@ -200,7 +200,7 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
             serverChannel.eventLoop().execute {
                 try {
                     pipeline.remove(serverChannelHandler)
-                } catch (e: NoSuchElementException) {
+                } catch (_: NoSuchElementException) {
                     // That's fine
                 }
             }
@@ -208,9 +208,7 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
     }
 
     private fun registerPlayers() {
-        for (player in Bukkit.getOnlinePlayers()) {
-            injectPlayer(player)
-        }
+        Bukkit.getOnlinePlayers().forEach(::injectPlayer)
     }
 
     /**
@@ -350,7 +348,7 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
             }
 
             return interceptor
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Try again
             return channel.pipeline()[handlerName] as PacketInterceptor
         }
@@ -458,7 +456,7 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
         }
 
         private fun handleLoginStart(channel: Channel, packet: Any?) {
-            if (PACKET_LOGIN_IN_START.isInstance(packet)) {
+            if (packetLoginInStart.isInstance(packet)) {
                 val profile = getGameProfile[packet]
                 channelLookup[profile.name] = channel
             }
@@ -493,8 +491,9 @@ class InjectProtocolModule(override val app: ServerPlugin) : PluginService, List
         Reflection.getField(minecraftServerClass, serverConnectionClass, 0)
 
     // Packets we have to intercept
-    private val PACKET_LOGIN_IN_START: Class<*> =
+    private val packetLoginInStart: Class<*> =
         Reflection.getClass("{nms}.PacketLoginInStart", "net.minecraft.network.protocol.login.PacketLoginInStart")
+
     private val getGameProfile: Reflection.FieldAccessor<GameProfile> =
-        Reflection.getField(PACKET_LOGIN_IN_START, GameProfile::class.java, 0)
+        Reflection.getField(packetLoginInStart, GameProfile::class.java, 0)
 }

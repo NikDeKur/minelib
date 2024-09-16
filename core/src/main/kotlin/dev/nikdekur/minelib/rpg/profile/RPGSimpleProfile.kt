@@ -1,28 +1,30 @@
 package dev.nikdekur.minelib.rpg.profile
 
+import dev.nikdekur.minelib.ext.call
 import dev.nikdekur.minelib.rpg.buff.MapAttachableBuffsList
 import dev.nikdekur.minelib.rpg.buff.RPGBuff
 import dev.nikdekur.minelib.rpg.buff.RPGBuffData
 import dev.nikdekur.minelib.rpg.combat.DamageSource
+import dev.nikdekur.minelib.rpg.event.RPGDamageEvent
+import dev.nikdekur.minelib.rpg.event.RPGKillEvent
+import dev.nikdekur.minelib.rpg.stat.MapRPGProfileStats
 import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGMaxHealthStat
-import dev.nikdekur.minelib.rpg.stat.RPGProfileStats
+import dev.nikdekur.minelib.rpg.stat.add
+import dev.nikdekur.minelib.rpg.stat.take
 import dev.nikdekur.minelib.rpg.update.FixedRateUpdater
 import java.util.*
 
 abstract class RPGSimpleProfile : RPGProfile {
 
-    final override val stats by lazy {
-        RPGProfileStats(this)
-    }
-
+    override val stats = MapRPGProfileStats(this)
 
     override val buffs = object : MapAttachableBuffsList() {
 
-        override fun afterAddBuff(buff: RPGBuffData) = add(buff.buff)
+        override fun onBuffAdd(buff: RPGBuffData<*>) = add(buff.buff)
         fun <T : Comparable<T>> add(buff: RPGBuff<T>) { stats.add(buff.stat, buff.value) }
 
-        override fun afterRemoveBuff(buff: RPGBuffData) = take(buff.buff)
+        override fun onBuffRemove(buff: RPGBuffData<*>) = take(buff.buff)
         fun <T : Comparable<T>> take(buff: RPGBuff<T>) { stats.take(buff.stat, buff.value) }
     }
 
@@ -59,9 +61,9 @@ abstract class RPGSimpleProfile : RPGProfile {
     override fun damage(source: DamageSource): Double  {
         val damage = strategy.calculateDamage(this, source)
 
-//        val event = RPGDamageEvent(this, source, damage)
-//        event.call()
-//        if (event.isCancelled) return 0.0
+        val event = RPGDamageEvent(this, source, damage)
+        event.call()
+        if (event.isCancelled) return 0.0
         val finalDamage = damage
 
         if (health - finalDamage <= 0.0) {
@@ -76,7 +78,7 @@ abstract class RPGSimpleProfile : RPGProfile {
 
     override fun kill(source: DamageSource) {
         stats[RPGHealthStat] = 0.0
-        // RPGKillEvent(this, source).call()
+        RPGKillEvent(this, source).call()
     }
 
 
@@ -102,5 +104,11 @@ abstract class RPGSimpleProfile : RPGProfile {
         val regen = updaters.remove(id)
         regen?.cancel()
         return regen
+    }
+
+
+
+    override fun toString(): String {
+        return "RPGSimpleProfile(stats=$stats)"
     }
 }

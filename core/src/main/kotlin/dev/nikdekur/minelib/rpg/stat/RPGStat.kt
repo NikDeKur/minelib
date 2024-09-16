@@ -21,19 +21,61 @@ import kotlin.reflect.KClass
 
 val random = java.util.Random()
 
+
 abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparable<T>, T : Any {
+
+    /**
+     * The default value of the stat
+     *
+     * Will be used when the stat is not set
+     */
     abstract val defaultValue: T
+
+    /**
+     * The static value of the stat
+     *
+     * Will always be used and added to the value
+     *
+     * For example, the static value of the health stat is 20,
+     * and the value is 10, the final value will be 30.
+     *
+     * @see defaultValue
+     */
     abstract val staticValue: T
 
-    abstract val clazz: KClass<T>
+    /**
+     * The class of the value of the stat
+     */
+    abstract val valueClass: KClass<T>
 
+    /**
+     * The name of the stat message
+     */
     abstract val nameBuffMSG: MessageReference
 
-    fun isInstance(value: Any): kotlin.Boolean {
-        return clazz.isInstance(value)
+    /**
+     * Check that given value is an instance of the stat value
+     */
+    open fun isInstance(value: Any): Boolean {
+        return valueClass.isInstance(value)
     }
 
+    /**
+     * Perform the addition of two values
+     *
+     * @param value the first value
+     * @param other the second value
+     * @return the result of the addition (merge)
+     */
     abstract fun plus(value: T, other: T): T
+
+    /**
+     * Perform the subtraction of two values
+     *
+     * @param value the first value
+     * @param other the second value
+     * @return the result of the subtraction
+     */
     abstract fun minus(value: T, other: T): T
 
     /**
@@ -45,152 +87,36 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
      */
     abstract fun range(min: T, max: T): T
 
+    /**
+     * Read (decode) the value from the string
+     *
+     * @param value the string value
+     * @return the value or null if the value is not valid
+     */
     abstract fun read(value: String): T?
 
+    /**
+     * The kotlinx-serializer that will be used to serialize the value
+     *
+     * @return the kotlinx-serializer
+     */
     abstract fun valueSerializer(): KSerializer<T>
 
     override fun toString(): String {
         return "RPGStat(id=$id)"
     }
 
-    override fun equals(other: Any?): kotlin.Boolean {
+    override fun equals(other: Any?): Boolean {
         val o = other as? RPGStat<*> ?: return false
         return o.id == this.id
     }
 
-    override fun hashCode(): kotlin.Int {
+    override fun hashCode(): Int {
         return id.hashCode()
     }
 
 
-    @Serializable
-    abstract class Double : RPGStat<kotlin.Double>() {
-        override val defaultValue = 0.0
-        override val staticValue = 0.0
 
-        override val clazz: KClass<kotlin.Double> = kotlin.Double::class
-        override fun plus(value: kotlin.Double, other: kotlin.Double): kotlin.Double {
-            return value + other
-        }
-        override fun minus(value: kotlin.Double, other: kotlin.Double): kotlin.Double {
-            return value - other
-        }
-
-        override fun range(min: kotlin.Double, max: kotlin.Double): kotlin.Double {
-            return random.randDouble(min, max)
-        }
-
-        override fun read(value: String): kotlin.Double? {
-            return value.toDoubleOrNull()
-        }
-
-        override fun valueSerializer() = kotlin.Double.serializer()
-    }
-
-    @Serializable
-    abstract class Float : RPGStat<kotlin.Float>() {
-        override val defaultValue = 0f
-        override val staticValue = 0f
-
-        override val clazz: KClass<kotlin.Float> = kotlin.Float::class
-        override fun plus(value: kotlin.Float, other: kotlin.Float): kotlin.Float {
-            return value + other
-        }
-        override fun minus(value: kotlin.Float, other: kotlin.Float): kotlin.Float {
-            return value - other
-        }
-
-        override fun range(min: kotlin.Float, max: kotlin.Float): kotlin.Float {
-            return random.randFloat(min, max)
-        }
-
-        override fun read(value: String): kotlin.Float? {
-            return value.toFloatOrNull()
-        }
-
-        override fun valueSerializer() = kotlin.Float.serializer()
-    }
-
-    @Serializable
-    abstract class Int : RPGStat<kotlin.Int>() {
-        override val defaultValue = 0
-        override val staticValue = 0
-
-        override val clazz: KClass<kotlin.Int> = kotlin.Int::class
-        override fun plus(value: kotlin.Int, other: kotlin.Int): kotlin.Int {
-            return value + other
-        }
-        override fun minus(value: kotlin.Int, other: kotlin.Int): kotlin.Int {
-            return value - other
-        }
-
-        override fun range(min: kotlin.Int, max: kotlin.Int): kotlin.Int {
-            return random.randInt(min, max)
-        }
-
-        override fun read(value: String): kotlin.Int? {
-            return value.toIntOrNull()
-        }
-
-        override fun valueSerializer() = kotlin.Int.serializer()
-    }
-
-    abstract class BigInteger : RPGStat<java.math.BigInteger>() {
-        override val defaultValue = java.math.BigInteger.ZERO
-        override val staticValue = java.math.BigInteger.ZERO
-
-        override val clazz: KClass<java.math.BigInteger> = java.math.BigInteger::class
-        override fun plus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
-            return value + other
-        }
-        override fun minus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
-            return value - other
-        }
-
-        override fun range(min: java.math.BigInteger, max: java.math.BigInteger): java.math.BigInteger {
-            return random.randDouble(min.toDouble(), max.toDouble()).toBigDecimal().toBigInteger()
-        }
-
-        override fun read(value: String): java.math.BigInteger? {
-            return value.toBigIntegerOrNull()
-        }
-
-        override fun valueSerializer() = object : KSerializer<java.math.BigInteger> {
-            override val descriptor = PrimitiveSerialDescriptor("java.math.BigInteger", PrimitiveKind.STRING)
-            override fun serialize(encoder: Encoder, value: java.math.BigInteger) {
-                encoder.encodeString(value.toString())
-            }
-
-            override fun deserialize(decoder: Decoder): java.math.BigInteger {
-                return decoder.decodeString().toBigInteger()
-            }
-        }
-    }
-
-    @Serializable
-    abstract class Boolean : RPGStat<kotlin.Boolean>() {
-        override val defaultValue = false
-        override val staticValue = false
-        override val clazz: KClass<kotlin.Boolean> = kotlin.Boolean::class
-
-        override fun plus(value: kotlin.Boolean, other: kotlin.Boolean): kotlin.Boolean {
-            return value || other
-        }
-
-        override fun range(min: kotlin.Boolean, max: kotlin.Boolean): kotlin.Boolean {
-            throw UnsupportedOperationException("Boolean stat can't be ranged")
-        }
-
-        override fun minus(value: kotlin.Boolean, other: kotlin.Boolean): kotlin.Boolean {
-            return value && other
-        }
-
-        override fun read(value: String): kotlin.Boolean? {
-            return value.toBooleanSmartOrNull()
-        }
-
-        override fun valueSerializer() = kotlin.Boolean.serializer()
-    }
 
 
     class Serializer(val service: RPGService) : KSerializer<RPGStat<*>> {
@@ -209,4 +135,133 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
             return "RPGStat.Serializer(service=$service)"
         }
     }
+}
+
+@Serializable
+abstract class RPGDoubleStat : RPGStat<Double>() {
+    override val defaultValue = 0.0
+    override val staticValue = 0.0
+
+    override val valueClass: KClass<Double> = Double::class
+    override fun plus(value: Double, other: Double): Double {
+        return value + other
+    }
+    override fun minus(value: Double, other: Double): Double {
+        return value - other
+    }
+
+    override fun range(min: Double, max: Double): Double {
+        return random.randDouble(min, max)
+    }
+
+    override fun read(value: String): Double? {
+        return value.toDoubleOrNull()
+    }
+
+    override fun valueSerializer() = Double.serializer()
+}
+
+@Serializable
+abstract class RPGFloatStat : RPGStat<Float>() {
+    override val defaultValue = 0f
+    override val staticValue = 0f
+
+    override val valueClass: KClass<Float> = Float::class
+    override fun plus(value: Float, other: Float): Float {
+        return value + other
+    }
+    override fun minus(value: Float, other: Float): Float {
+        return value - other
+    }
+
+    override fun range(min: Float, max: Float): Float {
+        return random.randFloat(min, max)
+    }
+
+    override fun read(value: String): Float? {
+        return value.toFloatOrNull()
+    }
+
+    override fun valueSerializer() = Float.serializer()
+}
+
+@Serializable
+abstract class RPGIntStat : RPGStat<Int>() {
+    override val defaultValue = 0
+    override val staticValue = 0
+
+    override val valueClass: KClass<Int> = Int::class
+    override fun plus(value: Int, other: Int): Int {
+        return value + other
+    }
+    override fun minus(value: Int, other: Int): Int {
+        return value - other
+    }
+
+    override fun range(min: Int, max: Int): Int {
+        return random.randInt(min, max)
+    }
+
+    override fun read(value: String): Int? {
+        return value.toIntOrNull()
+    }
+
+    override fun valueSerializer() = Int.serializer()
+}
+
+abstract class RPGBigIntegerStat : RPGStat<java.math.BigInteger>() {
+    override val defaultValue = java.math.BigInteger.ZERO
+    override val staticValue = java.math.BigInteger.ZERO
+
+    override val valueClass: KClass<java.math.BigInteger> = java.math.BigInteger::class
+    override fun plus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
+        return value + other
+    }
+    override fun minus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
+        return value - other
+    }
+
+    override fun range(min: java.math.BigInteger, max: java.math.BigInteger): java.math.BigInteger {
+        return random.randDouble(min.toDouble(), max.toDouble()).toBigDecimal().toBigInteger()
+    }
+
+    override fun read(value: String): java.math.BigInteger? {
+        return value.toBigIntegerOrNull()
+    }
+
+    override fun valueSerializer() = object : KSerializer<java.math.BigInteger> {
+        override val descriptor = PrimitiveSerialDescriptor("java.math.BigInteger", PrimitiveKind.STRING)
+        override fun serialize(encoder: Encoder, value: java.math.BigInteger) {
+            encoder.encodeString(value.toString())
+        }
+
+        override fun deserialize(decoder: Decoder): java.math.BigInteger {
+            return decoder.decodeString().toBigInteger()
+        }
+    }
+}
+
+@Serializable
+abstract class RPGBooleanStat : RPGStat<Boolean>() {
+    override val defaultValue = false
+    override val staticValue = false
+    override val valueClass: KClass<Boolean> = Boolean::class
+
+    override fun plus(value: Boolean, other: Boolean): Boolean {
+        return value || other
+    }
+
+    override fun range(min: Boolean, max: Boolean): Boolean {
+        throw UnsupportedOperationException("Boolean stat can't be ranged")
+    }
+
+    override fun minus(value: Boolean, other: Boolean): Boolean {
+        return value && other
+    }
+
+    override fun read(value: String): Boolean? {
+        return value.toBooleanSmartOrNull()
+    }
+
+    override fun valueSerializer() = Boolean.serializer()
 }

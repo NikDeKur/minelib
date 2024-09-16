@@ -15,15 +15,14 @@ import dev.nikdekur.ndkore.ext.filterPartialMatches
 import dev.nikdekur.ndkore.service.inject
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.time.Duration
 
 @Suppress("unused")
-abstract class ServiceServerCommand : ServerCommand, TabExecutor {
+abstract class ServiceServerCommand : ServerCommand {
 
-    override val service by inject<CommandService>()
+    override val service: CommandService by inject()
 
     var commandPath = ""
 
@@ -122,17 +121,7 @@ abstract class ServiceServerCommand : ServerCommand, TabExecutor {
 
 
     override fun register(plugin: ServerPlugin) {
-        try {
-            val command = plugin.getCommand(name) ?: run {
-                plugin.logger.severe("Command '$name' not found. Maybe you forgot to register it?")
-                return
-            }
-            command.executor = this
-            command.tabCompleter = this
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
 

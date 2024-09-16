@@ -6,15 +6,15 @@ import org.bukkit.event.player.PlayerChangedWorldEvent
 
 object DefaultConditionTypes {
 
-    val INVENTORY = object : ConditionType<Event>() {
-        override val contextClass = Event::class.java
+    inline fun <reified C> new() = object : ConditionType<C> {
+        override val contextClass = C::class.java
+
+        override fun toString(): String {
+            return "ConditionType(${contextClass.simpleName})"
+        }
     }
 
-    val WORLD = object : ConditionType<PlayerChangedWorldEvent>() {
-        override val contextClass = PlayerChangedWorldEvent::class.java
-    }
-
-    val LOCATION = object : ConditionType<OptiPlayerMoveEvent>() {
-        override val contextClass = OptiPlayerMoveEvent::class.java
-    }
+    val INVENTORY = new<Event>()
+    val WORLD = new<PlayerChangedWorldEvent>()
+    val LOCATION = new<OptiPlayerMoveEvent>()
 }

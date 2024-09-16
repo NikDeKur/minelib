@@ -7,36 +7,33 @@ import dev.nikdekur.ndkore.map.get
 import java.util.UUID
 
 open class MapBuffsList : BuffsList {
-    val map: MutableMultiMap<RPGStat<*>, UUID, RPGBuffData> = HashMap()
+    val map: MutableMultiMap<RPGStat<*>, UUID, RPGBuffData<*>> = HashMap()
 
-    override fun iterator(): Iterator<RPGBuffData> {
+    override fun iterator(): Iterator<RPGBuffData<*>> {
         return map.values.flatMap { it.values }.iterator()
     }
 
 
-    override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuffData> {
+    override fun <T : Comparable<T>> getBuffs(type: RPGStat<T>): Collection<RPGBuffData<T>> {
         val res = map[type] ?: return emptyList()
         @Suppress("UNCHECKED_CAST")
-        return res.values as? Collection<RPGBuffData> ?: emptyList()
+        return res.values as? Collection<RPGBuffData<T>> ?: emptyList()
     }
 
-    override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuffData? {
-        return map[type, id]
+    override fun <T : Comparable<T>> getBuff(type: RPGStat<T>, id: UUID): RPGBuffData<T>? {
+        @Suppress("UNCHECKED_CAST")
+        return map[type, id] as? RPGBuffData<T>
     }
 
 
 
     override fun <T : Comparable<T>> getBuffValueOrNull(type: RPGStat<T>): T? {
-        var value: T? = null
-        val buffsData = getBuffs(type)
-        for (data in buffsData) {
-            value = if (value == null) {
+        return getBuffs(type).fold(null) { acc, data ->
+            if (acc == null)
                 data.buff.value
-            } else {
-                type.plus(value, data.buff.value as T)
-            } as T
+            else
+                type.plus(acc, data.buff.value)
         }
-        return value
     }
 
     override fun <T : Comparable<T>> getBuffValue(type: RPGStat<T>): T {
@@ -47,8 +44,12 @@ open class MapBuffsList : BuffsList {
         map.keys.forEach(action)
     }
 
-    override fun hasBuff(data: RPGBuffData): Boolean {
+    override fun hasBuff(data: RPGBuffData<*>): Boolean {
         return map.contains(data.buff.stat, data.id)
     }
 
+
+    override fun toString(): String {
+        return "MapBuffsList(buffs=${toList()})"
+    }
 }

@@ -22,13 +22,13 @@ class DefaultConditionsListener(
 
     @EventHandler
     fun onInventoryDrag(event: InventoryDragEvent) {
-        val profile = rpgProfilesService.getProfile(event.whoClicked) ?: return
+        val profile = rpgProfilesService.getExistingProfile(event.whoClicked) ?: return
         profile.buffs.updateConditional(DefaultConditionTypes.INVENTORY, event)
     }
 
     @EventHandler
     fun onInventoryInteract(event: InventoryInteractEvent) {
-        val profile = rpgProfilesService.getProfile(event.whoClicked) ?: return
+        val profile = rpgProfilesService.getExistingProfile(event.whoClicked) ?: return
         profile.buffs.updateConditional(DefaultConditionTypes.INVENTORY, event)
     }
 
@@ -41,7 +41,7 @@ class DefaultConditionsListener(
 
     @EventHandler
     fun onWorldChange(event: PlayerChangedWorldEvent) {
-        val profile = rpgProfilesService.getProfile(event.player) ?: return
+        val profile = rpgProfilesService.getExistingProfile(event.player) ?: return
         profile.buffs.updateConditional(DefaultConditionTypes.WORLD, event)
     }
 
@@ -57,7 +57,7 @@ class DefaultConditionsListener(
     // -------------------
     @EventHandler
     fun onMove(event: OptiPlayerMoveEvent) {
-        val profile = rpgProfilesService.getProfile(event.player) ?: return
+        val profile = rpgProfilesService.getExistingProfile(event.player) ?: return
         profile.buffs.updateConditional(DefaultConditionTypes.LOCATION, event)
     }
 }

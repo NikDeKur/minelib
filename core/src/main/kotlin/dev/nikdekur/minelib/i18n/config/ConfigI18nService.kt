@@ -15,6 +15,8 @@ import dev.nikdekur.minelib.i18n.locale.LocaleConfig
 import dev.nikdekur.minelib.i18n.msg.I18nMessage
 import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.plugin.loadConfig
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.map.MultiMap
 import dev.nikdekur.ndkore.map.MutableMultiMap
@@ -23,9 +25,10 @@ import dev.nikdekur.ndkore.placeholder.PlaceholderParser
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import kotlin.collections.get
 
-class ConfigI18nService(override val app: ServerPlugin) : I18nService {
+class ConfigI18nService(
+    override val app: ServerPlugin
+) : PluginService(), I18nService {
 
     override val bindClass
         get() = I18nService::class

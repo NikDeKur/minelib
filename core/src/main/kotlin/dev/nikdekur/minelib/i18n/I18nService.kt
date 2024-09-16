@@ -5,12 +5,11 @@ import dev.nikdekur.minelib.i18n.bundle.Bundle
 import dev.nikdekur.minelib.i18n.locale.Locale
 import dev.nikdekur.minelib.i18n.msg.I18nMessage
 import dev.nikdekur.minelib.i18n.msg.MessageReference
-import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.map.MultiMap
 import dev.nikdekur.ndkore.placeholder.PlaceholderParser
 import org.bukkit.command.CommandSender
 
-interface I18nService : PluginService {
+interface I18nService {
 
     fun addDataProvider(provider: PlayerLocaleProvider)
     fun getDataProvider(id: String): PlayerLocaleProvider?

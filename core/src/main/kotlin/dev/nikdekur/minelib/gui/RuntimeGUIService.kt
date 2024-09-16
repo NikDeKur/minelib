@@ -7,19 +7,18 @@ import dev.nikdekur.minelib.ext.isTouchable
 import dev.nikdekur.minelib.gui.GUIFlag.CANNOT_PUT
 import dev.nikdekur.minelib.gui.GUIFlag.CANNOT_TAKE
 import dev.nikdekur.minelib.plugin.ServerPlugin
-import dev.nikdekur.ndkore.service.Service
+import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import java.util.*
-import kotlin.reflect.KClass
 
 class RuntimeGUIService(
     override val app: ServerPlugin
-) : GUIService, Listener {
+) : PluginService(), GUIService, Listener {
 
-    override val bindClass: KClass<out Service<*>>
+    override val bindClass
         get() = GUIService::class
 
     val guis = HashMap<UUID, GUI>()

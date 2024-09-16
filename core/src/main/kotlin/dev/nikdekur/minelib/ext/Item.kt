@@ -5,6 +5,7 @@ package dev.nikdekur.minelib.ext
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import de.tr7zw.changeme.nbtapi.NBT
+import de.tr7zw.changeme.nbtapi.NBTType
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT
 import dev.nikdekur.ndkore.ext.r_SetField
 import org.bukkit.Material
@@ -28,6 +29,22 @@ inline fun ItemStack.setStackAmount(amount: Int): ItemStack {
 
 fun <T> ItemStack.editNBT(func: ReadWriteItemNBT.() -> T) = NBT.modify(this, func)
 
+fun ReadWriteItemNBT.getTag(key: String): Any? {
+    val type = getType(key)
+    return when (type) {
+        NBTType.NBTTagByte -> getByte(key)
+        NBTType.NBTTagShort -> getShort(key)
+        NBTType.NBTTagInt -> getInteger(key)
+        NBTType.NBTTagLong -> getLong(key)
+        NBTType.NBTTagFloat -> getFloat(key)
+        NBTType.NBTTagDouble -> getDouble(key)
+        NBTType.NBTTagByteArray -> getByteArray(key)
+        NBTType.NBTTagString -> getString(key)
+        NBTType.NBTTagIntArray -> getIntArray(key)
+        NBTType.NBTTagLongArray -> getLongArray(key)
+        else -> null
+    }
+}
 
 fun ItemStack.setTag(key: String, value: Any): ItemStack {
     editNBT {

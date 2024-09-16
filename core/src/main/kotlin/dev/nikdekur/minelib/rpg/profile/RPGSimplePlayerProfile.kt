@@ -9,4 +9,9 @@ open class RPGSimplePlayerProfile(
 ) : RPGSimpleLivingEntityProfile(player, strategy), RPGPlayerProfile {
     override val entity: Player
         get() = player
+
+
+    override fun toString(): String {
+        return "RPGSimplePlayerProfile(player=$player, strategy=$strategy, stats=$stats)"
+    }
 }

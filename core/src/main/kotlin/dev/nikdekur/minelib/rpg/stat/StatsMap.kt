@@ -10,10 +10,8 @@ class StatsMap {
 
     fun <T : Comparable<T>> getOrNull(stat: RPGStat<T>): T? {
         val raw = getRaw(stat) ?: return null
-        @Suppress("UNCHECKED_CAST") // Type erasure, real cast is safe
-        return if (stat.isInstance(raw))
-            stat.plus(raw as T, stat.staticValue)
-        else null
+        @Suppress("UNCHECKED_CAST") // Type erasure
+        return stat.plus(raw as T, stat.staticValue)
     }
 
     operator fun <T : Comparable<T>> get(stat: RPGStat<T>): T {
@@ -26,5 +24,9 @@ class StatsMap {
 
     fun clear() {
         stats.clear()
+    }
+
+    override fun toString(): String {
+        return stats.toString()
     }
 }

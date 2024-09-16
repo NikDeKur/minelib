@@ -1,13 +1,5 @@
 package dev.nikdekur.minelib.inventory
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-
-@Serializable(InventorySlot.Serializer::class)
 enum class InventorySlot(val index: Int) {
     // ARMOR
     HELMET(103),
@@ -71,19 +63,17 @@ enum class InventorySlot(val index: Int) {
 
 
     // Hands
-    HAND(-1),
-    OFF_HAND(-2);
+    MAIN_HAND(-1),
+    OFF_HAND(-106)
 
+    ;
 
-    object Serializer : KSerializer<InventorySlot> {
-        override val descriptor = PrimitiveSerialDescriptor("InventorySlot", PrimitiveKind.INT)
+    val isHand
+        get() = this == MAIN_HAND || this == OFF_HAND
 
-        override fun serialize(encoder: Encoder, value: InventorySlot) {
-            encoder.encodeInt(value.index)
-        }
+    val isArmor
+        get() = this == HELMET || this == CHESTPLATE || this == LEGGINGS || this == BOOTS
 
-        override fun deserialize(decoder: Decoder): InventorySlot {
-            return InventorySlot.entries.first { it.index == decoder.decodeInt() }
-        }
-    }
+    val isHotBar
+        get() = this == HB_1 || this == HB_2 || this == HB_3 || this == HB_4 || this == HB_5 || this == HB_6 || this == HB_7 || this == HB_8 || this == HB_9
 }

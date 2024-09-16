@@ -110,4 +110,7 @@ object DefaultDamageStrategy : DamageStrategy {
 //
 //        return points
 //    }
+
+
+    override fun toString() = "DefaultDamageStrategy"
 }

@@ -1,8 +1,6 @@
 package dev.nikdekur.minelib.gui
 
-import dev.nikdekur.minelib.service.PluginService
-
-interface GUIService : PluginService {
+interface GUIService {
     fun registerGUI(gui: GUI)
     fun unregisterGUI(gui: GUI)
 }

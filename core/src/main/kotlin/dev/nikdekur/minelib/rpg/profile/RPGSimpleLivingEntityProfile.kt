@@ -4,6 +4,7 @@ import dev.nikdekur.minelib.ext.walkingSpeed
 import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGMaxHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGSpeedStat
+import dev.nikdekur.minelib.rpg.stat.take
 import dev.nikdekur.minelib.rpg.strategy.DamageStrategy
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
@@ -65,5 +66,10 @@ open class RPGSimpleLivingEntityProfile(
         updateMaxHealth(20.0)
         updateHealth(20.0)
         updateSpeed(20)
+    }
+
+
+    override fun toString(): String {
+        return "RPGSimpleLivingEntityProfile(entity=$entity, stats=$stats)"
     }
 }

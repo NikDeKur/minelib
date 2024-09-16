@@ -1,10 +1,9 @@
 package dev.nikdekur.minelib.movement
 
-import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-interface MovementService : PluginService {
+interface MovementService {
     /**
      * Teleport player to location and save new location as last location
      *

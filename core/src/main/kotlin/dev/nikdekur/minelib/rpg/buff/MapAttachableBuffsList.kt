@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.rpg.buff
 
 import java.util.LinkedList
 
-open class MapAttachableBuffsList : MapActiveBuffsList(), AttachableBuffsList {
+open class MapAttachableBuffsList : MapMutableBuffsList(), AttachableBuffsList {
 
     val attachesMap = HashMap<String, AttachedBuffsList>()
 
@@ -13,12 +13,13 @@ open class MapAttachableBuffsList : MapActiveBuffsList(), AttachableBuffsList {
         return attachesMap[id]
     }
 
-    override fun attach(id: String, buffs: ImaginaryBuffsList) {
-        val added = LinkedList<RPGBuffData>()
-        buffs.forEach { (buff, parameters) ->
-            added.add(
-                add(buff, parameters)
-            )
+    override fun attach(id: String, buffs: Iterable<RPGBuffData<*>>) {
+        if (attachesMap.containsKey(id)) return
+
+        val added = LinkedList<RPGBuffData<*>>()
+        buffs.forEach { data ->
+            addBuff(data)
+            added.add(data)
         }
         val attached = AttachedBuffsList(id, added)
         attachesMap[id] = attached
@@ -37,5 +38,9 @@ open class MapAttachableBuffsList : MapActiveBuffsList(), AttachableBuffsList {
 
     override fun detachAll() {
         LinkedList(attachesMap.keys).forEach(this::detach)
+    }
+
+    override fun toString(): String {
+        return "MapAttachableBuffsList(attaches=$attachesMap)"
     }
 }

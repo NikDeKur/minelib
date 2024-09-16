@@ -1,194 +1,30 @@
 package dev.nikdekur.minelib.plugin
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.YamlConfiguration
 import dev.nikdekur.minelib.command.api.ServerCommand
-import dev.nikdekur.minelib.ext.nanosToMs
-import dev.nikdekur.minelib.ext.warning
 import dev.nikdekur.minelib.scheduler.Scheduler
-import dev.nikdekur.minelib.service.PluginComponent
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.minelib.utils.ClassUtils
-import dev.nikdekur.ndkore.ext.forEachSafe
-import dev.nikdekur.ndkore.ext.format
-import dev.nikdekur.ndkore.ext.loadConfig
-import dev.nikdekur.ndkore.ext.tryEverything
-import dev.nikdekur.ndkore.koin.SimpleKoinContext
-import dev.nikdekur.ndkore.reflect.Reflect
-import dev.nikdekur.ndkore.service.KoinServicesManager
 import dev.nikdekur.ndkore.service.ServicesManager
-import kotlinx.serialization.encodeToString
-import org.bukkit.event.HandlerList
+import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.bukkit.plugin.java.JavaPlugin
-import org.koin.environmentProperties
+import org.bukkit.plugin.Plugin
 import java.io.File
-import java.io.IOException
-import java.util.logging.Logger
-import kotlin.properties.Delegates
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
+interface ServerPlugin : Plugin {
 
-/**
- * # ServerPlugin
- *
- * Abstract class that represents a plugin for the server (Should be used instead of [JavaPlugin]).
- * Provides a lot of useful features for the plugin.
- *
- * ### Functionality:
- * - [Scheduler] for the plugin that doesn't require to pass the plugin instance
- * - Components system for registering listeners, commands and services (from ndkore)
- * - Loading files/directories from the plugin directory
- * - Loading and saving configuration files
- * - Reloading the plugin and all components
- * - Loading all classes from the plugin jar to avoid class-loading issues on reloading
- * - Setting static fields of the plugin for your subclass (not recommended, use services instead)
- *
- * ### Example Usage:
- * ```kotlin
- * class MyPlugin : ServerPlugin() {
- *    override val components by lazy {
- *        listOf(
- *            // Services
- *            MyService(this),
- *
- *            // Commands
- *            MyCommand(this),
- *
- *            // Listeners
- *            MyListener(this)
- *         )
- *     }
- *
- *     override fun whenLoad() {
- *         // Do something when the plugin is loaded
- *     }
- *
- *     override fun whenEnabled() {
- *         // Do something when the plugin is enabled
- *     }
- * }
- * ```
- */
-abstract class ServerPlugin : JavaPlugin(), PluginComponent {
+    val onlinePlayers: Collection<Player>
 
-    /**
-     * Returns scheduler wrapper for this plugin
-     *
-     * It's not a global scheduler, it's a scheduler for this plugin
-     * that uses global scheduler with this plugin instance.
-     *
-     * All plugin tasks would be automatically cancelled straight after [beforeReload].
-     *
-     * @return [Scheduler]
-     */
-    var scheduler: Scheduler by Delegates.notNull()
-        private set
+    val uptime: Duration
 
     /**
      * Returns [ServicesManager] for this plugin.
      *
      * It's a manager for all [PluginService].
      * It can be used for getting or registering services.
-     *
-     * Services is recommended to be registered in [components].
      */
-    lateinit var servicesManager: ServicesManager
+    val servicesManager: ServicesManager
 
-    override val app: ServerPlugin
-        get() = this
-
-    /**
-     * Private set of listeners provided by the plugin.
-     *
-     * The field is used
-     * to register all listeners when the plugin is loaded and unregister all listeners when the plugin is unloaded.
-     */
-    private val _listeners: MutableSet<Listener> = HashSet()
-    val listeners: Set<Listener>
-        get() = _listeners
-
-    var startTime: Long = 0
-        private set
-    val uptime: Duration
-        get() = (System.currentTimeMillis() - startTime).milliseconds
-
-    val clazzLoader
-        get() = classLoader
-
-    override fun onEnable() {
-        registerComponents()
-
-        stopReload()
-    }
-
-    override fun onDisable() {
-        startReload()
-    }
-
-    /**
-     * Internal function called before the plugin is reloaded.
-     *
-     * Executes [beforeReload] and executes all necessary actions to prepare the plugin for reloading.
-     */
-    open fun startReload() {
-        beforeReload()
-        this@ServerPlugin.scheduler.cancelTasks()
-
-        // Unregister absolutely all listeners
-        HandlerList.unregisterAll(this)
-
-        servicesManager.disable()
-    }
-
-    /**
-     * Internal function called after the plugin is reloaded.
-     *
-     * Executes [afterReload] and executes all necessary actions to prepare the plugin after reloading.
-     */
-    open fun stopReload() {
-        startTime = System.currentTimeMillis()
-        servicesManager.enable()
-
-        // Register all listeners
-        _listeners.forEach(::registerListener)
-
-        afterReload()
-    }
-
-
-
-
-    /**
-    * Internal function called once the plugin is enabled to register all components.
-    *
-    * Function go through [components] and [defaultComponents] and register them via [registerComponent] function.
-    */
-    protected open fun registerComponents() {
-        defaultComponents.forEachSafe(
-            {e, el -> logger.warning("Failed to register default component $el", e) },
-            ::registerComponent
-        )
-
-        val components = try {
-            components
-        } catch (e: LinkageError) {
-            logger.severe(
-                "Failed to register plugin components. " +
-                        "Make sure to create all instances in lazy or getter format. " +
-                        "Storing instances in fields can cause bukkit class-loading issues."
-            )
-            e.printStackTrace()
-            return
-        }
-
-        components.forEachSafe(
-            { e, el -> logger.warning("Failed to register component $el", e) },
-            ::registerComponent
-        )
-    }
-
+    val components: Collection<Any>
 
     /**
      * Register a new plugin component.
@@ -198,113 +34,28 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
      * @param component Component to register
      * @return has the component been registered?
      */
-    open fun registerComponent(component: Any): Boolean {
-        var registered = false
-
-        if (component is Listener && !_listeners.contains(component)) {
-            addListener(component)
-            registered = true
-        }
-
-        if (component is ServerCommand) {
-            component.register(this)
-            registered = true
-        }
-
-        if (component is PluginService) {
-            servicesManager.registerService(component, component.bindClass)
-            registered = true
-        }
-
-        return registered
-    }
-
-    override fun onLoad() {
-        loadAllPluginClasses()
-
-        val koinContext = SimpleKoinContext()
-        koinContext.startKoin { environmentProperties() }
-        servicesManager = KoinServicesManager(koinContext)
-
-        this@ServerPlugin.scheduler = Scheduler(this)
-        setupStaticFields()
-        whenLoad()
-    }
+    fun registerComponent(component: Any): Boolean
 
     /**
-     * Try to set the static fields of the plugin.
+     * Returns scheduler wrapper for this plugin
      *
-     * Function is called in [onEnable] method.
-     * If you wish to override it, be aware of this.
+     * It's not a global scheduler, it's a scheduler for this plugin
+     * that uses global scheduler with this plugin instance.
      *
-     * It tries to set the following fields:
-     * - instance [ServerPlugin]
-     * - logger [Logger]
-     * - scheduler [Scheduler]
+     * All plugin tasks would be automatically cancelled straight after reloading.
      *
-     * If any of the fields are not found, it will be ignored.
+     * @return [Scheduler]
      */
-    protected open fun setupStaticFields() {
-        tryEverything(
-            { Reflect.setFieldValue(javaClass, null, "instance", this) },
-            { Reflect.setFieldValue(javaClass, null, "logger", logger) },
-            { Reflect.setFieldValue(javaClass, null, "scheduler", scheduler) }
-        )
-    }
+    val scheduler: Scheduler
 
-    open fun whenLoad() {
-        // Override this method to do something when the plugin is loaded
-    }
+    /**
+     * Returns the class loader for this plugin.
+     *
+     * It's a class loader that loads classes from the plugin jar.
+     */
+    val clazzLoader: ClassLoader
 
-    open fun whenEnabled() {
-        // Override this method to do something when the plugin is enabled
-    }
-    open fun whenDisable() {
-        // Override this method to do something when the plugin is disabled
-    }
-
-    open fun beforeReload() {
-        // Override this method to do something when the plugin is disabled
-    }
-    open fun afterReload() {
-        // Override this method to do something when the plugin is disabled
-    }
-
-
-    var isReloading: Boolean = false
-    fun reload() {
-        isReloading = true
-        startReload()
-        stopReload()
-        isReloading = false
-    }
-
-
-    open val preLoadingClassesWL: Set<String> = emptySet()
-    open val preLoadingClassesBL: Set<String> = emptySet()
-    protected fun loadAllPluginClasses() {
-        val startNanos = System.nanoTime()
-        val success: Boolean = try {
-            ClassUtils.loadAllClassesFromJar(classLoader, file) { className ->
-                return@loadAllClassesFromJar when {
-                    preLoadingClassesBL.contains(className) -> false
-                    className.contains("v1_") -> false
-                    className.startsWith("dev.nikdekur.") -> true
-                    preLoadingClassesWL.contains(className) -> true
-                    else -> false
-                }
-            }
-            true
-        } catch (e: IOException) {
-            logger.warning("Could not load classes from jar file", e)
-            false
-        }
-
-        if (success) {
-            val time = (System.nanoTime() - startNanos).nanosToMs().format(2)
-            logger.info("Loaded all plugin classes in $time ms")
-        }
-    }
+    val listeners: Collection<Listener>
 
     /**
      * Add a new listener to the plugin.
@@ -314,92 +65,71 @@ abstract class ServerPlugin : JavaPlugin(), PluginComponent {
      *
      * Modules have to use this function to add listeners.
      *
-     * Note: This function does not register the listener, registering would be performed in [stopReload].
+     * Note: This function does not register the listener, registering would be performed after reloading.
      * Usually, you don't need to worry about it. Add a listener and it will be registered automatically.
      *
      * @param listener Listener to add
      */
-    fun addListener(listener: Listener) {
-        _listeners.add(listener)
-    }
+    fun addListener(listener: Listener)
+
+    fun reload()
 
 
-    private fun registerListener(listener: Listener) {
-        server.pluginManager.registerEvents(listener, this)
-    }
+    fun loadDirectory(name: String): File
+
+    /**
+     * Load a file from the specified folder.
+     *
+     * Method ensures that the file and root folder exist.
+     *
+     * @param fileName Name of the file to load
+     * @param folder Folder to load the file from. If null, the default plugin folder will be used.
+     * @return Loaded file
+     */
+    fun loadFile(fileName: String, folder: File? = null): File
 
 
-
-    fun loadFile(fileName: String, folder: File = dataFolder): File {
-        return try {
-            folder.mkdirs()
-            val file = File(folder, fileName)
-            if (!file.exists()) file.createNewFile()
-            file
-        } catch (e: Throwable) {
-            throw RuntimeException(e)
-        }
-    }
-
-    val yaml by lazy {
-        Yaml(
-            configuration = YamlConfiguration(
-                strictMode = false
-            )
-        )
-    }
-
-    inline fun <reified T> loadConfig(
+    /**
+     * Load a configuration file from the specified folder.
+     *
+     * Method ensures that the file and root folder exist.
+     *
+     * If [requireFilled] is false, the method will try to create a new configuration and save it to the file.
+     *
+     * @param configName Name of the configuration file to load
+     * @param clazz Class of the configuration
+     * @param requireFilled If true, the method will throw an exception if the configuration is empty
+     * @param folder Folder to load the configuration from. If null, the default plugin folder will be used.
+     * @return Loaded configuration
+     * @throws IllegalArgumentException If the configuration is empty and requireFilled is true
+     */
+    fun <T : Any> loadConfig(
         configName: String,
+        clazz: Class<T>,
         requireFilled: Boolean = false,
-        folder: File = dataFolder
-    ): T {
-        val file = if (!configName.endsWith(".yml"))
-            loadFile("$configName.yml", folder)
-        else
-            loadFile(configName, folder)
+        folder: File? = null
+    ): T
 
-        // Check if the file is empty
-        // loadFile ensures that the file exists
-        if (file.length() == 0L) {
-            check(!requireFilled) {
-                "Config file `$configName` is empty while it should be filled."
-            }
-
-            val config = try {
-                 T::class.java.newInstance()
-            } catch (_: NoSuchMethodException) {
-                throw IllegalArgumentException(
-                    "Cannot create a default instance of ${T::class.simpleName}. " +
-                        "Make sure the class has a no-args constructor or enable `requireFilled`."
-                )
-            }
-            saveConfig(configName, config, folder)
-            return config
-        }
-
-       return yaml.loadConfig<T>(file)
-    }
-
-    inline fun <reified T> saveConfig(configName: String, config: T, folder: File = dataFolder) {
-        val name = if (!configName.endsWith(".yml")) "$configName.yml" else configName
-        val file = loadFile(name, folder)
-        file.writeText(yaml.encodeToString(config))
-    }
-
-    fun loadDir(name: String): File {
-        val dir = File(dataFolder, name)
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        return dir
-    }
-
-    open val components: Collection<Any>
-        get() = emptyList()
-
-
-    private val defaultComponents by lazy {
-        listOf<PluginService>()
-    }
+    fun saveConfig(configName: String, config: Any, folder: File? = null)
 }
+
+
+/**
+ * Load a configuration file from the specified folder.
+ *
+ * Method ensures that the file and root folder exist.
+ *
+ * If [requireFilled] is false, the method will try to create a new configuration and save it to the file.
+ *
+ * @param T Type of the configuration
+ * @param configName Name of the configuration file to load
+ * @param requireFilled If true, the method will throw an exception if the configuration is empty
+ * @param folder Folder to load the configuration from. If null, the default plugin folder will be used.
+ * @return Loaded configuration
+ * @throws IllegalArgumentException If the configuration is empty and requireFilled is true
+ */
+inline fun <reified T : Any> ServerPlugin.loadConfig(
+    configName: String,
+    requireFilled: Boolean = false,
+    folder: File? = null
+): T = loadConfig(configName, T::class.java, requireFilled, folder)

@@ -4,7 +4,7 @@ package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.gui.GUI
 import dev.nikdekur.minelib.inventory.InventorySlot
-import dev.nikdekur.minelib.inventory.InventorySlot.HAND
+import dev.nikdekur.minelib.inventory.InventorySlot.MAIN_HAND
 import dev.nikdekur.minelib.inventory.InventorySlot.OFF_HAND
 import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryType
@@ -155,7 +155,7 @@ inline fun Inventory.get(slot: InventorySlot): ItemStack? {
     } else {
         item = if (this is PlayerInventory) {
             when (slot) {
-                HAND -> itemInMainHand
+                MAIN_HAND -> itemInMainHand
                 OFF_HAND -> itemInOffHand
                 else -> null
             }

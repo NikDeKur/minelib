@@ -9,6 +9,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.nbtapi)
+
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly(libs.authlib)
+
+    testImplementation(libs.slf4j.api)
 }

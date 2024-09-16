@@ -2,10 +2,13 @@ package dev.nikdekur.minelib.drawing
 
 import dev.nikdekur.minelib.drawing.shape.Shape
 import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.service.PluginService
 import java.util.*
 import kotlin.time.Duration
 
-class SchedulerDrawingService(override val app: ServerPlugin) : DrawingService {
+class SchedulerDrawingService(
+    override val app: ServerPlugin
+) : PluginService(), DrawingService {
 
     override val bindClass
         get() = DrawingService::class
