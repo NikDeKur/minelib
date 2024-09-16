@@ -33,7 +33,7 @@ interface I18nService {
         locale: Locale,
         reference: MessageReference,
         vararg placeholders: Pair<String, Any?>,
-        parser: PlaceholderParser
+        parser: PlaceholderParser? = null
     ): Message
 
     fun getLocale(sender: CommandSender): Locale

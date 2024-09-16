@@ -1,6 +1,5 @@
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.kotlin.dsl.libs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -13,7 +12,7 @@ plugins {
 
 
 group = "dev.nikdekur"
-version = "1.0.0"
+version = "1.0.1"
 
 val authorId: String by project
 val authorName: String by project

@@ -21,7 +21,9 @@ import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.map.MultiMap
 import dev.nikdekur.ndkore.map.MutableMultiMap
 import dev.nikdekur.ndkore.map.put
+import dev.nikdekur.ndkore.placeholder.PatternPlaceholderParser
 import dev.nikdekur.ndkore.placeholder.PlaceholderParser
+import dev.nikdekur.ndkore.placeholder.ReflectValuesSource
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -39,6 +41,9 @@ class ConfigI18nService(
 
     var dataProviderId: String? = null
     private var _dataProvider: PlayerLocaleProvider? = null
+
+    lateinit var defaultParser: PatternPlaceholderParser
+
     val dataProvider: PlayerLocaleProvider
         get() = _dataProvider ?: run {
             if (dataProviderId == null) {
@@ -62,6 +67,9 @@ class ConfigI18nService(
     val bundlesDir = File(app.dataFolder.parentFile.parentFile, "i18n/bundles")
 
     override fun onEnable() {
+
+        defaultParser = PatternPlaceholderParser("{", "}", ReflectValuesSource)
+
         // Go back from plugin folder to the server folder
         val containerDir = app.dataFolder.parentFile.parentFile
         val i18nDir = File(containerDir, "i18n")
@@ -77,8 +85,8 @@ class ConfigI18nService(
         val defaultLangCodeStr = config.defaultLocale
         this.defaultLocale = defaultLangCodeStr.let(Locale::fromCodeOrThrow)
 
-        val bundlesDirs = bundlesDir.listFiles {
-            it.isDirectory
+        val bundlesDirs = bundlesDir.listFiles { file: File ->
+            file.isDirectory
         } ?: emptyArray()
 
         bundlesDirs.forEach {
@@ -99,8 +107,8 @@ class ConfigI18nService(
     }
 
     fun loadBundleTranslations(file: File): MultiMap<Locale, String, String> {
-        val files = file.listFiles {
-            it.extension == "yml" && it.nameWithoutExtension != "metadata"
+        val files = file.listFiles { file ->
+            file.extension == "yml" && file.nameWithoutExtension != "metadata"
         } ?: emptyArray()
 
         val bundleMap: MutableMultiMap<Locale, String, String> = HashMap()
@@ -208,13 +216,14 @@ class ConfigI18nService(
         locale: Locale,
         reference: MessageReference,
         vararg placeholders: Pair<String, Any?>,
-        parser: PlaceholderParser
+        parser: PlaceholderParser?
     ): Message {
         val bundleId = reference.bundleId
         val msg = reference.msg
         val bundle = getBundle(bundleId)
-        val message = bundle?.getMessage(locale, msg, *placeholders, parser = parser)
-        return message ?: Message(msg.defaultText).parsePlaceholders(parser, *placeholders)
+        val message = bundle?.getMessage(locale, msg) ?: Message(msg.defaultText)
+        val parser = parser ?: defaultParser
+        return message.parsePlaceholders(parser, *placeholders)
     }
 
 

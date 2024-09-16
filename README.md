@@ -9,7 +9,7 @@ Remember to install MineLib on your server before using it in your plugin.
 
 Replace `{version}` with the latest version number on repository.
 
-As of `01.09.2024` MineLib is still in beta, so the version is `1.0.0` and doesn't change.
+[`16.09.2024`] Latest version: `1.0.1`
 
 ### Gradle (Kotlin)
 
