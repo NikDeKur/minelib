@@ -21,9 +21,9 @@ import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.map.MultiMap
 import dev.nikdekur.ndkore.map.MutableMultiMap
 import dev.nikdekur.ndkore.map.put
+import dev.nikdekur.ndkore.placeholder.JVMReflectValuesSource
 import dev.nikdekur.ndkore.placeholder.PatternPlaceholderParser
 import dev.nikdekur.ndkore.placeholder.PlaceholderParser
-import dev.nikdekur.ndkore.placeholder.ReflectValuesSource
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -68,7 +68,7 @@ class ConfigI18nService(
 
     override fun onEnable() {
 
-        defaultParser = PatternPlaceholderParser("{", "}", ReflectValuesSource)
+        defaultParser = PatternPlaceholderParser("{", "}", JVMReflectValuesSource)
 
         // Go back from plugin folder to the server folder
         val containerDir = app.dataFolder.parentFile.parentFile

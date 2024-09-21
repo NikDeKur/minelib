@@ -3,7 +3,7 @@
 package dev.nikdekur.minelib.rpg.buff
 
 import dev.nikdekur.minelib.rpg.stat.RPGStat
-import java.util.*
+import java.util.UUID
 
 interface BuffsList : Iterable<RPGBuffData<*>> {
 

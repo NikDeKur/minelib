@@ -8,6 +8,7 @@ import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.service.PluginComponent
 import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.utils.ClassUtils
+import dev.nikdekur.ndkore.ext.KType
 import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.loadConfig
@@ -209,7 +210,7 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
         return registered
     }
 
-    open fun buildServicesManager() = KoinServicesManager(SHARED_CONTEXT)
+    open fun buildServicesManager(): ServicesManager = KoinServicesManager(SHARED_CONTEXT)
 
     override fun onLoad() {
         loadAllPluginClasses()
@@ -370,7 +371,8 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
             return config
         }
 
-        return yaml.loadConfig(file.readText(), clazz)
+        val type = KType(clazz.kotlin)
+        return yaml.loadConfig(file.readText(), type)
     }
 
     override fun saveConfig(configName: String, config: Any, folder: File?) {

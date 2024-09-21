@@ -8,7 +8,7 @@ import dev.nikdekur.minelib.rpg.buff.RPGBuffData
 import dev.nikdekur.minelib.rpg.buff.RPGRawBuffData
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.utils.Utils.debug
-import dev.nikdekur.ndkore.ext.toUUIDOrNull
+import dev.nikdekur.ndkore.ext.toJUUIDOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bukkit.inventory.ItemStack
@@ -36,7 +36,7 @@ class NBTRPGItem(
         stack.editNBT {
             val keys = getKeys()
             keys.forEach { key ->
-                val uuid = key.toUUIDOrNull() ?: return@forEach
+                val uuid = key.toJUUIDOrNull() ?: return@forEach
                 val value = getString(key)
                 val buff = try {
                     json.decodeFromString<RPGRawBuffData>(value)

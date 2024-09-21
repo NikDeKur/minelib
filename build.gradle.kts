@@ -12,7 +12,7 @@ plugins {
 
 
 group = "dev.nikdekur"
-version = "1.0.1"
+version = "1.1.0"
 
 val authorId: String by project
 val authorName: String by project
@@ -48,9 +48,6 @@ allprojects {
         implementation(rootProject.libs.koin)
 
         testImplementation(kotlin("test"))
-        testImplementation(rootProject.libs.junit.jupiter.api)
-        testImplementation(rootProject.libs.junit.jupiter.engine)
-        testImplementation(rootProject.libs.junit.jupiter.params)
         testImplementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     }
 
@@ -101,9 +98,8 @@ val repoPasswordProp = "NDK_REPO_PASSWORD"
 val repoUsername = System.getenv(repoUsernameProp)
 val repoPassword = System.getenv(repoPasswordProp)
 
-if (repoUsername.isNullOrBlank() || repoPassword.isNullOrBlank()) {
+if (repoUsername.isNullOrBlank() || repoPassword.isNullOrBlank())
     throw GradleException("Environment variables $repoUsernameProp and $repoPasswordProp must be set.")
-}
 
 publishing {
     publications {

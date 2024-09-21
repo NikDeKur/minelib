@@ -6,19 +6,20 @@ import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.plugin.loadConfig
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.ndkore.cooldown.Cooldown
 import dev.nikdekur.ndkore.cooldown.GrowPolicy
 import dev.nikdekur.ndkore.cooldown.GrowingCooldownManager
 import dev.nikdekur.ndkore.service.Dependencies
+import kotlinx.datetime.Clock
 import org.bukkit.Bukkit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 @Suppress("DEPRECATION")
 class ScoreboardManager(
     override val app: ServerPlugin,
-    val adapter: AssembleAdapter
+    val adapter: AssembleAdapter,
+    clock: Clock
 ) : PluginService() {
 
     override val bindClass = ScoreboardManager::class
@@ -34,9 +35,9 @@ class ScoreboardManager(
 
     val boards = ConcurrentHashMap<UUID, AssembleBoard>()
 
-    val cooldownPolicy = GrowPolicy.exponential(Cooldown(1, TimeUnit.SECONDS))
+    val cooldownPolicy = GrowPolicy.exponential(clock, 1.seconds)
     val cooldownManager = GrowingCooldownManager<UUID>(cooldownPolicy) { uuid, cooldown ->
-        bLogger.warning("[Scoreboard] Increasing cooldown for $uuid to ${cooldown.duration} ${cooldown.unit}")
+        bLogger.warning("[Scoreboard] Increasing cooldown for $uuid to $cooldown")
     }
 
     var ticks: Long = 10

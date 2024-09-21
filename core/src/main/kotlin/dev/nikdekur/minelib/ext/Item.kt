@@ -11,6 +11,7 @@ import dev.nikdekur.ndkore.ext.r_SetField
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
 
 
@@ -147,15 +148,14 @@ fun ItemStack.setHideAttributes(state: Boolean): ItemStack {
 
 inline fun ItemStack.setSkullTexture(texture: String?) {
     editMeta {
-        if (this is org.bukkit.inventory.meta.SkullMeta) {
-            val set = if (texture == null) {
-                null
-            } else {
-                val profile = GameProfile(UUID.randomUUID(), null)
-                profile.properties.put("textures", Property("textures", texture))
-                profile
-            }
-            r_SetField("profile", set)
+        if (this is SkullMeta) {
+            val profile =
+                if (texture == null) null
+                else GameProfile(UUID.randomUUID(), null).apply {
+                    properties.put("textures", Property("textures", texture))
+                }
+
+            r_SetField("profile", profile)
         }
     }
 }

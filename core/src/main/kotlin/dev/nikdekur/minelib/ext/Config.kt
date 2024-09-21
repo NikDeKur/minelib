@@ -4,7 +4,7 @@ package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.utils.AbstractLocation
 import dev.nikdekur.ndkore.ext.forEachSafe
-import dev.nikdekur.ndkore.ext.toUUIDOrNull
+import dev.nikdekur.ndkore.ext.toJUUIDOrNull
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
@@ -101,7 +101,7 @@ fun ConfigurationSection.readLocationOrThrow(path: String, defWorld: org.bukkit.
 
             4 -> {
                 val worldId = args[0]
-                val world = worldId.toUUIDOrNull()?.let { Bukkit.getWorld(it) } ?: Bukkit.getWorld(worldId) ?: defWorld
+                val world = worldId.toJUUIDOrNull()?.let { Bukkit.getWorld(it) } ?: Bukkit.getWorld(worldId) ?: defWorld
                 val x = args[1].toDouble()
                 val y = args[2].toDouble()
                 val z = args[3].toDouble()
@@ -119,7 +119,7 @@ fun ConfigurationSection.readLocationOrThrow(path: String, defWorld: org.bukkit.
 
             6 -> {
                 val worldId = args[0]
-                val world = worldId.toUUIDOrNull()?.let { Bukkit.getWorld(it) } ?: Bukkit.getWorld(worldId) ?: defWorld
+                val world = worldId.toJUUIDOrNull()?.let { Bukkit.getWorld(it) } ?: Bukkit.getWorld(worldId) ?: defWorld
                 val x = args[1].toDouble()
                 val y = args[2].toDouble()
                 val z = args[3].toDouble()

@@ -6,7 +6,6 @@ import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
-import dev.nikdekur.ndkore.extra.Tools
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -181,7 +180,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
 
     fun internalError(comment: String) {
-        sendError(DefaultMSG.INTERNAL_ERROR, "time" to Tools.packDateTimeBeautiful(), "comment" to comment)
+        sendError(DefaultMSG.INTERNAL_ERROR, "time" to OffsetDateTime.now().toString(), "comment" to comment)
     }
 
     fun getByteOrNull() = getStringOrNull()?.toByteOrNull()

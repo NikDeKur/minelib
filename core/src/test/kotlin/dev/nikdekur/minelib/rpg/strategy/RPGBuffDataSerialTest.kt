@@ -15,29 +15,14 @@ import dev.nikdekur.minelib.rpg.stat.RPGHealthStat
 import dev.nikdekur.minelib.rpg.stat.RPGRegenStat
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.service.get
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import java.math.BigInteger
 import java.util.UUID
-
-object BigIntegerSerializer : KSerializer<BigInteger> {
-    override val descriptor = PrimitiveSerialDescriptor("BigInteger", PrimitiveKind.STRING)
-    override fun serialize(encoder: Encoder, value: BigInteger) {
-        encoder.encodeString(value.toString())
-    }
-    override fun deserialize(decoder: Decoder): BigInteger {
-        return BigInteger(decoder.decodeString())
-    }
-}
 
 fun main() {
     val data1 = RPGBuffData(

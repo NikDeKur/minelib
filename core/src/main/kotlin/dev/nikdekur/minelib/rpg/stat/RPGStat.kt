@@ -17,9 +17,9 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.math.BigInteger
+import kotlin.random.Random
 import kotlin.reflect.KClass
-
-val random = java.util.Random()
 
 
 abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparable<T>, T : Any {
@@ -151,7 +151,7 @@ abstract class RPGDoubleStat : RPGStat<Double>() {
     }
 
     override fun range(min: Double, max: Double): Double {
-        return random.randDouble(min, max)
+        return Random.randDouble(min, max)
     }
 
     override fun read(value: String): Double? {
@@ -175,7 +175,7 @@ abstract class RPGFloatStat : RPGStat<Float>() {
     }
 
     override fun range(min: Float, max: Float): Float {
-        return random.randFloat(min, max)
+        return Random.randFloat(min, max)
     }
 
     override fun read(value: String): Float? {
@@ -199,7 +199,7 @@ abstract class RPGIntStat : RPGStat<Int>() {
     }
 
     override fun range(min: Int, max: Int): Int {
-        return random.randInt(min, max)
+        return Random.randInt(min, max)
     }
 
     override fun read(value: String): Int? {
@@ -209,33 +209,33 @@ abstract class RPGIntStat : RPGStat<Int>() {
     override fun valueSerializer() = Int.serializer()
 }
 
-abstract class RPGBigIntegerStat : RPGStat<java.math.BigInteger>() {
-    override val defaultValue = java.math.BigInteger.ZERO
-    override val staticValue = java.math.BigInteger.ZERO
+abstract class RPGBigIntegerStat : RPGStat<BigInteger>() {
+    override val defaultValue = BigInteger.ZERO
+    override val staticValue = BigInteger.ZERO
 
-    override val valueClass: KClass<java.math.BigInteger> = java.math.BigInteger::class
-    override fun plus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
+    override val valueClass: KClass<BigInteger> = BigInteger::class
+    override fun plus(value: BigInteger, other: BigInteger): BigInteger {
         return value + other
     }
-    override fun minus(value: java.math.BigInteger, other: java.math.BigInteger): java.math.BigInteger {
+    override fun minus(value: BigInteger, other: BigInteger): BigInteger {
         return value - other
     }
 
-    override fun range(min: java.math.BigInteger, max: java.math.BigInteger): java.math.BigInteger {
-        return random.randDouble(min.toDouble(), max.toDouble()).toBigDecimal().toBigInteger()
+    override fun range(min: BigInteger, max: BigInteger): BigInteger {
+        return Random.randDouble(min.toDouble(), max.toDouble()).toBigDecimal().toBigInteger()
     }
 
-    override fun read(value: String): java.math.BigInteger? {
+    override fun read(value: String): BigInteger? {
         return value.toBigIntegerOrNull()
     }
 
-    override fun valueSerializer() = object : KSerializer<java.math.BigInteger> {
+    override fun valueSerializer() = object : KSerializer<BigInteger> {
         override val descriptor = PrimitiveSerialDescriptor("java.math.BigInteger", PrimitiveKind.STRING)
-        override fun serialize(encoder: Encoder, value: java.math.BigInteger) {
+        override fun serialize(encoder: Encoder, value: BigInteger) {
             encoder.encodeString(value.toString())
         }
 
-        override fun deserialize(decoder: Decoder): java.math.BigInteger {
+        override fun deserialize(decoder: Decoder): BigInteger {
             return decoder.decodeString().toBigInteger()
         }
     }
