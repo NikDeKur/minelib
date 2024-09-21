@@ -5,7 +5,7 @@ import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.profile.RPGSimpleProfile
 import dev.nikdekur.minelib.rpg.stat.RPGDamageStat
 import dev.nikdekur.minelib.rpg.stat.RPGProtectionStat
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 
 object DefaultDamageStrategy : DamageStrategy {
     override fun calculateDamage(profile: RPGSimpleProfile, source: DamageSource): Double {

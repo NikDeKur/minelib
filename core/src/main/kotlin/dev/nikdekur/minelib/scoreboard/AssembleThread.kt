@@ -1,11 +1,10 @@
 package dev.nikdekur.minelib.scoreboard
 
-import org.bukkit.ChatColor
-import org.bukkit.entity.Player
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.online
-import dev.nikdekur.minelib.ext.ticksToMs
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
+import org.bukkit.ChatColor
+import org.bukkit.entity.Player
 import java.util.*
 
 class AssembleThread internal constructor(val manager: ScoreboardManager) : Thread("Assemble Thread") {
@@ -19,7 +18,7 @@ class AssembleThread internal constructor(val manager: ScoreboardManager) : Thre
         start()
     }
 
-    val msDelay = manager.ticks.ticksToMs()
+    val msDelay = manager.ticks * 50L
 
 
 

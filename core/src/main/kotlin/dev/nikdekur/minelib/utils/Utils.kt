@@ -6,7 +6,6 @@ import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.ndkore.ext.format
 import dev.nikdekur.ndkore.ext.measureAverageTime
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.util.Vector
@@ -53,10 +52,6 @@ inline fun TimeSource.debugAverageExecTime(message: String, times: Int, code: (I
     debug("$message: ${time.format()} ms")
 }
 
-
-inline fun applyColors(text: String): String {
-    return ChatColor.translateAlternateColorCodes('&', text)
-}
 
 
 

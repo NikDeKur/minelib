@@ -7,7 +7,7 @@ import dev.nikdekur.minelib.rpg.buff.MapMutableBuffsList
 import dev.nikdekur.minelib.rpg.buff.RPGBuffData
 import dev.nikdekur.minelib.rpg.buff.RPGRawBuffData
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 import dev.nikdekur.ndkore.ext.toJUUIDOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

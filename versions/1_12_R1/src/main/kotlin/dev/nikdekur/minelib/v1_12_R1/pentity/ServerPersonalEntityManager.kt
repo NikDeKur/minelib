@@ -1,6 +1,5 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
-import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
@@ -8,7 +7,7 @@ import dev.nikdekur.minelib.pentity.ServerPersonalEntityManager
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginListener
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolModule
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.ndkore.ext.distanceSquared
@@ -21,7 +20,6 @@ import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.util.Vector

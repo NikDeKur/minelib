@@ -3,7 +3,6 @@ package dev.nikdekur.minelib.plugin
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import dev.nikdekur.minelib.command.api.ServerCommand
-import dev.nikdekur.minelib.ext.nanosToMs
 import dev.nikdekur.minelib.scheduler.Scheduler
 import dev.nikdekur.minelib.service.PluginComponent
 import dev.nikdekur.minelib.service.PluginService
@@ -30,6 +29,8 @@ import java.util.logging.Logger
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
+import kotlin.time.measureTimedValue
 
 
 /**
@@ -94,6 +95,8 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
     private val _listeners: MutableSet<Listener> = HashSet()
     override val listeners: Set<Listener>
         get() = _listeners
+
+    open val timeSource: TimeSource = TimeSource.Monotonic
 
     var startTime: Long = 0
         private set
@@ -273,25 +276,27 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
     open val preLoadingClassesWL: Set<String> = emptySet()
     open val preLoadingClassesBL: Set<String> = emptySet()
     protected fun loadAllPluginClasses() {
-        val startNanos = System.nanoTime()
-        val success: Boolean = try {
-            ClassUtils.loadAllClassesFromJar(classLoader, file) { className ->
-                return@loadAllClassesFromJar when {
-                    preLoadingClassesBL.contains(className) -> false
-                    className.contains("v1_") -> false
-                    className.startsWith("dev.nikdekur.") -> true
-                    preLoadingClassesWL.contains(className) -> true
-                    else -> false
+        val data = timeSource.measureTimedValue {
+            try {
+                ClassUtils.loadAllClassesFromJar(classLoader, file) { className ->
+                    return@loadAllClassesFromJar when {
+                        preLoadingClassesBL.contains(className) -> false
+                        className.contains("v1_") -> false
+                        className.startsWith("dev.nikdekur.") -> true
+                        preLoadingClassesWL.contains(className) -> true
+                        else -> false
+                    }
                 }
+                true
+            } catch (e: IOException) {
+                logger.warning(e) { "Could not load classes from jar file" }
+                false
             }
-            true
-        } catch (e: IOException) {
-            logger.warning(e) { "Could not load classes from jar file" }
-            false
         }
 
-        if (success) {
-            val time = (System.nanoTime() - startNanos).nanosToMs().format(2)
+
+        if (data.value) {
+            val time = data.duration.inWholeMilliseconds.format(2)
             logger.info("Loaded all plugin classes in $time ms")
         }
     }

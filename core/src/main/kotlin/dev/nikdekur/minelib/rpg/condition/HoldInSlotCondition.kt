@@ -3,7 +3,7 @@
 package dev.nikdekur.minelib.rpg.condition
 
 import dev.nikdekur.minelib.inventory.InventorySlot
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName

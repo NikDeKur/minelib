@@ -11,7 +11,7 @@ import dev.nikdekur.minelib.rpg.item.NBTRPGItem
 import dev.nikdekur.minelib.rpg.item.RPGItem
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.ext.getInstanceFieldOrNull
 import dev.nikdekur.ndkore.reflect.ClassPathClassFinder

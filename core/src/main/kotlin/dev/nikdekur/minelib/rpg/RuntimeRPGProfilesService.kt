@@ -6,12 +6,11 @@ import dev.nikdekur.minelib.rpg.profile.RPGSimpleLivingEntityProfile
 import dev.nikdekur.minelib.rpg.profile.RPGSimplePlayerProfile
 import dev.nikdekur.minelib.rpg.strategy.DefaultDamageStrategy
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.minelib.utils.Utils.debug
+import dev.nikdekur.minelib.utils.debug
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.set
 
 class RuntimeRPGProfilesService(
     override val app: ServerPlugin

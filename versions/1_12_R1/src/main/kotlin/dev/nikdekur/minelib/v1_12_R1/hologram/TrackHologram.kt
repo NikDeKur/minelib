@@ -25,8 +25,7 @@ abstract class TrackHologram(manager: PersonalEntityManager) : TrackerPersonalEn
         val text = getFinalText(player)
         val list = LinkedList<net.minecraft.server.v1_12_R1.EntityArmorStand>()
 
-
-        for (line in text) {
+        text.forEach { line ->
             val entity = net.minecraft.server.v1_12_R1.EntityArmorStand(worldNMS)
             entity.customName = line
             entity.customNameVisible = true
@@ -68,17 +67,17 @@ abstract class TrackHologram(manager: PersonalEntityManager) : TrackerPersonalEn
         if (viewMap.isEmpty()) return
         val entities = viewMap.values
 
-        val newName = getFinalText(player)
+        val newNameText = getFinalText(player)
 
         // Respawn if text size changed
-        if (entities.size != newName.size) {
+        if (entities.size != newNameText.size) {
             remove(player)
             spawn(player)
             return
         }
 
         entities.forEachIndexed { index, entity ->
-            val line = newName[index]
+            val line = newNameText.elementAt(index)
             if (entity.customName != line) {
                 entity.customName = line
                 PacketBuilder.Entity.Data.updateShort(entity).send(player)
