@@ -201,14 +201,12 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
         }
 
         if (component is ServerCommand) {
-            val command = getCommand(name)
-            if (command != null) {
-                command.executor = this
-                command.tabCompleter = this
-            } else
-                logger.severe("Command '$name' not found. Maybe you forgot to register it?")
-
-            success = true
+            val commandName = component.name
+            getCommand(commandName)?.run {
+                executor = component
+                tabCompleter = component
+                success = true
+            } ?: logger.severe("Command '$commandName' not found. Maybe you forgot to register it?")
         }
 
         if (component is PluginService) {
