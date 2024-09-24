@@ -117,10 +117,10 @@ publishing {
                 }
             }
 
+
+            from(components["kotlin"])
+
             afterEvaluate {
-                val shadowJar = tasks.findByName("shadowJar")
-                if (shadowJar == null) from(components["java"])
-                else artifact(shadowJar)
 
                 // Source jar
                 artifact(tasks.named("sourcesJar", Jar::class.java))
@@ -138,10 +138,7 @@ publishing {
                 password = repoPassword
             }
         }
-
     }
-
-
 }
 
 

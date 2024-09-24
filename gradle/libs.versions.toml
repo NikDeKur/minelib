@@ -6,7 +6,7 @@ kotlinx-datetime = "0.6.1"
 kotlin-logging = "7.0.0"
 bignum = "0.3.10"
 shadowJar = "8.1.1"
-ndkore = "1.4.0"
+ndkore = "1.4.1"
 google-guava = "33.3.0-jre"
 licenser = "0.6.1"
 kaml = "0.57.0"
@@ -16,7 +16,7 @@ nbtapi = "2.13.2"
 slf4j = "2.0.16"
 
 [libraries]
-ndkore = { module = "dev.nikdekur:ndkore-jvm", version.ref = "ndkore" }
+ndkore = { module = "dev.nikdekur:ndkore", version.ref = "ndkore" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

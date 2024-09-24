@@ -10,7 +10,6 @@ import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.command.api.ServerCommand.StopCommand
 import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.filterPartialMatches
 import dev.nikdekur.ndkore.service.inject
 import org.bukkit.command.Command
@@ -117,12 +116,6 @@ abstract class ServiceServerCommand : ServerCommand {
         return completions?.ifEmpty { emptyList() } ?: emptyList()
     }
 
-
-
-
-    override fun register(plugin: ServerPlugin) {
-
-    }
 
 
 

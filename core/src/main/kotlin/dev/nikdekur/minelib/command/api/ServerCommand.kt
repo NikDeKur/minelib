@@ -1,7 +1,6 @@
 package dev.nikdekur.minelib.command.api
 
 import dev.nikdekur.minelib.i18n.msg.MessageReference
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginComponent
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
@@ -29,9 +28,6 @@ interface ServerCommand : TabExecutor, PluginComponent {
     fun CommandContext.onCommand()
     fun CommandTabContext.onTabComplete(): MutableList<String>? = null
     fun getUsage(sender: CommandSender): String = ""
-
-    fun register(plugin: ServerPlugin)
-
 
     class StopCommand : RuntimeException()
 }

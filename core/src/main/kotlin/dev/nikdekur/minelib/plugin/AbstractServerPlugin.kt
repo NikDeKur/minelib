@@ -193,24 +193,30 @@ abstract class AbstractServerPlugin : JavaPlugin(), ServerPlugin, PluginComponen
      * @return has the component been registered?
      */
     override fun registerComponent(component: Any): Boolean {
-        var registered = false
+        var success = false
 
         if (component is Listener && !_listeners.contains(component)) {
             addListener(component)
-            registered = true
+            success = true
         }
 
         if (component is ServerCommand) {
-            component.register(this)
-            registered = true
+            val command = getCommand(name)
+            if (command != null) {
+                command.executor = this
+                command.tabCompleter = this
+            } else
+                logger.severe("Command '$name' not found. Maybe you forgot to register it?")
+
+            success = true
         }
 
         if (component is PluginService) {
             servicesManager.registerService(component, component.bindClass)
-            registered = true
+            success = true
         }
 
-        return registered
+        return success
     }
 
     open fun buildServicesManager(): ServicesManager = KoinServicesManager(SHARED_CONTEXT)
