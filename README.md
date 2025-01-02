@@ -9,7 +9,7 @@ Remember to install MineLib on your server before using it in your plugin.
 
 Replace `{version}` with the latest version number on repository.
 
-[`16.09.2024`] Latest version: `1.0.1`
+[`02.01.2025`] Latest version: `1.2.0`
 
 ### Gradle (Kotlin)
 
@@ -57,7 +57,7 @@ dependencies {
 ```
 
 
-## Features
+## Features (Deprecated)
 
 The list of main features provided below. 
 For more information, check the documentation (only KDocs for now).
