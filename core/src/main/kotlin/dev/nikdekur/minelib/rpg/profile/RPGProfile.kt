@@ -7,10 +7,10 @@ import dev.nikdekur.minelib.rpg.stat.*
 import dev.nikdekur.minelib.rpg.stat.RPGProfileStats
 import dev.nikdekur.minelib.rpg.strategy.DamageStrategy
 import dev.nikdekur.minelib.rpg.update.FixedRateUpdater
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
 import java.util.*
 
-interface RPGProfile : Snowflake<UUID> {
+interface RPGProfile : Unique<UUID> {
 
     val strategy: DamageStrategy
 

@@ -3,11 +3,10 @@ package dev.nikdekur.minelib.command
 import dev.nikdekur.minelib.command.api.CommandContext
 import dev.nikdekur.minelib.command.api.CommandTabContext
 import dev.nikdekur.minelib.command.api.RootServerCommand
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.copyPartialMatches
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import java.util.LinkedList
+import java.util.*
 
 abstract class ServiceServerRootCommand : ServiceServerCommand(), RootServerCommand {
 
@@ -61,14 +60,4 @@ abstract class ServiceServerRootCommand : ServiceServerCommand(), RootServerComm
     }
 
     override fun CommandTabContext.onTabComplete(): MutableList<String>? { return null }
-
-    val children: Iterable<ServiceServerCommand> = emptyList()
-
-    override fun register(plugin: ServerPlugin) {
-        super.register(plugin)
-        children.forEach {
-            it.register(plugin)
-        }
-    }
-
 }

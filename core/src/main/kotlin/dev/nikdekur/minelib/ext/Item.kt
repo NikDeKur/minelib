@@ -9,6 +9,9 @@ import de.tr7zw.changeme.nbtapi.NBTType
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT
 import dev.nikdekur.ndkore.ext.r_SetField
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
@@ -28,7 +31,7 @@ inline fun ItemStack.setStackAmount(amount: Int): ItemStack {
     return this
 }
 
-fun <T> ItemStack.editNBT(func: ReadWriteItemNBT.() -> T) = NBT.modify(this, func)
+fun <T> ItemStack.editNBT(func: ReadWriteItemNBT.() -> T): T = NBT.modify(this, func)
 
 fun ReadWriteItemNBT.getTag(key: String): Any? {
     val type = getType(key)
@@ -115,8 +118,7 @@ inline fun ItemStack.setLore(vararg lore: String): ItemStack {
 }
 
 inline fun ItemStack.addLore(lines: List<String>): ItemStack {
-    val currentLore = this.lore
-    val newLore = currentLore.toMutableList()
+    val newLore = lore.toMutableList()
     newLore.addAll(lines)
     setLore(newLore)
     return this
@@ -160,16 +162,13 @@ inline fun ItemStack.setSkullTexture(texture: String?) {
     }
 }
 
-
-fun ItemStack.setTouchable(state: Boolean) = editNBT {
-    setBoolean("untouchable", !state)
-}
-/**
- * @return true by default, false if item is not touchable.
- */
-fun ItemStack.isTouchable() = editNBT {
-    !getBoolean("untouchable")
-}
+inline var ItemStack.isTouchable: Boolean
+    get() = editNBT {
+        !getBoolean("untouchable")
+    }
+    set(value) = editNBT {
+        setBoolean("untouchable", !value)
+    }
 
 inline val Material.isAir: Boolean
     get() = this == Material.AIR
@@ -185,4 +184,25 @@ inline fun ItemStack?.equalsByAppearance(item: ItemStack?): Boolean {
     val display1 = meta1!!.displayName
     val display2 = meta2!!.displayName
     return type1 == type2 && display1 == display2
+}
+
+
+
+
+
+
+inline fun ItemStack.addAttributeModifier(
+    attribute: Attribute,
+    operation: AttributeModifier.Operation,
+    slot: EquipmentSlot,
+    amount: Double,
+    uuid: UUID = UUID.randomUUID()
+) = addAttributeModifier(AttributeModifierData(attribute, operation, slot, amount, uuid))
+
+inline fun ItemStack.addAttributeModifier(
+    data: AttributeModifierData
+) {
+    editNBT {
+        addAttributeModifier(data)
+    }
 }

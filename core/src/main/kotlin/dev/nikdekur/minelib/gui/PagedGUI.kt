@@ -1,15 +1,20 @@
 package dev.nikdekur.minelib.gui
 
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.addItems
 import dev.nikdekur.minelib.ext.cancel
 import dev.nikdekur.minelib.ext.editNBT
+import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.item.Patterns
+import dev.nikdekur.ndkore.service.inject
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
 abstract class PagedGUI(
+    override val app: PluginApplication,
     player: Player,
     size: Int,
     var page: Int = 0
@@ -18,8 +23,10 @@ abstract class PagedGUI(
     open val previousArrowPos: Int = 45
     open val nextArrowPos: Int = 53
 
-    open val previousArrow: ItemStack = Patterns.ARROW_PREVIOUS.build(player)
-    open val nextArrow: ItemStack = Patterns.ARROW_NEXT.build(player)
+    val i18nService: I18nService by inject(MineLib.Qualifier)
+
+    open val previousArrow: ItemStack = Patterns.ARROW_PREVIOUS.build(i18nService, player)
+    open val nextArrow: ItemStack = Patterns.ARROW_NEXT.build(i18nService, player)
 
     open val startInventoryFrom: Int = 0
     val allZoneSize by lazy {

@@ -1,15 +1,10 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
-import dev.nikdekur.minelib.hologram.EntityWithHologram
-import dev.nikdekur.minelib.hologram.EntityWithHologramData
-import dev.nikdekur.minelib.hologram.EntityWithHologramImpl
-import dev.nikdekur.minelib.hologram.Hologram
-import dev.nikdekur.minelib.hologram.HologramData
+import dev.nikdekur.minelib.ext.bLogger
+import dev.nikdekur.minelib.hologram.*
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityData
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
-import dev.nikdekur.minelib.utils.AbstractLocation
-import dev.nikdekur.minelib.utils.Utils.debug
 import dev.nikdekur.minelib.v1_12_R1.ext.nms
 import dev.nikdekur.minelib.v1_12_R1.hologram.TrackHologram
 import dev.nikdekur.minelib.v1_12_R1.nms.entity.MineEntityType
@@ -26,7 +21,10 @@ class PersonalEntityManagerImpl(override val world: World) : PersonalEntityManag
     val entityByEntityId = HashMap<Int, PersonalEntity>()
 
     override fun newEntity(data: PersonalEntityData): PersonalEntity {
-        val entity = object : TrackerPersonalEntity(this) {
+        val entity = object : TrackerPersonalEntity() {
+            override val world: World
+                get() = this@PersonalEntityManagerImpl.world
+
             override fun newStack(player: Player): Collection<Entity> {
                 return data.entitiesBuilder(player)
             }
@@ -40,25 +38,18 @@ class PersonalEntityManagerImpl(override val world: World) : PersonalEntityManag
                 return PersonalTrackerEntry.factory(type).new(player, entity, spigotViewDistance)
             }
 
-        }
-        registerEntity(entity)
-        return entity
-    }
-
-    override fun newHologram(data: HologramData): Hologram {
-        val hologram = object : TrackHologram(this) {
-            override fun getLocation(player: Player): AbstractLocation {
-                return data.getLocation(player)
-            }
-
-            override fun getText(player: Player): Collection<String> {
-                return data.getText(player)
-            }
-
             override fun shouldSpawn(player: Player): Boolean {
                 return data.shouldSpawn(player)
             }
+
         }
+        registerEntity(entity)
+
+        return PersonalEntityDecorator(this, entity)
+    }
+
+    override fun newHologram(data: HologramData): Hologram {
+        val hologram = HologramDecorator(this, TrackHologram(world, data))
         registerEntity(hologram)
         return hologram
     }
@@ -98,14 +89,16 @@ class PersonalEntityManagerImpl(override val world: World) : PersonalEntityManag
 
 
 
-    override fun update(player: Player) {
+    override fun updateAllEntitiesFor(player: Player) {
         entities.values.forEach { entity ->
             if (entity is Hologram) {
-                debug("Update hologram for ${player.name} | is visible: ${entity.isVisibleFor(player)}")
+                bLogger.info("Update hologram for ${player.name} | is visible: ${entity.isVisibleFor(player)}")
             }
-            if (entity is TrackerPersonalEntity && entity.isVisibleFor(player)) {
+
+            if (entity is TrackerPersonalEntity) {
                 entity.updateTracking(player)
-            } else if (entity.shouldSpawn(player)) {
+
+            } else if (entity.shouldSpawn(player) && !entity.isVisibleFor(player)) {
                 entity.spawn(player)
             }
         }
@@ -131,4 +124,37 @@ class PersonalEntityManagerImpl(override val world: World) : PersonalEntityManag
     }
 
 
+    open class PersonalEntityDecorator(
+        val manager: PersonalEntityManagerImpl,
+        val entity: PersonalEntity,
+    ) : PersonalEntity by entity {
+        override fun spawn(player: Player): Iterable<Entity> {
+            val stack = entity.spawn(player)
+            stack.forEach { manager.registerPersonalEntity(entity, it) }
+            return stack
+        }
+
+        override fun remove() {
+            entity.remove()
+            manager.unregisterEntity(id)
+        }
+    }
+
+
+
+    open class HologramDecorator(
+        manager: PersonalEntityManagerImpl,
+        val hologram: Hologram,
+    ) : PersonalEntityDecorator(manager, hologram), Hologram by hologram {
+        override fun spawn(player: Player): Iterable<Entity> {
+            val stack = hologram.spawn(player)
+            stack.forEach { manager.registerPersonalEntity(hologram, it) }
+            return stack
+        }
+
+        override fun remove() {
+            hologram.remove()
+            manager.unregisterEntity(id)
+        }
+    }
 }

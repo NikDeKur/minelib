@@ -1,9 +1,6 @@
 package dev.nikdekur.minelib.service
 
-import dev.nikdekur.ndkore.service.Service
-import kotlin.reflect.KClass
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.ornament.service.AbstractAppService
 
-abstract class PluginService : Service(), PluginComponent {
-
-    abstract val bindClass: KClass<out Any>
-}
+abstract class PluginService : AbstractAppService<PluginApplication>(), PluginComponent

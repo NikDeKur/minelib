@@ -16,6 +16,7 @@ class PersonalEntityTracker(val pentity: TrackerPersonalEntity) {
     @Suppress("UNCHECKED_CAST")
     val nmsEntries = tracker.r_GetField("c").value as MutableSet<EntityTrackerEntry>
 
+    // Shows what player actually must see
     val viewMap = HashMap<Player, LinkedHashMap<Int, Entity>>()
 
     val viewers: Set<Player>
@@ -72,7 +73,7 @@ class PersonalEntityTracker(val pentity: TrackerPersonalEntity) {
     }
 
 
-    fun update(player: Player) {
+    fun reTrack(player: Player) {
         val entities = viewMap[player]?.let { LinkedHashMap(it) }
         if (entities.isNullOrEmpty()) return
         untrack(player)
@@ -81,6 +82,6 @@ class PersonalEntityTracker(val pentity: TrackerPersonalEntity) {
 
 
     fun updateAll() {
-        HashSet(viewMap.keys).forEach(this::update)
+        HashSet(viewMap.keys).forEach(this::reTrack)
     }
 }

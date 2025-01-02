@@ -1,13 +1,6 @@
 package dev.nikdekur.minelib.service
 
-import dev.nikdekur.minelib.plugin.ServerPlugin
-import dev.nikdekur.ndkore.service.ServicesComponent
-import dev.nikdekur.ndkore.service.ServicesManager
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.ornament.service.AppServicesComponent
 
-interface PluginComponent : ServicesComponent {
-    val app: ServerPlugin
-
-
-    override val manager: ServicesManager
-        get() = app.servicesManager
-}
+interface PluginComponent : AppServicesComponent<PluginApplication>

@@ -1,0 +1,59 @@
+has_banned_symbols: "&cСтрока '{string}&c' содержит запрещенные символы!"
+incorrect_number: "&cЧисло '{number}&c' не распознано!"
+unknown_player: "&cИгрок '{name}&c' не найден!"
+unknown_player_no_name: "&cИгрок не найден!"
+
+unknown_datatype: "&cТип данных '{type}&c' не найден!"
+internal_error: "&cПроизошла внутренняя ошибка! Свяжитесь с администрацией! [{time}] {comment}"
+command.tab_error: "&cПроизошла неизвестная ошибка при автозаполнении команды. Свяжитесь с администрацией! {time}"
+command.error: "&cПроизошла неизвестная ошибка при выполнении команды. Свяжитесь с администрацией! {time}"
+command.cooldown: "&cПодождите &6{seconds} &cсекунд перед выполнением этой команды!"
+
+command.not_enough_permissions: "&cУ вас недостаточно прав для выполнения этой команды!"
+command.only_for_players: "&cЭта команда доступна только для игроков!"
+command.only_for_players_syntax: "&cЭтот синтаксис доступен только для игроков!"
+
+unknown_locale_format: "&cНеизвестный формат кода локали '{code}'! Пример правильного формата: 'en_us', 'en_gb'!"
+
+arrow.next: "&6Следующая страница"
+arrow.prev: "&6Предыдущая страница"
+
+cmd.minelib.usage: "&cИспользование: /minelib <reload>"
+cmd.minelib.info:
+  - "&b~~~~~ MineLib &f{version} &7от &bNik De Kur ~~~~~~~~~~~"
+  - ""
+  - "&7- &bКоманды: &f{commands}"
+  - "&7- &bСлушатели: &f{listeners}"
+  - "&7- &bСервисы: &f{services}"
+  - "&7- &bВремя работы: &f{uptime}"
+  - ""
+  - "&7- &bПодкоманды:"
+  - "&7  - &b/minelib reload &7- Перезагружает плагин"
+  - "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+rpg.stat.speed.name: "Скорость"
+rpg.stat.speed.buff_name: "&f{buff.name} &6+{buff.value}"
+
+rpg.stat.health.name: "Макс. здоровье"
+rpg.stat.health.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.max_health.name: "Макс. здоровье"
+rpg.stat.max_health.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.protection.name: "Броня"
+rpg.stat.protection.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.regeneration.name: "Регенерация"
+rpg.stat.regeneration.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.regeneration_multiplier.name: "Регенерация"
+rpg.stat.regeneration_multiplier.buff_name: "&f{buff.name}: &6x{buff.value}"
+
+rpg.stat.regeneration_delay.name: "Скорость регенерации"
+rpg.stat.regeneration_delay.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.damage.name: "Урон"
+rpg.stat.damage.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.damage_multiplier.name: "Урон"
+rpg.stat.damage_multiplier.buff_name: "&f{buff.name}: &6x{buff.value}"

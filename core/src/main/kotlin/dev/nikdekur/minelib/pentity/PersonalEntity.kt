@@ -1,13 +1,13 @@
 package dev.nikdekur.minelib.pentity
 
 import dev.nikdekur.minelib.utils.AbstractLocation
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
 
-interface PersonalEntity : Snowflake<UUID> {
+interface PersonalEntity : Unique<UUID> {
 
     val world: World
 

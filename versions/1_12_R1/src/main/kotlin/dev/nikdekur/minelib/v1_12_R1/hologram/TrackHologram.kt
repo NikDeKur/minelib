@@ -4,21 +4,46 @@ package dev.nikdekur.minelib.v1_12_R1.hologram
 
 import dev.nikdekur.minelib.ext.applyColors
 import dev.nikdekur.minelib.hologram.Hologram
-import dev.nikdekur.minelib.pentity.PersonalEntityManager
+import dev.nikdekur.minelib.hologram.HologramData
+import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.utils.AbstractLocation
 import dev.nikdekur.minelib.v1_12_R1.nms.entity.MineEntityType
 import dev.nikdekur.minelib.v1_12_R1.nms.packet.PacketBuilder
 import dev.nikdekur.minelib.v1_12_R1.nms.track.PersonalTrackerEntry
 import dev.nikdekur.minelib.v1_12_R1.pentity.TrackerPersonalEntity
+import org.bukkit.World
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
 
-abstract class TrackHologram(manager: PersonalEntityManager) : TrackerPersonalEntity(manager), Hologram {
+open class TrackHologram(
+    override val world: World,
+    val data: HologramData
+) : TrackerPersonalEntity(), Hologram {
 
+    override fun getLocation(player: Player): AbstractLocation {
+        return data.getLocation(player)
+    }
+    override fun getText(player: Player): Collection<String> {
+        return data.getText(player)
+    }
 
-    abstract override fun getLocation(player: Player): AbstractLocation
+    override fun shouldSpawn(player: Player): Boolean {
+        return data.shouldSpawn(player)
+    }
+
+    override fun ClickContext.Left.onLeftClick() {
+        data.onLeftClick(this)
+    }
+
+    override fun ClickContext.Right.onRightClick() {
+        data.onRightClick(this)
+    }
+
+    override fun ClickContext.RightAt.onRightAtClick() {
+        data.onRightAtClick(this)
+    }
 
     override fun newStack(player: Player): Collection<Entity> {
         val location = getLocation(player)
@@ -46,7 +71,6 @@ abstract class TrackHologram(manager: PersonalEntityManager) : TrackerPersonalEn
     override fun newTrackerEntry(player: Player, entity: net.minecraft.server.v1_12_R1.Entity, spigotViewDistance: Int) =
         trackerFactory.new(player, entity, spigotViewDistance)
 
-    abstract override fun getText(player: Player): Collection<String>
 
     inline fun getFinalText(player: Player) = getText(player).applyColors()
 
@@ -63,6 +87,11 @@ abstract class TrackHologram(manager: PersonalEntityManager) : TrackerPersonalEn
 
 
     override fun update(player: Player) {
+        if (!isVisibleFor(player) && shouldSpawn(player)) {
+            spawn(player)
+            return
+        }
+
         val viewMap = tracker.viewMap[player] ?: return
         if (viewMap.isEmpty()) return
         val entities = viewMap.values

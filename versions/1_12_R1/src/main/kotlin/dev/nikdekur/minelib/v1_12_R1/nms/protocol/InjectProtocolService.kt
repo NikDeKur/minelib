@@ -2,9 +2,9 @@ package dev.nikdekur.minelib.v1_12_R1.nms.protocol
 
 import com.google.common.collect.MapMaker
 import com.mojang.authlib.GameProfile
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.call
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketSendEvent
@@ -15,11 +15,12 @@ import net.minecraft.server.v1_12_R1.Packet
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Level
+import kotlin.Throws
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -29,18 +30,15 @@ import java.util.logging.Level
  * @author Kristian
  * @author [Modified] Nik De Kur
  */
-class InjectProtocolModule(
-    override val app: ServerPlugin
+open class InjectProtocolService(
+    override val app: PluginApplication
 ) : PluginService(), Listener {
 
-    override val bindClass
-        get() = InjectProtocolModule::class
-
-    override fun onEnable() {
+    override suspend fun onEnable() {
         try {
             registerChannelHandler()
             registerPlayers()
-        } catch (ex: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Damn you, late bind
             bLogger.info("[ProtocolModule] Delaying server channel injection due to late bind.")
             app.scheduler.runTask {
@@ -52,21 +50,15 @@ class InjectProtocolModule(
     }
 
 
-    override fun onDisable() {
-        if (!closed) {
-            closed = true
-
-            // Remove our handlers
-            for (player in Bukkit.getOnlinePlayers()) {
-                uninjectPlayer(player)
-            }
-
-            // Clean up Bukkit
-            unregisterChannelHandler()
+    override suspend fun onDisable() {
+        // Remove our handlers
+        for (player in Bukkit.getOnlinePlayers()) {
+            uninjectPlayer(player)
         }
-    }
 
-    var counter = AtomicInteger(0)
+        // Clean up Bukkit
+        unregisterChannelHandler()
+    }
 
     // Speedup channel lookup
     private val channelLookup: MutableMap<String, Channel> = MapMaker().weakValues().makeMap()
@@ -83,14 +75,7 @@ class InjectProtocolModule(
     private var beginInitProtocol: ChannelInitializer<Channel>? = null
     private var endInitProtocol: ChannelInitializer<Channel>? = null
 
-    // Current handler name
-    private val handlerName by lazy {
-        "PacketInterceptor-${app.name}-${counter.incrementAndGet()}"
-    }
-
-    @Volatile
-    var closed: Boolean = false
-
+    private val handlerName = "PacketInterceptor-${app.name}"
 
     private fun createServerChannelHandler() {
         // Handle connected channels
@@ -101,9 +86,7 @@ class InjectProtocolModule(
                     // This can take a while, so we need to stop the main thread from interfering
                     synchronized(networkManagers!!) {
                         // Stop injecting channels
-                        if (!closed) {
-                            channel.eventLoop().submit<PacketInterceptor> { injectChannelInternal(channel) }
-                        }
+                        channel.eventLoop().submit<PacketInterceptor> { injectChannelInternal(channel) }
                     }
                 } catch (e: Exception) {
                     bLogger.log(Level.SEVERE, "Cannot inject incoming channel $channel", e)
@@ -124,17 +107,15 @@ class InjectProtocolModule(
             override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
                 val channel = msg as Channel
 
-                // Prepare to initialize ths channel
+                // Prepare to initialize the channel
                 channel.pipeline().addFirst(beginInitProtocol)
                 ctx.fireChannelRead(msg)
             }
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerLogin(e: PlayerLoginEvent) {
-        if (closed) return
-
         val channel = getChannel(e.player)
 
         // Don't inject players that have been explicitly uninjected
@@ -392,10 +373,7 @@ class InjectProtocolModule(
      * @param channel - the injected channel.
      */
     fun uninjectChannel(channel: Channel) {
-        // No need to guard against this if we're closing
-        if (!closed) {
-            uninjectedChannels.add(channel)
-        }
+        uninjectedChannels.add(channel)
 
         // See ChannelInjector in ProtocolLib, line 590
         channel.eventLoop().execute { channel.pipeline().remove(handlerName) }

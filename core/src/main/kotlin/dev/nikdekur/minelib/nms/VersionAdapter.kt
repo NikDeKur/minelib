@@ -1,14 +1,12 @@
 package dev.nikdekur.minelib.nms
 
-import dev.nikdekur.minelib.MineLib
-import dev.nikdekur.ndkore.ext.getInstanceField
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 interface VersionAdapter {
-
-    fun init(plugin: MineLib)
 
     /**
      * Expand the entity bounding box to the axis values
@@ -31,15 +29,17 @@ interface VersionAdapter {
 
 
     companion object {
+        fun <A> findAdapter(app: PluginApplication, version: String): A? where A : VersionAdapter, A : PluginService {
 
-        fun findAdapter(version: String): VersionAdapter? {
+            @Suppress("UNCHECKED_CAST", "kotlin:S6530")
             val adapterClazz = try {
-                Class.forName("dev.nikdekur.minelib.$version.VersionAdapter")
+                Class.forName("dev.nikdekur.minelib.$version.VersionAdapter_$version")
+                        as? Class<A>
             } catch (_: ClassNotFoundException) {
                 return null
             }
-            val instance = adapterClazz.getInstanceField() as? VersionAdapter ?: return null
-            return instance
+
+            return adapterClazz?.getConstructor(PluginApplication::class.java)?.newInstance(app)
         }
     }
 }

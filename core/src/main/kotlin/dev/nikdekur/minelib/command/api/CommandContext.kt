@@ -1,11 +1,22 @@
 package dev.nikdekur.minelib.command.api
 
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.sendLangMsg
-import dev.nikdekur.minelib.i18n.locale.Locale
+import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
-import dev.nikdekur.minelib.i18n.msg.MessageReference
+import dev.nikdekur.minelib.service.PluginComponent
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.extra.SimpleDataType
+import dev.nikdekur.ndkore.service.inject
+import dev.nikdekur.ornament.i18n.Key
+import dev.nikdekur.ornament.i18n.Locale
+import dev.nikdekur.ornament.i18n.toLocaleOrNull
+import dev.nikdekur.ornament.i18n.withPlaceholders
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.char
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -13,12 +24,15 @@ import org.bukkit.entity.Player
 import org.jetbrains.annotations.Contract
 import java.text.DecimalFormat
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
 
-open class CommandContext(val sender: CommandSender, val args: Array<String>)
-    : CommandSender by sender {
+open class CommandContext(
+    override val app: PluginApplication,
+    val sender: CommandSender,
+    val args: Array<String>
+) : CommandSender by sender, PluginComponent {
 
+    val i18n: I18nService by inject(MineLib.Qualifier)
 
     var commandResult: CommandResult = CommandResult.SUCCESS
 
@@ -45,16 +59,16 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
     fun selfAsPlayer(): Player {
-        return sender as? Player ?: sendError(DefaultMSG.ONLY_FOR_PLAYERS_SYNTAX)
+        return sender as? Player ?: sendError(DefaultMSG.Command.ONLY_FOR_PLAYERS_SYNTAX)
     }
 
 
-    fun send(msg: MessageReference, vararg pairs: Pair<String, Any?>) {
-        sender.sendLangMsg(msg, *pairs)
+    fun send(key: Key) {
+        i18n.sendLangMsg(sender, key)
     }
 
-    fun sendError(msg: MessageReference, vararg pairs: Pair<String, Any?>): Nothing {
-        send(msg, *pairs)
+    fun sendError(key: Key): Nothing {
+        send(key)
         stop()
     }
 
@@ -78,23 +92,23 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     fun <T> isExists(
         collection: Collection<T>,
         obj: T,
-        onTrue: MessageReference,
-        onFalse: MessageReference,
+        onTrue: Key,
+        onFalse: Key,
         vararg pair: Pair<String, Any>
     ): Boolean {
         val result = collection.contains(obj)
         if (result)
-            send(onTrue, *pair)
+            send(onTrue)
         else
-            send(onFalse, *pair)
+            send(onFalse)
         return result
     }
 
     fun <T> isNotExists(
         collection: Collection<T>,
         o: T,
-        onTrue: MessageReference,
-        onFalse: MessageReference,
+        onTrue: Key,
+        onFalse: Key,
         vararg pair: Pair<String, Any>
     ): Boolean {
         return !isExists(collection, o, onFalse, onTrue, *pair)
@@ -113,7 +127,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         val intStr = getStringOrNull() ?: return def
         val number = intStr.toIntOrNull()
         return if (number == null && def == null) {
-            sendError(DefaultMSG.INCORRECT_NUMBER, "number" to intStr)
+            sendError(DefaultMSG.INCORRECT_NUMBER.withPlaceholders("number" to intStr))
         } else number ?: def
     }
 
@@ -122,7 +136,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         val str = getStringOrNull() ?: return def
         val number = str.toDoubleOrNull()
         return if (number == null && def == null) {
-            sendError(DefaultMSG.INCORRECT_NUMBER, "number" to str)
+            sendError(DefaultMSG.INCORRECT_NUMBER.withPlaceholders("number" to str))
         } else number ?: def
     }
 
@@ -130,7 +144,7 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         if (playerName == null || playerName.isBlankOrEmpty())
             send(DefaultMSG.UNKNOWN_PLAYER_NO_NAME)
         else
-            send(DefaultMSG.UNKNOWN_PLAYER, "name" to playerName)
+            send(DefaultMSG.UNKNOWN_PLAYER)
     }
 
 
@@ -148,17 +162,15 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
     fun sendCooldown(
         cooldown: Duration,
-        cooldownMSG: MessageReference = DefaultMSG.COOLDOWN_ON_COMMAND,
+        cooldownMSG: Key = DefaultMSG.Command.COOLDOWN,
         vararg placeholders: Pair<String, Any?>
     ) {
         val format = formatSecondsValue(cooldown.inWholeMilliseconds)
         if (placeholders.isEmpty()) {
-            send(cooldownMSG, "time" to format)
+            send(cooldownMSG)
         } else {
             send(
-                cooldownMSG,
-                *arrayOf(*placeholders)
-                    .plus("time" to format)
+                cooldownMSG
             )
         }
     }
@@ -169,18 +181,30 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     }
 
 
-    fun timedError(message: MessageReference) {
-        return send(message, "time" to datetimeFormatter.format(OffsetDateTime.now()))
+
+    fun timedError(message: Key) {
+        val time = app.clock.now().format(DateTimeFormat)
+
+        return send(
+            message
+                .withPlaceholders("time" to time)
+        )
     }
 
-    fun timedErrorAndStop(message: MessageReference): Nothing {
+    fun timedErrorAndStop(message: Key): Nothing {
         timedError(message)
         stop()
     }
 
 
-    fun internalError(comment: String) {
-        sendError(DefaultMSG.INTERNAL_ERROR, "time" to OffsetDateTime.now().toString(), "comment" to comment)
+    fun internalError(comment: String): Nothing {
+        sendError(
+            DefaultMSG.INTERNAL_ERROR
+                .withPlaceholders(
+                    "time" to OffsetDateTime.now().toString(),
+                    "comment" to comment
+                )
+        )
     }
 
     fun getByteOrNull() = getStringOrNull()?.toByteOrNull()
@@ -234,12 +258,18 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
     fun getDataType(default: SimpleDataType? = SimpleDataType.STRING): SimpleDataType {
         val value = getStringOrNull()
             ?: return default ?: run {
-                sendError(DefaultMSG.UNKNOWN_DATATYPE, "type" to "null")
+                sendError(
+                    DefaultMSG.UNKNOWN_DATATYPE
+                        .withPlaceholders("type" to "null")
+                )
             }
 
         val type = SimpleDataType.fromStringOrNull(value)
         if (type == null && default == null) {
-            sendError(DefaultMSG.UNKNOWN_DATATYPE, "type" to value)
+            sendError(
+                DefaultMSG.UNKNOWN_DATATYPE
+                    .withPlaceholders("type" to value)
+            )
         } else if (type == null) {
             return default!!
         }
@@ -293,18 +323,27 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
 
     fun getOnlinePlayer(): Player {
         val name = getString()
-        val player = Bukkit.getPlayer(name) ?: sendError(DefaultMSG.UNKNOWN_PLAYER, "name" to name)
+        val player = Bukkit.getPlayer(name) ?: sendError(
+            DefaultMSG.UNKNOWN_PLAYER
+                .withPlaceholders("name" to name)
+        )
         return player
     }
 
     fun getLocale(): Locale {
         val name = getString()
-        return Locale.fromCode(name) ?: sendError(DefaultMSG.UNKNOWN_LOCALE_FORMAT, "code" to name)
+        return name.toLocaleOrNull() ?: sendError(
+            DefaultMSG.UNKNOWN_LOCALE_FORMAT
+                .withPlaceholders("code" to name)
+        )
     }
 
     fun checkPermission(permission: String) {
         if (sender.hasPermission(permission)) return
-        sendError(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD, "permission" to permission)
+        sendError(
+            DefaultMSG.Command.NOT_ENOUGH_PERMISSIONS
+                .withPlaceholders("permission" to permission)
+        )
     }
 
 
@@ -315,6 +354,16 @@ open class CommandContext(val sender: CommandSender, val args: Array<String>)
         val GTFIVE_SECONDS_FORMAT = DecimalFormat("#")
 
 
-        val datetimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+        val DateTimeFormat = DateTimeComponents.Format {
+            date(LocalDate.Formats.ISO)
+
+            char(' ')
+
+            hour()
+            char(':')
+            minute()
+            char(':')
+            second()
+        }
     }
 }

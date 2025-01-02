@@ -1,12 +1,13 @@
 package dev.nikdekur.minelib.plugin
 
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.scheduler.Scheduler
-import dev.nikdekur.ndkore.service.manager.RuntimeServicesManager
+import dev.nikdekur.ornament.environment.Environment
 import org.bukkit.Server
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.plugin.PluginDescriptionFile
@@ -14,71 +15,39 @@ import org.bukkit.plugin.PluginLoader
 import java.io.File
 import java.io.InputStream
 import java.util.logging.Logger
-import kotlin.properties.Delegates
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
-open class TestServerPlugin : ServerPlugin {
+
+class TestServerPlugin : ApplicationServerPlugin() {
+    override fun createApplication(environment: Environment): PluginApplication {
+        TODO("Not yet implemented")
+    }
+}
+
+open class TestServer(
+    val environment: Environment,
+    plugin: TestServerPlugin
+) : ServerPlugin {
+    override val scheduler = Scheduler(this)
 
     override val clazzLoader: ClassLoader
-        get() = this.javaClass.classLoader
+        get() = this::class.java.classLoader
 
-    override val components: Collection<Any>
-        get() = emptyList()
-
-    override val onlinePlayers: Collection<Player>
-        get() = emptyList()
-
-    override var scheduler: Scheduler by Delegates.notNull()
-
-    override val servicesManager = RuntimeServicesManager()
-
-    override val listeners: Collection<Listener>
-        get() = emptyList()
-
-    var startTime: Long = 0
-        private set
-
-    override val uptime: Duration
-        get() = (System.currentTimeMillis() - startTime).milliseconds
-
-    override fun registerComponent(component: Any) = false
+    override val listeners = ArrayList<Listener>()
 
     override fun addListener(listener: Listener) {
-
+        listeners.add(listener)
     }
 
-    override fun reload() {
-
-    }
-
-    override fun loadDirectory(name: String): File {
-        throw NotImplementedError()
-    }
-
-    override fun loadFile(fileName: String, folder: File?): File {
-        throw NotImplementedError()
-    }
-
-    override fun <T : Any> loadConfig(
-        configName: String,
-        clazz: Class<T>,
-        requireFilled: Boolean,
-        folder: File?
-    ): T {
-        throw NotImplementedError()
-    }
-
-    override fun saveConfig(configName: String, config: Any, folder: File?) {
-
+    override fun addCommand(command: ServerCommand) {
+        TODO()
     }
 
     override fun getDataFolder(): File? {
-        TODO("Not yet implemented")
+        return File("plugin")
     }
 
     override fun getDescription(): PluginDescriptionFile? {
-        TODO("Not yet implemented")
+        return PluginDescriptionFile("TestServerPlugin", "1.0", "dev.nikdekur.minelib.plugin.TestServerPlugin")
     }
 
     override fun getConfig(): FileConfiguration? {
@@ -144,9 +113,9 @@ open class TestServerPlugin : ServerPlugin {
         TODO("Not yet implemented")
     }
 
-    private val _logger = Logger.getLogger("TestServerPlugin")
-
-    override fun getLogger() = _logger
+    override fun getLogger(): Logger? {
+        TODO("Not yet implemented")
+    }
 
     override fun getName(): String? {
         TODO("Not yet implemented")

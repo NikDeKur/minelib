@@ -23,7 +23,7 @@ inline var LivingEntity.walkingSpeed: Float
     }
     set(value) {
         if (this is Player)
-            setHighWalkSpeed(value)
+            player.walkSpeed = value
         else
             getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).baseValue = value.toDouble()
     }

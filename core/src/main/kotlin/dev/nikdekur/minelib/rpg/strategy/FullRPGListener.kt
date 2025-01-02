@@ -1,6 +1,7 @@
 package dev.nikdekur.minelib.rpg.strategy
 
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.rpg.RPGProfilesService
 import dev.nikdekur.minelib.rpg.combat.DamageSource
 import dev.nikdekur.minelib.service.PluginListener
@@ -8,9 +9,9 @@ import dev.nikdekur.ndkore.service.inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
-class FullRPGListener(override val app: ServerPlugin) : PluginListener {
+class FullRPGListener(override val app: PluginApplication) : PluginListener {
 
-    val rpgService: RPGProfilesService by inject()
+    val rpgService: RPGProfilesService by inject(MineLib.Qualifier)
 
     @EventHandler
     fun onAttack(event: EntityDamageByEntityEvent) {

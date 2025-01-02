@@ -2,11 +2,12 @@ package dev.nikdekur.minelib.hologram
 
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.utils.AbstractLocation
+import dev.nikdekur.minelib.utils.add
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
-import java.util.UUID
+import java.util.*
 
 data class EntityWithHologramImpl(
     override val entity: PersonalEntity,

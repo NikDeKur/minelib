@@ -4,8 +4,8 @@ package dev.nikdekur.minelib.rpg
 
 
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.editNBT
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.rpg.condition.Condition
 import dev.nikdekur.minelib.rpg.item.NBTRPGItem
 import dev.nikdekur.minelib.rpg.item.RPGItem
@@ -29,11 +29,8 @@ import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 
 class RuntimeRPGService(
-    override val app: ServerPlugin
+    override val app: PluginApplication
 ) : PluginService(), RPGService {
-
-    override val bindClass
-        get() = RPGService::class
 
 
     lateinit var json: Json
@@ -44,7 +41,7 @@ class RuntimeRPGService(
     val itemsCache: MutableMap<UUID, RPGItem> = ConcurrentHashMap()
 
 
-    override fun onEnable() {
+    override suspend fun onEnable() {
         json = Json {
             serializersModule = SerializersModule {
                 polymorphic(Condition::class) {
@@ -67,7 +64,7 @@ class RuntimeRPGService(
         }
     }
 
-    override fun onDisable() {
+    override suspend fun onDisable() {
         stats.clear()
         itemsCache.clear()
     }

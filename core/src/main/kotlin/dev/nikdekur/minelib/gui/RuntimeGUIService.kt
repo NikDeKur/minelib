@@ -1,12 +1,12 @@
 package dev.nikdekur.minelib.gui
 
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.cancel
 import dev.nikdekur.minelib.ext.gui
 import dev.nikdekur.minelib.ext.isAir
 import dev.nikdekur.minelib.ext.isTouchable
 import dev.nikdekur.minelib.gui.GUIFlag.CANNOT_PUT
 import dev.nikdekur.minelib.gui.GUIFlag.CANNOT_TAKE
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -15,11 +15,8 @@ import org.bukkit.event.inventory.*
 import java.util.*
 
 class RuntimeGUIService(
-    override val app: ServerPlugin
+    override val app: PluginApplication
 ) : PluginService(), GUIService, Listener {
-
-    override val bindClass
-        get() = GUIService::class
 
     val guis = HashMap<UUID, GUI>()
 
@@ -121,7 +118,7 @@ class RuntimeGUIService(
 
         if (clickedItem == null || clickedItem.type.isAir || clickedItem.itemMeta == null || event.cursor == null) return
 
-        val isTouchable = clickedItem.isTouchable()
+        val isTouchable = clickedItem.isTouchable
         if (!isTouchable) {
             val player = event.whoClicked as? Player
             if (player?.scoreboardTags?.contains("passTouchable") != true)

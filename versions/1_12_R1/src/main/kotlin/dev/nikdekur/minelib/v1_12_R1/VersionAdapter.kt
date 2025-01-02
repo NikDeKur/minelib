@@ -1,22 +1,38 @@
 package dev.nikdekur.minelib.v1_12_R1
 
 import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.nms.VersionAdapter
+import dev.nikdekur.minelib.pentity.PersonalEntityService
+import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.utils.requireMainThread
 import dev.nikdekur.minelib.v1_12_R1.ext.nms
-import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolModule
-import dev.nikdekur.minelib.v1_12_R1.pentity.ServerPersonalEntityManagerImpl
+import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolService
+import dev.nikdekur.minelib.v1_12_R1.pentity.PersonalEntityServiceImpl
+import dev.nikdekur.ndkore.service.bind
+import dev.nikdekur.ndkore.service.qualify
 import net.minecraft.server.v1_12_R1.AxisAlignedBB
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 // Class is found in Runtime so there is no usage of it in the code
-@Suppress("unused")
-object VersionAdapter : VersionAdapter {
+@Suppress("unused", "ClassName", "kotlin:S101")
+open class VersionAdapter_v1_12_R1(
+    override val app: PluginApplication
+) : PluginService(), VersionAdapter {
 
-    override fun init(plugin: MineLib) {
-        plugin.registerComponent(ServerPersonalEntityManagerImpl(plugin))
-        plugin.registerComponent(InjectProtocolModule(plugin))
+    override suspend fun onEnable() {
+        listOf(
+            PersonalEntityServiceImpl(app).also(app::registerComponent)
+                    bind PersonalEntityService::class
+                    qualify MineLib.Qualifier,
+
+            InjectProtocolService(app).also(app::registerComponent)
+                    bind InjectProtocolService::class
+                    qualify MineLib.Qualifier
+        ).forEach {
+            app.servicesManager.registerService(it)
+        }
     }
 
     override fun expandBB(entity: Entity, x: Float, y: Float, z: Float) {

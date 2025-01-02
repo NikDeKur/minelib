@@ -3,15 +3,20 @@
 package dev.nikdekur.minelib.item
 
 import dev.nikdekur.minelib.ext.*
-import dev.nikdekur.minelib.i18n.msg.MessageReference
+import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.ndkore.ext.toTArray
+import dev.nikdekur.ornament.i18n.Key
 import org.bukkit.Color
 import org.bukkit.DyeColor
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.command.CommandSender
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -38,13 +43,13 @@ class ItemPattern {
 
 
     val lore = LinkedList<String>()
-    fun setLore(lore: List<String>): ItemPattern {
+    fun addLore(lore: List<String>): ItemPattern {
         this.lore.clear()
         this.lore.addAll(lore)
         return this
     }
 
-    inline fun setLore(vararg lore: String) = setLore(lore.toList())
+    inline fun setLore(vararg lore: String) = addLore(lore.toList())
     fun addLore(lore: String): ItemPattern {
         this.lore.add(lore)
         return this
@@ -54,38 +59,61 @@ class ItemPattern {
 
 
 
-    var displayNameMSG: MessageReference? = null
-    fun setDisplayName(msgEnum: MessageReference?): ItemPattern {
-        this.displayNameMSG = msgEnum
-        return this
-    }
-
-    var loreMSG: MessageReference? = null
-    fun setLore(msgEnum: MessageReference?): ItemPattern {
-        this.loreMSG = msgEnum
-        // Gets calling plugin
+    var displayNameKey: Key? = null
+    fun setDisplayName(key: Key?): ItemPattern {
+        this.displayNameKey = key
         return this
     }
 
 
 
-    fun getFinalDisplayName(sender: CommandSender?, vararg placeholders: Pair<String, Any?>): String? {
-        return if (sender != null && displayNameMSG != null) {
-            sender.getLangMsg(displayNameMSG!!, *placeholders).text
+    var loreKeys: MutableCollection<Key>? = null
+    fun addLore(vararg keys: Key): ItemPattern {
+        val lore = loreKeys ?: LinkedList<Key>().also { loreKeys = it }
+        lore.addAll(keys)
+        return this
+    }
+
+    fun setLore(keys: Collection<Key>?): ItemPattern {
+        loreKeys = keys?.toMutableList()
+        return this
+    }
+
+
+
+
+    fun I18nService.getFinalDisplayName(
+        sender: CommandSender?,
+        modify: (Key) -> Key
+    ): String? {
+        return if (sender != null && displayNameKey != null) {
+            val modify = { it: Key -> modify(it.withLocale(getLocale(sender))) }
+            getLangMsg(modify(displayNameKey!!), sender).text
         } else {
             displayName
         }
     }
 
 
-    fun getFinalLore(sender: CommandSender?, vararg placeholders: Pair<String, Any?>): List<String> {
-        return if (sender != null && loreMSG != null) {
-            sender.getLangMsg(loreMSG!!, *placeholders).listText
+    fun I18nService.getFinalLore(
+        sender: CommandSender?,
+        modify: (Key) -> Key
+    ): List<String> {
+        val lore = loreKeys
+        return if (sender != null && lore != null) {
+            val modify = { it: Key -> modify(it.withLocale(getLocale(sender))) }
+            lore.map(modify).flatMap { getLangMsg(it, sender).listText }
         } else {
-            lore
+            this@ItemPattern.lore
         }
     }
 
+
+    val enchantments: MutableMap<Enchantment, Int> = HashMap()
+    fun addEnchantment(enchantment: Enchantment, level: Int): ItemPattern {
+        enchantments[enchantment] = level
+        return this
+    }
 
 
     fun setHideAttributes(state: Boolean): ItemPattern {
@@ -100,6 +128,20 @@ class ItemPattern {
         return this
     }
 
+
+    val attributeModifiers = LinkedList<AttributeModifierData>()
+    fun addAttributeModifier(attribute: AttributeModifierData): ItemPattern {
+        attributeModifiers.add(attribute)
+        return this
+    }
+
+    fun addAttributeModifier(
+        attribute: Attribute,
+        operation: AttributeModifier.Operation,
+        slot: EquipmentSlot,
+        amount: Double,
+        uuid: UUID = UUID.randomUUID()
+    ) = addAttributeModifier(AttributeModifierData(attribute, operation, slot, amount, uuid))
 
 
 
@@ -220,9 +262,9 @@ class ItemPattern {
     fun clone() = ItemPattern()
         .setMaterial(material)
         .setDisplayName(displayName)
-        .setLore(lore)
-        .setDisplayName(displayNameMSG)
-        .setLore(loreMSG)
+        .addLore(lore)
+        .setDisplayName(displayNameKey)
+        .setLore(loreKeys)
         .setAmount(amount)
         .setDurability(durability)
         .setData(data)
@@ -230,19 +272,31 @@ class ItemPattern {
         .also { it.onBuild.addAll(onBuild) }
 
 
-    fun build(player: Player?, vararg placeholders: Pair<String, Any?>): ItemStack {
+    fun build(
+        i18n: I18nService? = null,
+        player: Player? = null,
+        modify: (Key) -> Key = { it }
+    ): ItemStack {
         @Suppress("DEPRECATION")
         val item = ItemStack(material, amount, durability, data)
 
         tags.forEach(item::setTag)
 
-        val finalDisplay = getFinalDisplayName(player, *placeholders)
+        val finalDisplay = i18n?.getFinalDisplayName(player, modify)
         if (finalDisplay != null) item.setDisplayName(finalDisplay)
-        val finalLore = getFinalLore(player, *placeholders)
-        if (finalLore.isNotEmpty()) item.setLore(finalLore)
+        val finalLore = i18n?.getFinalLore(player, modify)
+        if (!finalLore.isNullOrEmpty()) item.setLore(finalLore)
+
+        enchantments.forEach { (enchantment, level) ->
+            item.addEnchantment(enchantment, level)
+        }
+
+        attributeModifiers.forEach { attribute ->
+            item.addAttributeModifier(attribute)
+        }
 
         item.editMeta {
-            if (hideFlags.isEmpty())
+            if (hideFlags.isNotEmpty())
                 addItemFlags(*hideFlags.toTArray())
 
             if (isUnbreakable)

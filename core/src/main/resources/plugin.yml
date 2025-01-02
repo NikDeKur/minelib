@@ -1,6 +1,6 @@
 name: MineLib
-version: '1.0.0'
-main: dev.nikdekur.minelib.MineLib
+version: '1.1.1'
+main: dev.nikdekur.minelib.MineLibPlugin
 authors: [Nik_De_Kur]
 api-version: 1.13
 description: Plugin with big amount of features for plugin development
@@ -8,5 +8,3 @@ load: POSTWORLD
 commands:
   minelib:
     description: Main command for MineLib
-    usage: /minelib
-    permission: minelib.command

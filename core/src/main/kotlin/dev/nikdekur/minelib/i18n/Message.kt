@@ -4,36 +4,37 @@ package dev.nikdekur.minelib.i18n
 
 import dev.nikdekur.minelib.ext.applyColors
 import dev.nikdekur.minelib.ext.bLogger
+import dev.nikdekur.minelib.ext.sendActionBar
 import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
 import dev.nikdekur.ndkore.ext.toTArray
-import dev.nikdekur.ndkore.placeholder.PlaceholderParser
-import dev.nikdekur.ndkore.placeholder.parse
 import org.bukkit.command.CommandSender
 import java.util.logging.Level
 
-class Message(var text: String) {
-    
-    constructor(text: List<String>) : this(text.joinToString("\n"))
+data class Message(
+    val rawText: String
+) {
 
-    /**
-     * Raw text with prefix
-     */
-    val chatText: String
-        get() = text
+    val text: String
+        get() = rawText.applyColors()
 
-    fun parsePlaceholders(parser: PlaceholderParser, vararg placeholders: Pair<String, Any?>): Message {
-        text = parser.parse(text, *placeholders)
-        return this
-    }
 
-    val arrayText: Array<out String>
-        get() = listText.toTArray()
     val listText: List<String>
         get() = text.split("\n")
 
-    fun send(player: CommandSender) {
-        player.sendSimpleMessage(chatText)
+    val arrayText: Array<out String>
+        get() = listText.toTArray()
+
+
+    fun send(sender: CommandSender) {
+        sender.sendSimpleMessage(text, applyColors = false)
+    }
+
+    fun sendActionBar(player: CommandSender) {
+        if (player is org.bukkit.entity.Player)
+            player.sendActionBar(text, applyColors = false)
+        else
+            send(player)
     }
 
     fun sendTitle(player: CommandSender, fadeIn: Int = 10, stay: Int = 50, fadeOut: Int = 10) {
@@ -55,17 +56,17 @@ class Message(var text: String) {
         if (title == null && subtitle == null) return
 
         if (player is org.bukkit.entity.Player)
-            player.sendTitle(title?.applyColors(), subtitle?.applyColors(), fadeIn, stay, fadeOut)
+            player.sendTitle(title, subtitle, fadeIn, stay, fadeOut)
         else
             send(player)
     }
 
     @JvmOverloads
     inline fun log(level: Level = Level.INFO) {
-        bLogger.log(level, chatText)
+        bLogger.log(level, text)
     }
 
     override fun toString(): String {
-        return "Message(text='$chatText')"
+        return "Message(text='$text')"
     }
 }

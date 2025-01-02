@@ -1,14 +1,17 @@
 package dev.nikdekur.minelib.scoreboard
 
 
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.bLogger
-import dev.nikdekur.minelib.plugin.ServerPlugin
-import dev.nikdekur.minelib.plugin.loadConfig
 import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreateEvent
 import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.cooldown.GrowPolicy
 import dev.nikdekur.ndkore.cooldown.GrowingCooldownManager
-import dev.nikdekur.ndkore.service.Dependencies
+import dev.nikdekur.ndkore.service.dependencies
+import dev.nikdekur.ndkore.service.inject
+import dev.nikdekur.ornament.dataset.DataSetService
+import dev.nikdekur.ornament.dataset.get
 import kotlinx.datetime.Clock
 import org.bukkit.Bukkit
 import java.util.*
@@ -17,17 +20,19 @@ import kotlin.time.Duration.Companion.seconds
 
 @Suppress("DEPRECATION")
 class ScoreboardManager(
-    override val app: ServerPlugin,
+    override val app: PluginApplication,
     val adapter: AssembleAdapter,
     clock: Clock
 ) : PluginService() {
-
-    override val bindClass = ScoreboardManager::class
-
     // ScoreboardManager will be loaded after all possibly displayable data is loaded
     // And unloaded first before all possibly displayable data is unloaded
-    
-    override val dependencies = Dependencies.last()
+
+    override val dependencies = dependencies {
+        dependsOn(DataSetService::class, MineLib.Qualifier)
+        last()
+    }
+
+    val dataset: DataSetService by inject(MineLib.Qualifier)
 
     var thread: AssembleThread? = null
     var listeners: AssembleListener = AssembleListener(this)
@@ -44,9 +49,8 @@ class ScoreboardManager(
     val isHook = false
     val isCallEvents = true
 
-    override fun onEnable() {
-
-        val config = app.loadConfig<ScoreboardConfig>("scoreboard")
+    override suspend fun onEnable() {
+        val config = dataset.get<ScoreboardConfig>("scoreboard") ?: ScoreboardConfig()
         ticks = config.updateDelay
         style = config.style
 
@@ -80,7 +84,7 @@ class ScoreboardManager(
     }
 
 
-    override fun onDisable() {
+    override suspend fun onDisable() {
         if (this.thread != null) {
             thread!!.stop()
             this.thread = null

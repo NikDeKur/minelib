@@ -3,12 +3,10 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
 import dev.nikdekur.minelib.pentity.PersonalEntity
-import dev.nikdekur.minelib.pentity.PersonalEntityManager
 import dev.nikdekur.minelib.utils.AbstractLocation
 import dev.nikdekur.minelib.v1_12_R1.ext.nms
 import dev.nikdekur.minelib.v1_12_R1.nms.track.PersonalEntityTracker
 import dev.nikdekur.minelib.v1_12_R1.nms.track.PersonalTrackerEntry
-import net.minecraft.server.v1_12_R1.SoundEffects.it
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
@@ -28,13 +26,10 @@ import java.util.*
  *
  * @param world The bukkit world where the entity will be spawned.
  */
-abstract class TrackerPersonalEntity(
-    val manager: PersonalEntityManager
-) : PersonalEntity {
+abstract class TrackerPersonalEntity: PersonalEntity {
 
-    override val world by manager::world
-
-    val worldNMS = world.nms
+    val worldNMS
+        get() = world.nms
 
     /**
      * The unique identifier of the entity.
@@ -42,12 +37,6 @@ abstract class TrackerPersonalEntity(
      * It is unique for each entity, it's different from the minecraft entity id.
      */
     override val id: UUID = UUID.randomUUID()
-
-
-    var removed = false
-    inline fun checkRemoved() {
-        check(!removed) { "The entity is removed! Create a new instance." }
-    }
 
 
 
@@ -74,26 +63,14 @@ abstract class TrackerPersonalEntity(
      * @return The spawned entities.
      */
     override fun spawn(player: Player): Collection<Entity> {
-        checkRemoved()
-        return spawn0(player)
-    }
-
-    /**
-     * Protected method to spawn the entity for the player.
-     *
-     * Does not check if [TrackerPersonalEntity] is registered.
-     *
-     * Don't try to call this method directly, use [spawn] instead.
-     */
-    open fun spawn0(player: Player): Collection<Entity> {
         val stack = newStack(player)
         stack.forEach {
             it.nms.world = worldNMS
-            manager.registerPersonalEntity(this, it)
             tracker.track(player, it.nms)
         }
         return stack
     }
+
 
     /**
      * Spawn the entity for all players in the world.
@@ -101,30 +78,18 @@ abstract class TrackerPersonalEntity(
      * Simply calls [spawn] for each player in the world.
      */
     override fun spawnForEveryone() {
-        checkRemoved()
-        world.players.forEach(::spawn0)
+        world.players.forEach(::spawn)
     }
 
     override fun remove(player: Player) {
-        checkRemoved()
-        remove0(player)
-    }
-
-
-    open fun remove0(player: Player) {
         tracker.untrack(player)
     }
 
     override fun remove() {
-        checkRemoved()
-        HashSet(tracker.viewers).forEach(::remove0)
-
-        manager.unregisterEntity(id)
+        tracker.viewers.toSet().forEach(::remove)
     }
 
     override fun teleport(player: Player, location: AbstractLocation) {
-        checkRemoved()
-
         getEntities(player).forEach {
             it.nms.setLocation(location.x, location.y, location.z, location.yaw, location.pitch)
         }
@@ -195,9 +160,8 @@ abstract class TrackerPersonalEntity(
      * @param player The player for which the entity will be updated.
      */
     open fun updateTracking(player: Player) {
-        checkRemoved()
         if (!tracker.isTracking(player)) return
-        tracker.update(player)
+        tracker.reTrack(player)
     }
 
 

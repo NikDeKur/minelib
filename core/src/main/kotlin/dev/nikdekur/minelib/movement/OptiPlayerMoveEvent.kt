@@ -6,7 +6,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-data class OptiPlayerMoveEvent(
+open class OptiPlayerMoveEvent(
     val player: Player,
     val from: Location,
     val to: Location,

@@ -1,7 +1,8 @@
 package dev.nikdekur.minelib.rpg.condition
 
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.movement.OptiPlayerMoveEvent
-import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.minelib.rpg.RPGProfilesService
 import dev.nikdekur.minelib.service.PluginListener
 import dev.nikdekur.ndkore.service.inject
@@ -11,10 +12,10 @@ import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
 
 class DefaultConditionsListener(
-    override val app: ServerPlugin
+    override val app: PluginApplication
 ) : PluginListener {
 
-    val rpgProfilesService: RPGProfilesService by inject()
+    val rpgProfilesService: RPGProfilesService by inject(MineLib.Qualifier)
 
     // -------------------
     //      INVENTORY

@@ -8,9 +8,11 @@ import dev.nikdekur.minelib.inventory.InventorySlot.MAIN_HAND
 import dev.nikdekur.minelib.inventory.InventorySlot.OFF_HAND
 import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
+import java.util.*
 
 
 /**
@@ -167,3 +169,11 @@ inline fun Inventory.get(slot: InventorySlot): ItemStack? {
 
     return item
 }
+
+
+inline val EquipmentSlot.minecraftId: String
+    get() = when (this) {
+        EquipmentSlot.HAND -> "mainhand"
+        EquipmentSlot.OFF_HAND -> "offhand"
+        else -> name.lowercase(Locale.ENGLISH)
+    }

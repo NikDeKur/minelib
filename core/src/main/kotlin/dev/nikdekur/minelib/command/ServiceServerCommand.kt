@@ -2,16 +2,15 @@
 
 package dev.nikdekur.minelib.command
 
-import dev.nikdekur.minelib.command.api.CommandContext
-import dev.nikdekur.minelib.command.api.CommandResult
-import dev.nikdekur.minelib.command.api.CommandService
-import dev.nikdekur.minelib.command.api.CommandTabContext
-import dev.nikdekur.minelib.command.api.ServerCommand
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.command.api.*
 import dev.nikdekur.minelib.command.api.ServerCommand.StopCommand
 import dev.nikdekur.minelib.ext.sendLangMsg
+import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.msg.DefaultMSG
 import dev.nikdekur.ndkore.ext.filterPartialMatches
 import dev.nikdekur.ndkore.service.inject
+import dev.nikdekur.ornament.i18n.withPlaceholders
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -21,7 +20,8 @@ import kotlin.time.Duration
 @Suppress("unused")
 abstract class ServiceServerCommand : ServerCommand {
 
-    override val service: CommandService by inject()
+    val service: CommandService by inject(MineLib.Qualifier)
+    val i18n: I18nService by inject(MineLib.Qualifier)
 
     var commandPath = ""
 
@@ -34,13 +34,20 @@ abstract class ServiceServerCommand : ServerCommand {
 
         val permission = permission
         if (permission != null && !sender.hasPermission(permission)) {
-            sender.sendLangMsg(DefaultMSG.NOT_ENOUGH_PERMISSIONS_CMD, "permission" to permission)
+            i18n.sendLangMsg(
+                sender = sender,
+                key = DefaultMSG.Command.NOT_ENOUGH_PERMISSIONS
+                    .withPlaceholders("permission" to permission),
+            )
             return true
         }
 
         val isPlayer = sender is Player
         if (!isConsoleFriendly && !isPlayer) {
-            sender.sendLangMsg(DefaultMSG.ONLY_FOR_PLAYERS)
+            i18n.sendLangMsg(
+                sender = sender,
+                key = DefaultMSG.Command.ONLY_FOR_PLAYERS
+            )
             return true
         }
 
@@ -59,11 +66,11 @@ abstract class ServiceServerCommand : ServerCommand {
         val result: CommandResult
         val player: Player? = sender as? Player
 
-        val execution = CommandContext(sender, args)
+        val execution = CommandContext(app, sender, args)
         if (player != null && cooldown > Duration.ZERO && !player.isOp) {
             val cooldown = service.getCooldown(player, this)
             if (cooldown != null) {
-                execution.sendCooldown(cooldown, DefaultMSG.COOLDOWN_ON_COMMAND)
+                execution.sendCooldown(cooldown, DefaultMSG.Command.COOLDOWN)
                 return true
             }
         }
@@ -75,7 +82,7 @@ abstract class ServiceServerCommand : ServerCommand {
             // Do nothing
         } catch (e: Exception) {
             e.printStackTrace()
-            execution.timedError(DefaultMSG.COMMAND_ERROR)
+            execution.timedError(DefaultMSG.Command.ERROR)
         }
 
         result = execution.commandResult
@@ -97,7 +104,7 @@ abstract class ServiceServerCommand : ServerCommand {
         if (permission != null && !sender.hasPermission(permission))
             return emptyList()
 
-        val execution = CommandTabContext(sender, args)
+        val execution = CommandTabContext(app, sender, args)
         val completions = try {
             with(execution) {
                 onTabComplete()
@@ -106,7 +113,7 @@ abstract class ServiceServerCommand : ServerCommand {
             return emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
-            execution.timedError(DefaultMSG.COMMAND_TAB_ERROR)
+            execution.timedError(DefaultMSG.Command.TAB_ERROR)
             return emptyList()
         }
 
@@ -116,6 +123,18 @@ abstract class ServiceServerCommand : ServerCommand {
         return completions?.ifEmpty { emptyList() } ?: emptyList()
     }
 
+
+    override fun getCooldown(player: Player): Duration? {
+        return service.getCooldown(player, this)
+    }
+
+    override fun setCooldown(player: Player, cooldown: Duration) {
+        service.setCooldown(player, this, cooldown)
+    }
+
+    override fun resetCooldown(player: Player) {
+        service.resetCooldown(player, this)
+    }
 
 
 

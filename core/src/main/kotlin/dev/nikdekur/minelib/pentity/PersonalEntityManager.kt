@@ -7,12 +7,11 @@ import dev.nikdekur.minelib.hologram.HologramData
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 interface PersonalEntityManager {
 
     val world: World
-
 
     fun newEntity(data: PersonalEntityData): PersonalEntity
     fun newHologram(data: HologramData): Hologram
@@ -29,7 +28,7 @@ interface PersonalEntityManager {
     fun unregisterPersonalEntity(entityId: Int)
     fun getEntityByPersonalEntity(entityId: Int): PersonalEntity?
 
-    fun update(player: Player)
+    fun updateAllEntitiesFor(player: Player)
     fun clear(player: Player)
 
 

@@ -3,7 +3,6 @@
 
 package dev.nikdekur.minelib.rpg.buff
 
-import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
 import dev.nikdekur.minelib.rpg.stat.RPGStat
 import dev.nikdekur.ndkore.ext.CompAny
 import kotlinx.serialization.Contextual
@@ -11,20 +10,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.CompositeDecoder
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.decodeStructure
-import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.encoding.*
 
 @Serializable(RPGBuffSerializer::class)
 open class RPGBuff<T : Comparable<T>>(
     @Contextual val stat: RPGStat<T>,
     open var value: T
-) : MSGNameHolder, Cloneable {
-
-    override val nameMSG = stat.nameBuffMSG
-
+) : Cloneable {
 
     override fun toString(): String {
         return "RPGBuff(type=${stat.id}, value=$value)"

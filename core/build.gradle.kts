@@ -3,7 +3,6 @@ version = "1.0.0"
 
 dependencies {
     implementation(libs.google.guava)
-    implementation(libs.kaml)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.json)

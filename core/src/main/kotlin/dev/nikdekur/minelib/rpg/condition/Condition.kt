@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.rpg.condition
 
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  * @param C The context type.
  */
 @Serializable
-abstract class Condition<C> : Snowflake<String> {
+abstract class Condition<C> : Unique<String> {
 
     abstract val cType: ConditionType<C>
 

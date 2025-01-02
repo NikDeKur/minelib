@@ -2,14 +2,13 @@
 
 package dev.nikdekur.minelib.rpg.stat
 
-import dev.nikdekur.minelib.i18n.msg.MSGNameHolder
-import dev.nikdekur.minelib.i18n.msg.MessageReference
 import dev.nikdekur.minelib.rpg.RPGService
 import dev.nikdekur.ndkore.ext.randDouble
 import dev.nikdekur.ndkore.ext.randFloat
 import dev.nikdekur.ndkore.ext.randInt
 import dev.nikdekur.ndkore.ext.toBooleanSmartOrNull
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
+import dev.nikdekur.ornament.i18n.Key
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
@@ -22,7 +21,9 @@ import kotlin.random.Random
 import kotlin.reflect.KClass
 
 
-abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparable<T>, T : Any {
+abstract class RPGStat<T> : Unique<String> where T : Comparable<T>, T : Any {
+
+    abstract val name: Key
 
     /**
      * The default value of the stat
@@ -51,7 +52,7 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     /**
      * The name of the stat message
      */
-    abstract val nameBuffMSG: MessageReference
+    abstract val nameBuff: Key
 
     /**
      * Check that given value is an instance of the stat value
@@ -122,7 +123,6 @@ abstract class RPGStat<T> : Snowflake<String>, MSGNameHolder where T : Comparabl
     class Serializer(val service: RPGService) : KSerializer<RPGStat<*>> {
         override val descriptor = PrimitiveSerialDescriptor("RPGStat", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: RPGStat<*>) {
-            println("Serializing stat ${value.id}")
             encoder.encodeString(value.id)
         }
 
@@ -210,8 +210,8 @@ abstract class RPGIntStat : RPGStat<Int>() {
 }
 
 abstract class RPGBigIntegerStat : RPGStat<BigInteger>() {
-    override val defaultValue = BigInteger.ZERO
-    override val staticValue = BigInteger.ZERO
+    override val defaultValue: BigInteger = BigInteger.ZERO
+    override val staticValue: BigInteger = BigInteger.ZERO
 
     override val valueClass: KClass<BigInteger> = BigInteger::class
     override fun plus(value: BigInteger, other: BigInteger): BigInteger {

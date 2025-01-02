@@ -10,53 +10,39 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.CompositeDecoder
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.decodeStructure
-import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.encoding.*
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.util.Vector
 
 @Serializable(AbstractLocation.Serializer::class)
 data class AbstractLocation(
-    var x: Double,
-    var y: Double,
-    var z: Double,
-    var yaw: Float = 0f,
-    var pitch: Float = 0f
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float = 0f,
+    val pitch: Float = 0f
 ) : Cloneable {
 
-    fun add(x: Double, y: Double, z: Double): AbstractLocation {
-        this.x += x
-        this.y += y
-        this.z += z
-        return this
-    }
+    constructor(x: Int, y: Int, z: Int, yaw: Float = 0f, pitch: Float = 0f) :
+            this(x.toDouble(), y.toDouble(), z.toDouble(), yaw, pitch)
 
-    fun add(vector: Vector): AbstractLocation {
-        return add(vector.x, vector.y, vector.z)
+    fun add(x: Double, y: Double, z: Double): AbstractLocation {
+        return copy(
+            x = this.x + x,
+            y = this.y + y,
+            z = this.z + z
+        )
     }
 
     fun subtract(x: Double, y: Double, z: Double): AbstractLocation {
-        this.x -= x
-        this.y -= y
-        this.z -= z
-        return this
+        return copy(
+            x = this.x - x,
+            y = this.y - y,
+            z = this.z - z
+        )
     }
 
-    fun subtract(vector: Vector): AbstractLocation {
-        return subtract(vector.x, vector.y, vector.z)
-    }
-
-    inline fun toVector(): Vector {
-        return Vector(x, y, z)
-    }
-
-    inline fun toLocation(world: World): Location {
-        return Location(world, x, y, z, yaw, pitch)
-    }
 
 
 
@@ -83,7 +69,8 @@ data class AbstractLocation(
             return try {
                 val stringValue = decoder.decodeString()
                 parseFromString(stringValue)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                e.printStackTrace()
                 decoder.decodeStructure(descriptor) {
                     var x = 0.0
                     var y = 0.0
@@ -110,7 +97,7 @@ data class AbstractLocation(
 
         private fun parseFromString(value: String): AbstractLocation {
             val parts = value.split(",")
-            require(parts.size < 3) { "Invalid format for AbstractLocation string" }
+            require(parts.size >= 3) { "Invalid format for AbstractLocation string" }
             val x = parts[0].toDouble()
             val y = parts[1].toDouble()
             val z = parts[2].toDouble()
@@ -120,3 +107,36 @@ data class AbstractLocation(
         }
     }
 }
+
+
+
+
+
+inline fun AbstractLocation.toVector(): Vector {
+    return Vector(x, y, z)
+}
+
+inline fun AbstractLocation.toLocation(world: World): Location {
+    return Location(world, x, y, z, yaw, pitch)
+}
+
+
+inline fun AbstractLocation.add(vector: Vector): AbstractLocation {
+    return add(vector.x, vector.y, vector.z)
+}
+
+
+inline fun AbstractLocation.subtract(vector: Vector): AbstractLocation {
+    return subtract(vector.x, vector.y, vector.z)
+}
+
+
+inline val AbstractLocation.blockX: Int
+    get() = Location.locToBlock(x)
+
+inline val AbstractLocation.blockY: Int
+    get() = Location.locToBlock(y)
+
+inline val AbstractLocation.blockZ: Int
+    get() = Location.locToBlock(z)
+

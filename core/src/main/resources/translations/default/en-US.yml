@@ -1,0 +1,59 @@
+has_banned_symbols: "&cThe string '{string}&c' contains forbidden symbols!"
+incorrect_number: "&cThe number '{number}&c' is not recognized!"
+unknown_player: "&cPlayer '{name}&c' not found!"
+unknown_player_no_name: "&cPlayer not found!"
+
+unknown_datatype: "&cData type '{type}&c' not found!"
+internal_error: "&cAn internal error occurred! Contact the administration! [{time}] {comment}"
+command.tab_error: "&cAn unknown error occurred while tab-completing the command. Contact the administration! {time}"
+command.error: "&cAn unknown error occurred while executing the command. Contact the administration! {time}"
+command.cooldown: "&cWait &6{seconds} &cseconds before executing this command!"
+
+command.not_enough_permissions: "&cYou do not have enough permissions to execute this command!"
+command.only_for_players: "&cThis command is only available for players!"
+command.only_for_players_syntax: "&cThis syntax is only available for players!"
+
+unknown_locale_format: "&cUnknown locale code format '{code}'! Example of correct format: 'en_us', 'en_gb'!"
+
+arrow.next: "&6Next page"
+arrow.prev: "&6Previous page"
+
+cmd.minelib.usage: "&cUsage: /minelib <reload>"
+cmd.minelib.info:
+  - "&b~~~~~ MineLib &f{version} &7by &bNik De Kur ~~~~~~~~~~~"
+  - ""
+  - "&7- &bCommands: &f{commands}"
+  - "&7- &bListeners: &f{listeners}"
+  - "&7- &bServices: &f{services}"
+  - "&7- &bUptime: &f{uptime}"
+  - ""
+  - "&7- &bSub Commands:"
+  - "&7  - &b/minelib reload &7- Reloads the plugin"
+  - "&b~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+rpg.stat.speed.name: "Speed"
+rpg.stat.speed.buff_name: "&f{buff.name} &6+{buff.value}"
+
+rpg.stat.health.name: "Health"
+rpg.stat.health.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.max_health.name: "Max Health"
+rpg.stat.max_health.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.protection.name: "Armor"
+rpg.stat.protection.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.regeneration.name: "Regeneration"
+rpg.stat.regeneration.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.regeneration_multiplier.name: "Regeneration"
+rpg.stat.regeneration_multiplier.buff_name: "&f{buff.name}: &6x{buff.value}"
+
+rpg.stat.regeneration_delay.name: "Regeneration Speed"
+rpg.stat.regeneration_delay.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.damage.name: "Damage"
+rpg.stat.damage.buff_name: "&f{buff.name}: &6+{buff.value}"
+
+rpg.stat.damage_multiplier.name: "Damage"
+rpg.stat.damage_multiplier.buff_name: "&f{buff.name}: &6x{buff.value}"

@@ -2,6 +2,7 @@
 
 package dev.nikdekur.minelib.scheduler
 
+import dev.nikdekur.minelib.ext.inWholeTicks
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
@@ -9,6 +10,8 @@ import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scheduler.BukkitWorker
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
+import kotlin.time.Duration
+
 
 @JvmInline
 @Suppress("unused")
@@ -23,8 +26,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param task Task to be executed
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleSyncDelayedTask(delay: Long, task: Runnable): Int {
-        return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, task, delay)
+    fun scheduleSyncDelayedTask(delay: Duration, task: Runnable): Int {
+        return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -34,8 +37,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param delay Delay in server ticks before executing the task
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleSyncDelayedTask(task: BukkitRunnable, delay: Long): Int {
-        return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, task, delay)
+    fun scheduleSyncDelayedTask(task: BukkitRunnable, delay: Duration): Int {
+        return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -70,8 +73,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param task Task to be executed
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleSyncRepeatingTask(delay: Long, period: Long, task: Runnable): Int {
-        return Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, task, delay, period)
+    fun scheduleSyncRepeatingTask(delay: Duration, period: Duration, task: Runnable): Int {
+        return Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -80,8 +83,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param period Period in server ticks of the task
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleSyncRepeatingTask(task: BukkitRunnable, delay: Long, period: Long): Int {
-        return Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, task, delay, period)
+    fun scheduleSyncRepeatingTask(task: BukkitRunnable, delay: Duration, period: Duration): Int {
+        return Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -96,8 +99,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param task Task to be executed
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleAsyncDelayedTask(delay: Long, task: Runnable): Int {
-        return Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task, delay)
+    fun scheduleAsyncDelayedTask(delay: Duration, task: Runnable): Int {
+        return Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -128,8 +131,8 @@ value class Scheduler(val plugin: Plugin) {
      * @param task Task to be executed
      * @return Task id number (-1 if scheduling failed)
      */
-    fun scheduleAsyncRepeatingTask(delay: Long, period: Long, task: Runnable): Int {
-        return Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, task, delay, period)
+    fun scheduleAsyncRepeatingTask(delay: Duration, period: Duration, task: Runnable): Int {
+        return Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -291,8 +294,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLater(delay: Long, task: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskLater(plugin, task, delay)
+    fun runTaskLater(delay: Duration, task: Runnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskLater(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -302,8 +305,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLater(delay: Long, task: BukkitRunnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskLater(plugin, task, delay)
+    fun runTaskLater(delay: Duration, task: BukkitRunnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskLater(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -320,8 +323,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLaterAsynchronously(delay: Long, task: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay)
+    fun runTaskLaterAsynchronously(delay: Duration, task: Runnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -331,8 +334,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskLaterAsynchronously(delay: Long, task: BukkitRunnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay)
+    fun runTaskLaterAsynchronously(delay: Duration, task: BukkitRunnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, task, delay.inWholeTicks)
     }
 
     /**
@@ -346,8 +349,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimer(delay: Long, period: Long, task: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period)
+    fun runTaskTimer(delay: Duration, period: Duration, task: Runnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimer(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -360,7 +363,7 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimer(period: Long, task: Runnable): BukkitTask {
+    fun runTaskTimer(period: Duration, task: Runnable): BukkitTask {
         return runTaskTimer(period, period, task)
     }
 
@@ -372,8 +375,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimer(delay: Long, period: Long, task: BukkitRunnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimer(plugin, task, delay, period)
+    fun runTaskTimer(delay: Duration, period: Duration, task: BukkitRunnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimer(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -392,8 +395,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimerAsynchronously(delay: Long, period: Long, task: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay, period)
+    fun runTaskTimerAsynchronously(delay: Duration, period: Duration, task: Runnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
     /**
@@ -410,7 +413,7 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimerAsynchronously(period: Long, task: Runnable): BukkitTask {
+    fun runTaskTimerAsynchronously(period: Duration, task: Runnable): BukkitTask {
         return runTaskTimerAsynchronously(period, period, task)
     }
 
@@ -422,8 +425,8 @@ value class Scheduler(val plugin: Plugin) {
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
-    fun runTaskTimerAsynchronously(delay: Long, period: Long, task: BukkitRunnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay, period)
+    fun runTaskTimerAsynchronously(delay: Duration, period: Duration, task: BukkitRunnable): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay.inWholeTicks, period.inWholeTicks)
     }
 
 

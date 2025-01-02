@@ -1,13 +1,12 @@
 package dev.nikdekur.minelib.command.api
 
-import dev.nikdekur.minelib.ext.sendLangMsg
 import dev.nikdekur.minelib.ext.sendSimpleMessage
 import dev.nikdekur.ndkore.ext.isBlankOrEmpty
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-interface CommandAction : Snowflake<String> {
+interface CommandAction : Unique<String> {
 
     fun execute(command: ServerCommand, sender: CommandSender)
 
@@ -20,14 +19,8 @@ interface CommandAction : Snowflake<String> {
 
         override fun execute(command: ServerCommand, sender: CommandSender) {
             val player = sender as? Player
-            when (this) {
+            when (this@Default) {
                 THROW_USAGE -> {
-                    val usageMSG = command.usageMSG
-                    if (usageMSG != null) {
-                        sender.sendLangMsg(usageMSG)
-                        return
-                    }
-
                     val usageStr = command.getUsage(sender)
                     if (!usageStr.isBlankOrEmpty()) {
                         sender.sendSimpleMessage(usageStr)
@@ -39,16 +32,15 @@ interface CommandAction : Snowflake<String> {
 
                 SET_COOLDOWN -> {
                     if (command.hasCooldown() && player != null) {
-                        command.service.setCooldown(player, command, command.cooldown)
+                        command.setCooldown(player, command.cooldown)
                     }
                 }
 
                 UNSET_COOLDOWN -> {
                     if (command.hasCooldown() && player != null) {
-                        command.service.resetCooldown(player, command)
+                        command.resetCooldown(player)
                     }
                 }
-
             }
         }
     }

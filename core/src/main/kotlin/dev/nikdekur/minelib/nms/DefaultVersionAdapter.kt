@@ -1,13 +1,13 @@
 package dev.nikdekur.minelib.nms
 
-import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
-object DefaultVersionAdapter : VersionAdapter {
-    override fun init(plugin: MineLib) {
-        // NOOP
-    }
+class DefaultVersionAdapter(
+    override val app: PluginApplication
+) : PluginService(), VersionAdapter {
 
     override fun expandBB(entity: Entity, x: Float, y: Float, z: Float) {
         // NOOP

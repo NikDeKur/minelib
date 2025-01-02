@@ -1,7 +1,7 @@
 package dev.nikdekur.minelib.drawing
 
 import dev.nikdekur.minelib.drawing.shape.Shape
-import dev.nikdekur.ndkore.`interface`.Snowflake
+import dev.nikdekur.ndkore.`interface`.Unique
 import java.util.*
 
 data class DrawingShape(
@@ -11,7 +11,7 @@ data class DrawingShape(
     val delay: Long,
     val period: Long,
     val liveTime: Long
-) : Snowflake<UUID> {
+) : Unique<UUID> {
 
     var paused = false
 

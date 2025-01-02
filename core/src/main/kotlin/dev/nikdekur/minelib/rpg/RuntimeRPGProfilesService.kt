@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.rpg
 
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
 import dev.nikdekur.minelib.rpg.profile.RPGSimpleLivingEntityProfile
 import dev.nikdekur.minelib.rpg.profile.RPGSimplePlayerProfile
@@ -9,15 +9,12 @@ import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.utils.debug
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class RuntimeRPGProfilesService(
-    override val app: ServerPlugin
+    override val app: PluginApplication
 ) : PluginService(), RPGProfilesService {
-
-    override val bindClass
-        get() = RPGProfilesService::class
 
     val rpgProfiles = ConcurrentHashMap<UUID, RPGProfile>()
 

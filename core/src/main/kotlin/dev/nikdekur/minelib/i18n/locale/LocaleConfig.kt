@@ -6,14 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LocaleConfig(
-    @SerialName("default_locale")
-    @YamlComment(
-        "Locale code of default language to use if player language is undefined",
-        "Default is `en_us`"
-    )
-    val defaultLocale: String = "en_us",
-
-
     @SerialName("data_provider")
     @YamlComment(
         "Data Provider used to identify player locale.",

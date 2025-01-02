@@ -1,15 +1,17 @@
 package dev.nikdekur.minelib.v1_12_R1.pentity
 
+import dev.nikdekur.minelib.MineLib
+import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.minelib.ext.ticks
 import dev.nikdekur.minelib.pentity.ClickContext
 import dev.nikdekur.minelib.pentity.PersonalEntity
 import dev.nikdekur.minelib.pentity.PersonalEntityManager
-import dev.nikdekur.minelib.pentity.ServerPersonalEntityManager
-import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.minelib.pentity.PersonalEntityService
 import dev.nikdekur.minelib.service.PluginListener
 import dev.nikdekur.minelib.service.PluginService
-import dev.nikdekur.minelib.utils.debug
-import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolModule
+import dev.nikdekur.minelib.v1_12_R1.nms.protocol.InjectProtocolService
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
+import dev.nikdekur.minelib.v1_12_R1.pentity.PersonalEntityServiceImpl.Companion.MAX_INTERACT_DISTANCE_SQUARED
 import dev.nikdekur.ndkore.ext.distanceSquared
 import dev.nikdekur.ndkore.ext.r_GetField
 import dev.nikdekur.ndkore.ext.sqrt
@@ -26,16 +28,22 @@ import org.bukkit.util.Vector
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class ServerPersonalEntityManagerImpl(
-    override val app: ServerPlugin
-) : PluginService(), ServerPersonalEntityManager, PluginListener {
-
-    override val bindClass
-        get() = ServerPersonalEntityManager::class
+class PersonalEntityServiceImpl(
+    override val app: PluginApplication
+) : PluginService(), PersonalEntityService, PluginListener {
 
     override val dependencies = dependencies {
-        after(InjectProtocolModule::class)
+        dependsOn(InjectProtocolService::class, MineLib.Qualifier)
     }
+
+
+
+
+    override suspend fun onDisable() {
+        managers.values.forEach(PersonalEntityManager::unload)
+        managers.clear()
+    }
+
 
 
     val managers = ConcurrentHashMap<UUID, PersonalEntityManager>()
@@ -113,9 +121,8 @@ class ServerPersonalEntityManagerImpl(
     @EventHandler
     fun teleportTrackerFix(event: PlayerTeleportEvent) {
         val player = event.player
-        debug("Teleport tracker fix for ${player.name}")
-        app.scheduler.runTaskLater(5) {
-            getManager(player.world).update(player)
+        app.scheduler.runTaskLater(5.ticks) {
+            getManager(player.world).updateAllEntitiesFor(player)
         }
     }
 
@@ -135,13 +142,6 @@ class ServerPersonalEntityManagerImpl(
 
     // TODO: Check compatibility with a changing world
 
-
-
-
-    override fun onDisable() {
-        managers.values.forEach(PersonalEntityManager::unload)
-        managers.clear()
-    }
 
 
     companion object {

@@ -6,13 +6,12 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.shadowJar)
-    alias(libs.plugins.licenser)
     id("maven-publish")
 }
 
 
 group = "dev.nikdekur"
-version = "1.1.1"
+version = "1.2.0"
 
 val authorId: String by project
 val authorName: String by project
@@ -24,27 +23,11 @@ allprojects {
         plugin(rootProject.libs.plugins.shadowJar.get().pluginId)
     }
 
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        maven {
-            url = uri("https://repo.dmulloy2.net/repository/public/")
-        }
-        maven {
-            name = "DestroyStokyo"
-            url = uri("https://repo.destroystokyo.com/repository/maven-public/")
-        }
-        maven {
-            name = "CodeMC"
-            url = uri("https://repo.codemc.io/repository/maven-public/")
-        }
-        maven("https://repo.aikar.co/nexus/content/repositories/aikar-release/")
-    }
-
     val implementation by configurations
 
     dependencies {
         implementation(rootProject.libs.ndkore)
+        implementation(rootProject.libs.ornament)
         implementation(rootProject.libs.koin)
 
         testImplementation(kotlin("test"))
@@ -66,10 +49,6 @@ allprojects {
     kotlin {
         jvmToolchain(8)
     }
-
-    tasks.test {
-        useJUnitPlatform()
-    }
 }
 
 
@@ -84,19 +63,10 @@ tasks.register<Jar>("sourcesJar") {
 }
 
 
-license {
-    header(project.file("HEADER"))
-    properties {
-        set("year", "2024-present")
-        set("name", authorName)
-    }
-}
-
-
 val repoUsernameProp = "NDK_REPO_USERNAME"
 val repoPasswordProp = "NDK_REPO_PASSWORD"
-val repoUsername = System.getenv(repoUsernameProp)
-val repoPassword = System.getenv(repoPasswordProp)
+val repoUsername: String? = System.getenv(repoUsernameProp)
+val repoPassword: String? = System.getenv(repoPasswordProp)
 
 if (repoUsername.isNullOrBlank() || repoPassword.isNullOrBlank())
     throw GradleException("Environment variables $repoUsernameProp and $repoPasswordProp must be set.")
@@ -108,6 +78,10 @@ publishing {
             artifactId = project.name
             version = project.version.toString()
 
+            // Use shadowJar as the main artifact
+            val shadowJar by tasks
+            artifact(shadowJar)
+
             pom {
                 developers {
                     developer {
@@ -117,12 +91,7 @@ publishing {
                 }
             }
 
-
-            from(components["kotlin"])
-
             afterEvaluate {
-
-                // Source jar
                 artifact(tasks.named("sourcesJar", Jar::class.java))
             }
         }
@@ -161,8 +130,6 @@ tasks.withType<ShadowJar> {
         configurations.add(project.configurations.runtimeClasspath.get())
     }
 
-//    println("Relocating dependencies")
-//
 //    // Shared
 //    reloc("de.tr7zw.changeme.nbtapi")
 //    reloc("dev.nikdekur.ndkore")

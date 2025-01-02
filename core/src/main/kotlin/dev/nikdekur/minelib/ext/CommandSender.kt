@@ -4,6 +4,6 @@ package dev.nikdekur.minelib.ext
 
 import org.bukkit.command.CommandSender
 
-inline fun CommandSender.sendSimpleMessage(message: String) {
-    sendMessage(message.applyColors())
+inline fun CommandSender.sendSimpleMessage(message: Any, applyColors: Boolean = true) {
+    sendMessage(message.toString().let { if (applyColors) it.applyColors() else it })
 }

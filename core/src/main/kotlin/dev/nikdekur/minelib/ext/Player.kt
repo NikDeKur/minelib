@@ -2,7 +2,8 @@
 
 package dev.nikdekur.minelib.ext
 
-import dev.nikdekur.minelib.MineLib
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -53,28 +54,6 @@ inline fun Player.getTargetUpLocation(maxDistance: Int, transparent: Set<Materia
 
 
 /**
- * Method to set the player's walk speed.
- *
- * Method uses direct NMS to prevent you from stacking into Bukkit's limits, but it's still safe to use.
- *
- * @param speed the speed to set (from 0 to 1)
- */
-inline fun Player.setHighWalkSpeed(speed: Float) {
-    MineLib.versionAdapter.setHighWalkSpeed(this, speed)
-}
-
-/**
- * Method to set the player's fly speed.
- *
- * Method uses direct NMS to prevent you from stacking into Bukkit's limits, but it's still safe to use.
- *
- * @param speed the speed to set (from 0 to 1)
- */
-inline fun Player.setHighFlySpeed(speed: Float) {
-    MineLib.versionAdapter.setHighFlySpeed(this, speed)
-}
-
-/**
  * Set the player's experience depends on 2 variables:
  *
  * Player has: [has] and out from: [outFrom]
@@ -90,4 +69,9 @@ inline fun Player.setExp(has: Number, outFrom: Number): Float {
     require(experience in 0f..1f) { "Experience must be in range 0-1 (inclusive)" }
     this.exp = experience
     return experience
+}
+
+
+inline fun Player.sendActionBar(message: String, applyColors: Boolean = true) {
+    spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(message.applyColors().let { if (applyColors) it.applyColors() else it }))
 }

@@ -1,6 +1,7 @@
 package dev.nikdekur.minelib.i18n
 
-import dev.nikdekur.minelib.i18n.locale.Locale
+import dev.nikdekur.ornament.i18n.Locale
+import dev.nikdekur.ornament.i18n.toLocale
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -11,7 +12,7 @@ object BukkitLocaleProvider : PlayerLocaleProvider {
     override fun getLocale(sender: CommandSender): Locale? {
         return (sender as? Player)?.let {
             val locale = it.locale
-            Locale.fromCode(locale)
+            locale.toLocale()
         }
     }
 

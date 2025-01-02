@@ -2,42 +2,31 @@
 
 package dev.nikdekur.minelib.ext
 
-import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.Message
-import dev.nikdekur.minelib.i18n.locale.Locale
-import dev.nikdekur.minelib.i18n.msg.MessageReference
-import dev.nikdekur.ndkore.placeholder.PlaceholderParser
-import dev.nikdekur.ndkore.service.getService
+import dev.nikdekur.ornament.i18n.Key
 import org.bukkit.command.CommandSender
 
 
-inline val CommandSender.locale: Locale
-    get() = MineLib.instance.servicesManager.getService<I18nService>().getLocale(this)
+inline fun I18nService.getLangMsg(key: Key) =
+    Message(translateKey(key))
 
-inline fun CommandSender.getLangMsg(
-    msg: MessageReference,
-    vararg placeholders: Pair<String, Any?>,
-    parser: PlaceholderParser? = null
-): Message {
-    val service = MineLib.instance.servicesManager.getService<I18nService>()
-    return service.getMessage(locale, msg, *placeholders, parser = parser)
+inline fun I18nService.getLangMsg(key: Key, sender: CommandSender) =
+    getLangMsg(
+        key = key.withLocale(getLocale(sender))
+    )
+
+inline fun I18nService.sendLangMsg(
+    sender: CommandSender,
+    key: Key
+) {
+    getLangMsg(key, sender).send(sender)
 }
 
 
-inline fun CommandSender.sendLangMsg(
-    msg: MessageReference,
-    vararg placeholders: Pair<String, Any?>,
-    parser: PlaceholderParser? = null
+inline fun I18nService.sendTitleLangMsg(
+    sender: CommandSender,
+    key: Key,
 ) {
-    getLangMsg(msg, *placeholders, parser = parser).send(this)
-}
-
-
-inline fun CommandSender.sendTitleLangMsg(
-    msg: MessageReference,
-    vararg placeholders: Pair<String, Any?>,
-    parser: PlaceholderParser? = null
-) {
-    getLangMsg(msg, *placeholders, parser = parser).sendTitle(this)
+    getLangMsg(key, sender).sendTitle(sender)
 }
