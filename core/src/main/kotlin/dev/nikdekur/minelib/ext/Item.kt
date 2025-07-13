@@ -1,4 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE")
+@file:OptIn(ExperimentalContracts::class)
 
 package dev.nikdekur.minelib.ext
 
@@ -16,13 +17,21 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 
 inline fun ItemStack?.isEmpty(): Boolean {
+
+    contract {
+        returns(false) implies (this@isEmpty != null)
+    }
+
     if (this == null) return true
-    if (type == Material.AIR) return true
-    if (amount == 0) return true
+    if (type.isAir) return true
+    if (amount <= 0) return true
     if (itemMeta == null) return true
+
     return false
 }
 

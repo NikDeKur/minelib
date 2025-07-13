@@ -1,19 +1,18 @@
 package dev.nikdekur.minelib.rpg.update
 
 import dev.nikdekur.minelib.rpg.profile.RPGProfile
-import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.scheduler.PluginScheduler
 import org.bukkit.scheduler.BukkitTask
 import java.util.*
-import kotlin.time.Duration
 
 abstract class FixedRateUpdater(
-    val scheduler: Scheduler,
+    val scheduler: PluginScheduler,
     val profile: RPGProfile
 ) : StatUpdater {
 
     override val id: UUID = UUID.randomUUID()
 
-    abstract val frequency: Duration
+    abstract val frequency: Long
 
     var task: BukkitTask? = null
 

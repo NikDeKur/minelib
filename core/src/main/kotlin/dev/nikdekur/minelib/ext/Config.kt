@@ -4,26 +4,49 @@ package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.utils.AbstractLocation
 import dev.nikdekur.ndkore.ext.forEachSafe
+import dev.nikdekur.ndkore.ext.r_GetField
 import dev.nikdekur.ndkore.ext.toJUUIDOrNull
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.configuration.file.YamlRepresenter
 import org.bukkit.util.NumberConversions
 import org.bukkit.util.Vector
+import org.yaml.snakeyaml.DumperOptions
 import java.text.DecimalFormat
 
-val ConfigurationSection.keys: MutableSet<String>
+inline val ConfigurationSection.keys: MutableSet<String>
     get() = getKeys(false)
 
-val ConfigurationSection.allKeys: MutableSet<String>
+inline val ConfigurationSection.allKeys: MutableSet<String>
     get() = getKeys(true)
 
 
-fun ConfigurationSection.copyTo(section: ConfigurationSection) {
+inline fun ConfigurationSection.copyTo(section: ConfigurationSection) {
     pairs.forEach(section::set)
 }
 
-fun ConfigurationSection.getOrThrow(path: String): Any {
+inline val YamlConfiguration.dumperOptions: DumperOptions
+    get() = r_GetField("yamlOptions").value as DumperOptions
+
+
+inline val YamlConfiguration.representer: YamlRepresenter
+    get() = r_GetField("yamlRepresenter").value as YamlRepresenter
+
+inline var YamlConfiguration.lineBreakWidth: Int
+    get() = dumperOptions.width
+    set(value) { dumperOptions.width = value }
+
+inline var YamlConfiguration.splitLines: Boolean
+    get() = dumperOptions.splitLines
+    set(value) { dumperOptions.splitLines = value }
+
+inline var YamlConfiguration.scalarStyle: DumperOptions.ScalarStyle
+    get() = dumperOptions.defaultScalarStyle
+    set(value) { dumperOptions.defaultScalarStyle = value }
+
+inline fun ConfigurationSection.getOrThrow(path: String): Any {
     return get(path) ?: throwNotFound(path)
 }
 
@@ -31,15 +54,15 @@ inline fun ConfigurationSection.getSection(path: String): ConfigurationSection? 
     return getConfigurationSection(path)
 }
 
-fun ConfigurationSection.getSectionOrThrow(path: String): ConfigurationSection {
+inline fun ConfigurationSection.getSectionOrThrow(path: String): ConfigurationSection {
     return getSection(path) ?: throwNotFound(path)
 }
 
-fun ConfigurationSection.getListSection(): List<ConfigurationSection> {
+inline fun ConfigurationSection.getListSection(): List<ConfigurationSection> {
     return keys.mapNotNull { getSection(it) }
 }
 
-fun ConfigurationSection.getListSection(path: String): List<ConfigurationSection> {
+inline fun ConfigurationSection.getListSection(path: String): List<ConfigurationSection> {
     return getSection(path)?.getListSection() ?: return emptyList()
 }
 
@@ -59,7 +82,7 @@ inline fun ConfigurationSection.forEachSectionSafe(path: String, action: (Config
 
 val VECTOR_ZERO = Vector(0, 0, 0)
 
-fun ConfigurationSection.readVectorOrThrow(path: String): Vector {
+inline fun ConfigurationSection.readVectorOrThrow(path: String): Vector {
     val serialized = getStringOrThrow(path)
     val coords = serialized.substring(1, serialized.length - 1)
         .split(",")
@@ -68,7 +91,7 @@ fun ConfigurationSection.readVectorOrThrow(path: String): Vector {
     return Vector(coords[0], coords[1], coords[2])
 }
 
-fun ConfigurationSection.readVector(path: String, default: Vector? = null): Vector? {
+inline fun ConfigurationSection.readVector(path: String, default: Vector? = null): Vector? {
     return try {
         readVectorOrThrow(path)
     } catch (e: Exception) {

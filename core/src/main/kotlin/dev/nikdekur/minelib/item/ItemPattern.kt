@@ -3,7 +3,8 @@
 package dev.nikdekur.minelib.item
 
 import dev.nikdekur.minelib.ext.*
-import dev.nikdekur.minelib.i18n.I18nService
+import dev.nikdekur.minelib.i18n.locale.LocaleProvider
+import dev.nikdekur.minelib.i18n.sender.PlayerContext
 import dev.nikdekur.ndkore.ext.toTArray
 import dev.nikdekur.ornament.i18n.Key
 import org.bukkit.Color
@@ -11,7 +12,6 @@ import org.bukkit.DyeColor
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
-import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Item
@@ -20,12 +20,12 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
 import java.util.function.BiConsumer
 
 class ItemPattern {
-
-
     var material: Material = Material.STONE
     fun setMaterial(material: Material): ItemPattern {
         this.material = material
@@ -82,29 +82,27 @@ class ItemPattern {
 
 
 
-    fun I18nService.getFinalDisplayName(
-        sender: CommandSender?,
+    fun getFinalDisplayName(
+        localeProvider: LocaleProvider?,
         modify: (Key) -> Key
     ): String? {
-        return if (sender != null && displayNameKey != null) {
-            val modify = { it: Key -> modify(it.withLocale(getLocale(sender))) }
-            getLangMsg(modify(displayNameKey!!), sender).text
+        return if (localeProvider != null && displayNameKey != null) {
+            localeProvider.translate(modify(displayNameKey!!))
         } else {
             displayName
         }
     }
 
 
-    fun I18nService.getFinalLore(
-        sender: CommandSender?,
+    fun getFinalLore(
+        localeProvider: LocaleProvider?,
         modify: (Key) -> Key
     ): List<String> {
-        val lore = loreKeys
-        return if (sender != null && lore != null) {
-            val modify = { it: Key -> modify(it.withLocale(getLocale(sender))) }
-            lore.map(modify).flatMap { getLangMsg(it, sender).listText }
+        val keys: Collection<Key>? = loreKeys
+        return if (localeProvider != null && keys != null) {
+            keys.map(modify).map(localeProvider::translate)
         } else {
-            this@ItemPattern.lore
+            lore
         }
     }
 
@@ -124,6 +122,12 @@ class ItemPattern {
 
     val hideFlags = ArrayList<ItemFlag>()
     fun addFlags(vararg flags: ItemFlag): ItemPattern {
+        hideFlags.addAll(flags)
+        return this
+    }
+
+
+    fun addFlags(flags: Collection<ItemFlag>): ItemPattern {
         hideFlags.addAll(flags)
         return this
     }
@@ -165,7 +169,7 @@ class ItemPattern {
     /**
      * @return true by default, false if item is not droppable
      */
-    fun isTouchable() = getTag("touchable") as? Boolean ?: true
+    fun isTouchable() = getTag("touchable") as? Boolean != false
 
 
 
@@ -273,19 +277,18 @@ class ItemPattern {
 
 
     fun build(
-        i18n: I18nService? = null,
+        localeProvider: LocaleProvider? = null,
         player: Player? = null,
         modify: (Key) -> Key = { it }
     ): ItemStack {
         @Suppress("DEPRECATION")
         val item = ItemStack(material, amount, durability, data)
 
-        tags.forEach(item::setTag)
-
-        val finalDisplay = i18n?.getFinalDisplayName(player, modify)
+        val finalDisplay = getFinalDisplayName(localeProvider, modify)
         if (finalDisplay != null) item.setDisplayName(finalDisplay)
-        val finalLore = i18n?.getFinalLore(player, modify)
-        if (!finalLore.isNullOrEmpty()) item.setLore(finalLore)
+
+        val finalLore = getFinalLore(localeProvider, modify)
+        if (finalLore.isNotEmpty()) item.setLore(finalLore)
 
         enchantments.forEach { (enchantment, level) ->
             item.addEnchantment(enchantment, level)
@@ -303,10 +306,10 @@ class ItemPattern {
                 this.isUnbreakable = unbreakable
 
             @Suppress("DEPRECATION")
-            if (this is org.bukkit.inventory.meta.SkullMeta)
+            if (this is SkullMeta)
                 this.owner = skullOwner
 
-            if (this is org.bukkit.inventory.meta.LeatherArmorMeta)
+            if (this is LeatherArmorMeta)
                 this.color = armorColor
         }
 
@@ -319,6 +322,8 @@ class ItemPattern {
         onBuild.forEach {
             it.accept(item, player)
         }
+
+        tags.forEach(item::setTag)
 
         return item
     }
@@ -345,3 +350,12 @@ class ItemPattern {
         }
     }
 }
+
+inline fun ItemPattern.build(
+    playerContext: PlayerContext,
+    noinline modify: (Key) -> Key = { it }
+) = build(
+    localeProvider = playerContext.localeProvider,
+    player = playerContext.sender,
+    modify = modify
+)

@@ -1,20 +1,20 @@
 package dev.nikdekur.minelib.scoreboard
 
+import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreatedEvent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
-import dev.nikdekur.minelib.scoreboard.events.AssembleBoardCreatedEvent
 
 /**
  * Assemble Board.
  *
  * @param player that the board belongs to.
- * @param scoreboardManager instance.
+ * @param assembleScoreboardService instance.
  */
-class AssembleBoard(val player: Player, private val scoreboardManager: ScoreboardManager) {
+class AssembleBoard(val player: Player, private val assembleScoreboardService: AssembleScoreboardService) {
     val entries = ArrayList<AssembleBoardEntry>()
     val identifiers = ArrayList<String>()
 
@@ -30,7 +30,7 @@ class AssembleBoard(val player: Player, private val scoreboardManager: Scoreboar
          * @return either existing scoreboard or new scoreboard.
          */
         get() {
-            return if (scoreboardManager.isHook || player.scoreboard !== Bukkit.getScoreboardManager().mainScoreboard) {
+            return if (assembleScoreboardService.isHook || player.scoreboard !== Bukkit.getScoreboardManager().mainScoreboard) {
                 player.scoreboard
             } else {
                 Bukkit.getScoreboardManager().newScoreboard
@@ -48,7 +48,7 @@ class AssembleBoard(val player: Player, private val scoreboardManager: Scoreboar
             if (scoreboard.getObjective("Assemble") == null) {
                 val objective: Objective = scoreboard.registerNewObjective("Assemble", "dummy")
                 objective.displaySlot = DisplaySlot.SIDEBAR
-                objective.displayName = scoreboardManager.adapter.getTitle(player)
+                objective.displayName = assembleScoreboardService.adapter.getTitle(player)
                 return objective
             } else {
                 return scoreboard.getObjective("Assemble")
@@ -64,7 +64,7 @@ class AssembleBoard(val player: Player, private val scoreboardManager: Scoreboar
         player.scoreboard = scoreboard
 
         // Call Events if enabled.
-        if (scoreboardManager.isCallEvents) {
+        if (assembleScoreboardService.isCallEvents) {
             val createdEvent = AssembleBoardCreatedEvent(this)
             Bukkit.getPluginManager().callEvent(createdEvent)
         }

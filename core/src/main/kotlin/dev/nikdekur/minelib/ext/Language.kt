@@ -4,6 +4,8 @@ package dev.nikdekur.minelib.ext
 
 import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.Message
+import dev.nikdekur.minelib.i18n.sender.SenderContext
+import dev.nikdekur.minelib.i18n.locale.LocaleProvider
 import dev.nikdekur.ornament.i18n.Key
 import org.bukkit.command.CommandSender
 
@@ -29,4 +31,25 @@ inline fun I18nService.sendTitleLangMsg(
     key: Key,
 ) {
     getLangMsg(key, sender).sendTitle(sender)
+}
+
+
+
+
+
+
+inline fun LocaleProvider.getLangMsg(key: Key) =
+    Message(translate(key))
+
+inline fun SenderContext.sendLangMsg(
+    key: Key
+) {
+    localeProvider.getLangMsg(key).send(sender)
+}
+
+
+inline fun SenderContext.sendTitleLangMsg(
+    key: Key,
+) {
+    localeProvider.getLangMsg(key).sendTitle(sender)
 }

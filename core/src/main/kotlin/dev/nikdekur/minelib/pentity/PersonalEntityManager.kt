@@ -1,42 +1,20 @@
 package dev.nikdekur.minelib.pentity
 
-import dev.nikdekur.minelib.hologram.EntityWithHologram
-import dev.nikdekur.minelib.hologram.EntityWithHologramData
-import dev.nikdekur.minelib.hologram.Hologram
-import dev.nikdekur.minelib.hologram.HologramData
 import org.bukkit.World
-import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.*
 
 interface PersonalEntityManager {
-
     val world: World
 
-    fun newEntity(data: PersonalEntityData): PersonalEntity
-    fun newHologram(data: HologramData): Hologram
-    fun newEntityWithHologram(data: EntityWithHologramData): EntityWithHologram
+    fun <C : PersonalEntityContext> createEntity(builder: PersonalEntityBuilder<C>): PersonalEntity<C>
 
-    fun registerEntity(npc: PersonalEntity)
-    fun unregisterEntity(entityId: UUID)
-    fun getEntity(npcId: UUID): PersonalEntity?
+    fun getEntity(bukkitEntityId: Int): PersonalEntity<*> ?
 
-
-
-
-    fun registerPersonalEntity(entity: PersonalEntity, personalEntity: Entity)
-    fun unregisterPersonalEntity(entityId: Int)
-    fun getEntityByPersonalEntity(entityId: Int): PersonalEntity?
-
-    fun updateAllEntitiesFor(player: Player)
-    fun clear(player: Player)
-
-
-    fun unload()
+    fun removeAll(player: Player)
+    fun removeAll()
 }
 
-
-inline fun PersonalEntityManager.newEntity(builder: PersonalEntityBuilder.() -> Unit): PersonalEntity {
-    val data = PersonalEntityBuilder().apply(builder).build()
-    return newEntity(data)
+interface PersonalEntityBuilder<C : PersonalEntityContext> {
+    fun build(world: World): PersonalEntity<C>
 }
+

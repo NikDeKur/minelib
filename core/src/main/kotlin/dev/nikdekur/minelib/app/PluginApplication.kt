@@ -2,12 +2,14 @@ package dev.nikdekur.minelib.app
 
 import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin
+import dev.nikdekur.ndkore.scheduler.Scheduler
 import dev.nikdekur.ornament.Application
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import java.io.File
 
 interface PluginApplication : Application, ServerPlugin {
+    val scheduler: Scheduler
 
     val onlinePlayers: Collection<Player>
 

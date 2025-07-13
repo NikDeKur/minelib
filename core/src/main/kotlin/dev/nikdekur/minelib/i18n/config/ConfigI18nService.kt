@@ -1,18 +1,24 @@
 @file:Suppress("NOTHING_TO_INLINE")
+@file:OptIn(UnsafeReflectAPI::class)
 
 package dev.nikdekur.minelib.i18n.config
 
 import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.minelib.app.PluginApplication
+import dev.nikdekur.minelib.config.CustomYamlRepresenter
+import dev.nikdekur.minelib.config.SmartYamlConfiguration
 import dev.nikdekur.minelib.i18n.BukkitLocaleProvider
 import dev.nikdekur.minelib.i18n.I18nService
 import dev.nikdekur.minelib.i18n.PlayerLocaleProvider
+import dev.nikdekur.minelib.i18n.YamlBundleUtils.EMPTY_CHAR
 import dev.nikdekur.minelib.i18n.locale.LocaleConfig
 import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.ndkore.ext.addById
 import dev.nikdekur.ndkore.map.MultiMap
-import dev.nikdekur.ndkore.placeholder.JVMReflectMethod
 import dev.nikdekur.ndkore.placeholder.PatternPlaceholderParser
+import dev.nikdekur.ndkore.reflect.JVMReflectMethod
+import dev.nikdekur.ndkore.reflect.UnsafeReflectAPI
+import dev.nikdekur.ndkore.service.Service
 import dev.nikdekur.ndkore.service.dependencies
 import dev.nikdekur.ndkore.service.inject
 import dev.nikdekur.ornament.dataset.DataSetService
@@ -21,7 +27,8 @@ import dev.nikdekur.ornament.i18n.Key
 import dev.nikdekur.ornament.i18n.Locale
 import dev.nikdekur.ornament.i18n.toLanguageTag
 import org.bukkit.command.CommandSender
-import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.configuration.ConfigurationSection
+import org.yaml.snakeyaml.DumperOptions
 import java.io.File
 import dev.nikdekur.ornament.i18n.I18nService as OrnamentI18nService
 
@@ -89,8 +96,8 @@ class ConfigI18nService(
 
     override suspend fun saveBundle(
         id: String,
-        messages: Collection<Key>,
-        translations: MultiMap<Locale, String, String>
+        translations: MultiMap<Locale, String, String>,
+        merge: Boolean
     ) {
         val bundleName = id.lowercase()
         val bundleDir = File(i18nDir, bundleName)
@@ -100,32 +107,59 @@ class ConfigI18nService(
         translations.forEach { locale, translations ->
             val code = locale.toLanguageTag()
             val langFile = File(bundleDir, "${code}.yml")
-            val langConfig = YamlConfiguration.loadConfiguration(langFile)
-            val defaultTranslationsMap = translations.mapKeys { it.key }
+            langFile.createNewFile() // Making sure the file exists.
+
+            val representer = CustomYamlRepresenter()
+            val dumperOptions = DumperOptions().apply {
+                splitLines = false
+            }
+
+            val langConfig = SmartYamlConfiguration(
+                yamlOptions = dumperOptions,
+                yamlRepresenter = representer
+            )
+            langConfig.options().pathSeparator(EMPTY_CHAR)
+
+
+            if (merge) {
+                langConfig.load(langFile)
+            }
+
 
             // Check if there are any missing translations
-            val anyMissed = defaultTranslationsMap.keys.any { it !in langConfig }
+            val anyMissed = translations.keys.any { it !in langConfig }
 
             // If there are no missing translations, skip this locale
             if (!anyMissed) return@forEach
 
             // If some translations are missing, recreate config to add them (in right order)
             // Fill the new config with all translations with priority to the existing ones
-            val newConfig = YamlConfiguration()
-            defaultTranslationsMap.forEach { (key, defaultValue) ->
-                val value = langConfig[key] ?: defaultValue
-                newConfig[key] = when (value) {
-                    is String -> if (value.contains("\n")) value.split("\n") else value
-                    is Collection<*> -> value
-                    else -> value.toString()
-                }
-            }
+            mergeYaml(translations, langConfig)
 
             // Save the new config
-            newConfig.save(langFile)
+            langConfig.save(langFile)
         }
 
-        // (i18n as Service).reload()
+        (i18nDataset as Service).reload()
+    }
+
+    fun mergeYaml(
+        source: Map<String, String>,
+        with: ConfigurationSection
+    ) {
+        source.forEach { (key, requiredValue) ->
+            if (!with.contains(key)) {
+                with[key] = valueToProperType(requiredValue)
+            }
+        }
+    }
+
+    fun valueToProperType(value: Any): Any {
+        return when (value) {
+            is String -> if (value.contains("\n")) value.split("\n") else value
+            is Collection<*> -> value
+            else -> value.toString()
+        }
     }
 
 //    override fun getMessage(
@@ -154,4 +188,20 @@ class ConfigI18nService(
 
     override fun hasKey(key: Key) = i18n.hasKey(key)
     override fun translateKey(key: Key) = i18n.translateKey(key.withParser(key.parser ?: defaultParser))
+
+//        .also {
+//        val service = i18nDataset as YamlKtMultiFileDataSetService<*>
+//        println(service.delegate.map)
+//        val bundle = (key.bundle ?: Bundle.Default).name
+//        println("Bundle: $bundle")
+//        val bundleSection = service.getSection(bundle)
+//        println("Found: $bundleSection")
+//        val languageTag = (key.locale ?: defaultLocale).toLanguageTag()
+//        println("Locale: $languageTag")
+//        val localeSection = bundleSection?.getSection(languageTag)
+//        println("Locale Section: $localeSection")
+//        val keyValue = localeSection?.get<String>(key.key)
+//        println("Key value: $keyValue")
+//        println("Requested translation for key: $key -> $it")
+//    }
 }

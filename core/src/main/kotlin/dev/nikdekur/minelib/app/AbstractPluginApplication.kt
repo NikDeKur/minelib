@@ -4,6 +4,7 @@ import dev.nikdekur.minelib.command.api.ServerCommand
 import dev.nikdekur.minelib.plugin.ServerPlugin
 import dev.nikdekur.ndkore.ext.forEachSafe
 import dev.nikdekur.ndkore.koin.SimpleKoinContext
+import dev.nikdekur.ndkore.scheduler.Scheduler
 import dev.nikdekur.ndkore.service.manager.KoinServicesManager
 import dev.nikdekur.ndkore.service.manager.ServicesManager
 import dev.nikdekur.ornament.AbstractApplication
@@ -12,11 +13,17 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.koin.environmentProperties
 import java.io.File
+import kotlin.properties.Delegates
 
 abstract class AbstractPluginApplication(
     override val environment: Environment,
     val plugin: ServerPlugin
 ) : AbstractApplication(), PluginApplication, ServerPlugin by plugin {
+
+
+    override var scheduler: Scheduler by Delegates.notNull()
+
+    abstract fun createScheduler(): Scheduler
 
 
     override val onlinePlayers: Collection<Player>
@@ -28,8 +35,15 @@ abstract class AbstractPluginApplication(
 
     override fun whenFinishReload() {
         super.whenFinishReload()
+        scheduler = createScheduler()
         registerComponents()
     }
+
+    override fun whenStartReload() {
+        super.whenStartReload()
+        scheduler.shutdown()
+    }
+
 
 
     /**

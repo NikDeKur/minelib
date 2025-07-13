@@ -2,7 +2,7 @@ package dev.nikdekur.minelib.plugin
 
 import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.command.api.ServerCommand
-import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.scheduler.DelegatePluginScheduler
 import dev.nikdekur.ornament.environment.Environment
 import org.bukkit.Server
 import org.bukkit.command.Command
@@ -27,7 +27,7 @@ open class TestServer(
     val environment: Environment,
     plugin: TestServerPlugin
 ) : ServerPlugin {
-    override val scheduler = Scheduler(this)
+    override val bukkitScheduler = DelegatePluginScheduler(this)
 
     override val clazzLoader: ClassLoader
         get() = this::class.java.classLoader

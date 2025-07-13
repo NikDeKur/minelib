@@ -1,12 +1,17 @@
 package dev.nikdekur.minelib.nms
 
 import dev.nikdekur.minelib.app.PluginApplication
-import dev.nikdekur.minelib.service.PluginService
+import dev.nikdekur.ndkore.service.manager.ServicesManager
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 interface VersionAdapter {
+
+    val components: Collection<Any>
+        get() = emptyList()
+
+    suspend fun ServicesManager.registerServices() {}
 
     /**
      * Expand the entity bounding box to the axis values
@@ -29,12 +34,12 @@ interface VersionAdapter {
 
 
     companion object {
-        fun <A> findAdapter(app: PluginApplication, version: String): A? where A : VersionAdapter, A : PluginService {
+        fun findAdapter(app: PluginApplication, version: String): VersionAdapter? {
 
             @Suppress("UNCHECKED_CAST", "kotlin:S6530")
             val adapterClazz = try {
                 Class.forName("dev.nikdekur.minelib.$version.VersionAdapter_$version")
-                        as? Class<A>
+                        as? Class<VersionAdapter>
             } catch (_: ClassNotFoundException) {
                 return null
             }

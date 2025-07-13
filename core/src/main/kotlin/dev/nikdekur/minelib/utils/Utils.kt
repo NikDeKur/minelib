@@ -85,5 +85,5 @@ val isPrimaryThread: Boolean
 
 
 inline fun requireMainThread(operation: String) {
-    require(isPrimaryThread) { "Operation '$operation' must be called from the main thread!" }
+    require(isPrimaryThread) { "Operation '$operation' must be called from the main thread! Called from thread: ${Thread.currentThread().name}" }
 }

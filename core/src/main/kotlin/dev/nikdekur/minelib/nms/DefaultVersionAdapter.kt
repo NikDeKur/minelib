@@ -5,7 +5,7 @@ import dev.nikdekur.minelib.service.PluginService
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
-class DefaultVersionAdapter(
+open class DefaultVersionAdapter(
     override val app: PluginApplication
 ) : PluginService(), VersionAdapter {
 

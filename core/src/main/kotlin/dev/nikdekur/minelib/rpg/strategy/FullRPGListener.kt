@@ -9,7 +9,9 @@ import dev.nikdekur.ndkore.service.inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
-class FullRPGListener(override val app: PluginApplication) : PluginListener {
+class FullRPGListener(
+    override val app: PluginApplication
+) : PluginListener {
 
     val rpgService: RPGProfilesService by inject(MineLib.Qualifier)
 

@@ -2,12 +2,10 @@ package dev.nikdekur.minelib.scoreboard
 
 import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.online
-import dev.nikdekur.minelib.utils.debug
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
-import java.util.*
 
-class AssembleThread internal constructor(val manager: ScoreboardManager) : Thread("Assemble Thread") {
+class AssembleThread internal constructor(val manager: AssembleScoreboardService) : Thread("Assemble Thread") {
 
     /**
      * Assemble Thread.
@@ -47,7 +45,6 @@ class AssembleThread internal constructor(val manager: ScoreboardManager) : Thre
     }
 
     private fun tickPlayer(player: Player) {
-        debug("Tick player ${player.name}")
         if (manager.cooldownManager.hasCooldown(player.uniqueId)) return
 
         val board = manager.boards[player.uniqueId] ?: return

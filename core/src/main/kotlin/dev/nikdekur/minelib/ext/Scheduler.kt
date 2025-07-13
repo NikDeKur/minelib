@@ -2,10 +2,12 @@
 
 package dev.nikdekur.minelib.ext
 
-import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.scheduler.PluginScheduler
 import dev.nikdekur.minelib.utils.isPrimaryThread
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitScheduler
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -29,11 +31,12 @@ inline val Duration.inWholeTicks: Long
  * @param runnable The task to run
  * @see Scheduler.runTask
  */
-inline fun Scheduler.runSync(runnable: Runnable) {
-    if (isPrimaryThread) {
-        runnable.run()
+inline fun <T> PluginScheduler.runSync(noinline func: () -> T): Future<T> {
+    return if (isPrimaryThread) {
+        val result = func()
+        return CompletableFuture.completedFuture(result)
     } else {
-        runTask(runnable)
+        callSyncMethod(func)
     }
 }
 
@@ -44,13 +47,14 @@ inline fun Scheduler.runSync(runnable: Runnable) {
  *
  * If the current thread is not the main thread, the task will be executed on next tick via [Scheduler.runTask].
  *
- * @param runnable The task to run
+ * @param func The task to run
  * @see Scheduler.runTask
  */
-inline fun BukkitScheduler.runSync(plugin: Plugin, runnable: Runnable) {
-    if (isPrimaryThread) {
-        runnable.run()
+inline fun <T> BukkitScheduler.runSync(plugin: Plugin, noinline func: () -> T): Future<T> {
+    return if (isPrimaryThread) {
+        val result = func()
+        return CompletableFuture.completedFuture(result)
     } else {
-        runTask(plugin, runnable)
+        callSyncMethod(plugin, func)
     }
 }

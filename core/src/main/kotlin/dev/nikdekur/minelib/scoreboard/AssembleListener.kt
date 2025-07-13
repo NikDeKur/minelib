@@ -10,13 +10,13 @@ import dev.nikdekur.minelib.scoreboard.events.AssembleBoardDestroyEvent
 /**
  * Assemble Listener.
  *
- * @param scoreboardManager instance.
+ * @param assembleScoreboardService instance.
  */
-class AssembleListener(private val scoreboardManager: ScoreboardManager) : Listener {
+class AssembleListener(private val assembleScoreboardService: AssembleScoreboardService) : Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         // Call Events if enabled.
-        if (scoreboardManager.isCallEvents) {
+        if (assembleScoreboardService.isCallEvents) {
             val createEvent = AssembleBoardCreateEvent(event.player)
 
             Bukkit.getPluginManager().callEvent(createEvent)
@@ -25,13 +25,13 @@ class AssembleListener(private val scoreboardManager: ScoreboardManager) : Liste
             }
         }
 
-        scoreboardManager.boards[event.player.uniqueId] = AssembleBoard(event.player, scoreboardManager)
+        assembleScoreboardService.boards[event.player.uniqueId] = AssembleBoard(event.player, assembleScoreboardService)
     }
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
         // Call Events if enabled.
-        if (scoreboardManager.isCallEvents) {
+        if (assembleScoreboardService.isCallEvents) {
             val destroyEvent = AssembleBoardDestroyEvent(event.player)
 
             Bukkit.getPluginManager().callEvent(destroyEvent)
@@ -40,7 +40,7 @@ class AssembleListener(private val scoreboardManager: ScoreboardManager) : Liste
             }
         }
 
-        scoreboardManager.boards.remove(event.player.uniqueId)
+        assembleScoreboardService.boards.remove(event.player.uniqueId)
         event.player.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
     }
 }

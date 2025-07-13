@@ -42,7 +42,7 @@ open class CommandContext(
         get() = !isPlayer
 
     val player
-        get() = if (sender is Player) sender else error("CommandSender is not a Player")
+        get() = sender as? Player ?: error("CommandSender is not a Player")
 
     val argsSize
         get() = args.size

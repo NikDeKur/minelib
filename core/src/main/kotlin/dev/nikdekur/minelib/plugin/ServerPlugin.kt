@@ -1,7 +1,7 @@
 package dev.nikdekur.minelib.plugin
 
 import dev.nikdekur.minelib.command.api.ServerCommand
-import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.scheduler.PluginScheduler
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 
@@ -14,9 +14,9 @@ interface ServerPlugin : Plugin {
      *
      * All plugin tasks would be automatically cancelled straight after reloading.
      *
-     * @return [Scheduler]
+     * @return [BukkitScheduler]
      */
-    val scheduler: Scheduler
+    val bukkitScheduler: PluginScheduler
 
 
     /**

@@ -7,7 +7,11 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
 
-interface PersonalEntity : Unique<UUID> {
+interface PersonalEntityContext {
+    val player: Player
+}
+
+interface PersonalEntity<C : PersonalEntityContext> : Unique<UUID> {
 
     val world: World
 
@@ -16,32 +20,7 @@ interface PersonalEntity : Unique<UUID> {
      */
     val viewers: Set<Player>
 
-    /**
-     * Spawn the entity for the player.
-     *
-     * The entity will be spawned only for the specific player.
-     *
-     * @param player The player for which the entity will be spawned.
-     * @return The spawned entities.
-     */
-    fun spawn(player: Player): Iterable<Entity>
-
-    /**
-     * Spawn the entity for all players in the world.
-     *
-     * Simply calls [spawn] for each player in the world.
-     */
-    fun spawnForEveryone()
-
-    /**
-     * Remove the entity for the player.
-     *
-     * The entity will be removed only for the specific player.
-     *
-     * @param player The player for which the entity will be removed.
-     */
-    fun remove(player: Player)
-
+    fun spawn(context: C): Collection<Entity>
 
     /**
      * Remove the entity for all players in the world.
@@ -52,6 +31,20 @@ interface PersonalEntity : Unique<UUID> {
      * You don't have to worry about it. You can spawn it again using [spawn] method.
      */
     fun remove()
+
+    /**
+     * Remove the entity for the player.
+     *
+     * The entity will be removed only for the specific player.
+     *
+     * @param player The player for which the entity will be removed.
+     */
+    fun remove(player: Player)
+
+    fun update(context: C) {
+        remove(context.player)
+        spawn(context)
+    }
 
     /**
      * Teleport the entity to the specified position.
@@ -89,16 +82,6 @@ interface PersonalEntity : Unique<UUID> {
      */
     fun isVisibleFor(player: Player): Boolean
 
-
-    /**
-     * Method, which will be called when the player joins the world or tracking, is updated.
-     *
-     * If the entity is already spawned for the player, this method will not be called.
-     *
-     * @param player The player to check.
-     * @return True if the entity should be spawned for the player, false otherwise.
-     */
-    fun shouldSpawn(player: Player): Boolean
 
     /**
      * Method, which will be called when the player right-clicks the entity.

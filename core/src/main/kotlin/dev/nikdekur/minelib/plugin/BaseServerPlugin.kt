@@ -3,18 +3,17 @@
 package dev.nikdekur.minelib.plugin
 
 import dev.nikdekur.minelib.command.api.ServerCommand
-import dev.nikdekur.minelib.scheduler.Scheduler
+import dev.nikdekur.minelib.scheduler.DelegatePluginScheduler
+import dev.nikdekur.minelib.scheduler.PluginScheduler
 import dev.nikdekur.minelib.utils.ClassUtils
 import dev.nikdekur.ndkore.ext.asKLogger
 import dev.nikdekur.ndkore.ext.format
-import dev.nikdekur.ndkore.ext.tryEverything
-import dev.nikdekur.ndkore.reflect.Reflect
+import dev.nikdekur.ndkore.scheduler.Scheduler
 import io.github.oshai.kotlinlogging.KLogger
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.IOException
-import java.util.logging.Logger
 import kotlin.properties.Delegates
 import kotlin.time.TimeSource
 import kotlin.time.measureTimedValue
@@ -66,7 +65,7 @@ open class BaseServerPlugin : JavaPlugin(), ServerPlugin {
     override val clazzLoader: ClassLoader
         get() = classLoader
 
-    override var scheduler: Scheduler by Delegates.notNull()
+    override var bukkitScheduler: PluginScheduler by Delegates.notNull()
 
     /**
      * Private set of listeners provided by the plugin.
@@ -129,8 +128,6 @@ open class BaseServerPlugin : JavaPlugin(), ServerPlugin {
     open fun startReload() {
         whenStartReload()
 
-        this.scheduler.cancelTasks()
-
         // Unregister all listeners that are linked to the plugin
         HandlerList.unregisterAll(this)
     }
@@ -156,34 +153,11 @@ open class BaseServerPlugin : JavaPlugin(), ServerPlugin {
 
 
 
-
     override fun onLoad() {
         loadAllPluginClasses()
 
-        scheduler = Scheduler(this)
-        setupStaticFields()
+        bukkitScheduler = DelegatePluginScheduler(this)
         whenLoad()
-    }
-
-    /**
-     * Try to set the static fields of the plugin.
-     *
-     * Function is called in [onEnable] method.
-     * If you wish to override it, be aware of this.
-     *
-     * It tries to set the following fields:
-     * - instance [ServerPlugin]
-     * - logger [Logger]
-     * - scheduler [Scheduler]
-     *
-     * If any of the fields are not found, it will be ignored.
-     */
-    protected open fun setupStaticFields() {
-        tryEverything(
-            { Reflect.setFieldValue(javaClass, null, "instance", this) },
-            { Reflect.setFieldValue(javaClass, null, "logger", kLogger) },
-            { Reflect.setFieldValue(javaClass, null, "scheduler", scheduler) }
-        )
     }
 
     open fun whenLoad() {

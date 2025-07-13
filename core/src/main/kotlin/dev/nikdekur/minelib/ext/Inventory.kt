@@ -155,6 +155,7 @@ inline fun Inventory.get(slot: InventorySlot): ItemStack? {
     if (index > -1) {
         return getItem(index)
     } else {
+
         item = if (this is PlayerInventory) {
             when (slot) {
                 MAIN_HAND -> itemInMainHand

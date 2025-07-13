@@ -2,9 +2,9 @@
 
 package dev.nikdekur.minelib.gui
 
-import dev.nikdekur.minelib.ext.applyColors
-import dev.nikdekur.minelib.service.PluginComponent
-import dev.nikdekur.ndkore.service.inject
+import dev.nikdekur.minelib.ext.getLangMsg
+import dev.nikdekur.minelib.i18n.sender.PlayerContext
+import dev.nikdekur.ornament.i18n.Key
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.*
@@ -13,11 +13,15 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.InventoryView
 import java.util.*
 
-abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginComponent {
+abstract class GUI(val playerContext: PlayerContext, val size: Int) : InventoryHolder {
 
-    val service by inject<GUIService>()
+    val player: Player
+        get() = playerContext.sender
 
     val id: UUID = UUID.randomUUID()
+
+    abstract val title: Key
+
     lateinit var inv: Inventory
     lateinit var inventoryView: InventoryView
     open val flags: Set<GUIFlag> = emptySet()
@@ -26,18 +30,12 @@ abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginC
         return inv
     }
 
-    abstract fun getTitle(): String
-    
-    val titleFinal: String
-        get() = getTitle().applyColors()
-
-
-
 
     var initialized = false
     fun init() {
-        inv = Bukkit.createInventory(this, size, titleFinal)
-        service.registerGUI(this)
+        val titleStr = playerContext.localeProvider.getLangMsg(title).text
+        inv = Bukkit.createInventory(this, size, titleStr)
+
         onCreate()
     }
     inline fun checkInit() {
@@ -68,7 +66,6 @@ abstract class GUI(val player: Player, val size: Int) : InventoryHolder, PluginC
     }
 
     open fun finish() {
-        service.unregisterGUI(this)
     }
 
     open fun closeAndFinish() {

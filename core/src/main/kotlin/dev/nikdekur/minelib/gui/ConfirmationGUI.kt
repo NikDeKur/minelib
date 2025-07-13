@@ -1,13 +1,13 @@
 package dev.nikdekur.minelib.gui
 
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.ItemStack
 import dev.nikdekur.minelib.ext.cancel
 import dev.nikdekur.minelib.ext.isEmpty
 import dev.nikdekur.minelib.ext.setTag
+import dev.nikdekur.minelib.i18n.sender.PlayerContext
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
-abstract class ConfirmationGUI(player: Player) : GUI(player, 27) {
+abstract class ConfirmationGUI(player: PlayerContext) : GUI(player, 27) {
     abstract fun getMainItem(): ItemStack
     abstract fun getConfirmItem(): ItemStack
     abstract fun getCancelItem(): ItemStack

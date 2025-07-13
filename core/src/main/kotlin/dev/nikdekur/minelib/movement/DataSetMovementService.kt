@@ -5,6 +5,7 @@ package dev.nikdekur.minelib.movement
 import dev.nikdekur.minelib.MineLib
 import dev.nikdekur.minelib.app.PluginApplication
 import dev.nikdekur.minelib.ext.call
+import dev.nikdekur.minelib.ext.inWholeTicks
 import dev.nikdekur.minelib.ext.online
 import dev.nikdekur.minelib.ext.runSync
 import dev.nikdekur.minelib.service.PluginService
@@ -14,6 +15,7 @@ import dev.nikdekur.ornament.dataset.DataSetService
 import dev.nikdekur.ornament.dataset.get
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitTask
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -29,16 +31,21 @@ class DataSetMovementService(
 
     val lastLocationMap = ConcurrentHashMap<UUID, Location>()
 
+    var updateTask: BukkitTask? = null
+
     override suspend fun onEnable() {
         val config = dataset.get<MovementConfig>("movement") ?: MovementConfig()
         val delayTicks = config.updateDelay
-        app.scheduler.runTaskTimerAsynchronously(delayTicks) {
+        updateTask = app.bukkitScheduler.runTaskTimerAsynchronously(delayTicks.inWholeTicks) {
             online.forEach(::update)
         }
     }
 
     override suspend fun onDisable() {
         lastLocationMap.clear()
+
+        updateTask?.cancel()
+        updateTask = null
     }
 
     inline fun isChanged(old: Location, new: Location): Boolean {
@@ -89,7 +96,7 @@ class DataSetMovementService(
     }
 
     override fun teleportSafe(player: Player, location: Location) {
-        app.scheduler.runSync {
+        app.bukkitScheduler.runSync {
             teleport(player, location)
         }
     }

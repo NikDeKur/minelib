@@ -1,7 +1,9 @@
 package dev.nikdekur.minelib.gui
 
-enum class GUIFlag {
-    CANNOT_TAKE,
-    CANNOT_PUT,
-    RETURN_ITEMS
+interface GUIFlag {
+    companion object {
+        val CANNOT_TAKE = object : GUIFlag {}
+        val CANNOT_PUT = object : GUIFlag {}
+        val RETURN_ITEMS = object : GUIFlag {}
+    }
 }
