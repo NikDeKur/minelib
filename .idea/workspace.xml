@@ -5,52 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b3cfc6ce-8f3f-4059-84cd-0ce1cea568db" name="Changes" comment="Many Reworks 2">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/config/CustomYamlRepresenter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/config/SmartYamlConfiguration.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/ext/Equipment.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastBoard.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastBoardBase.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastReflection.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/gui/GUIListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/YamlBundleUtils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/locale/LocaleProvider.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/sender/Contexts.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/RuntimePersonalEntityManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/RuntimePersonalEntityService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/plugin/SmartJavaPlugin.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scheduler/DelegatePluginScheduler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scheduler/PluginScheduler.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scoreboard/AssembleScoreboardService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/utils/TicksDurationSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/VersionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/VersionAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/hologram/TrackHologram.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/entity/MineEntityType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/entity/MineEntityType.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/InjectProtocolService.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/Reflection.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/Sender.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalEntityTracker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalEntityTracker.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalTrackerEntry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalTrackerEntry.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketReceiveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketReceiveEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketSendEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketSendEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketReceiveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketReceiveEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketSendEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketSendEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/PersonalEntityManagerImpl.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/PersonalEntityServiceImpl.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/TrackerPersonalEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/TrackerPersonalEntity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/PersonalEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/PersonalEntity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/EntityBuilders.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/EntityBuilders.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -902,7 +859,7 @@
       <workItem from="1752270118260" duration="46000" />
       <workItem from="1752270185257" duration="11564000" />
       <workItem from="1752428287636" duration="2790000" />
-      <workItem from="1752431963290" duration="564000" />
+      <workItem from="1752431963290" duration="5723000" />
     </task>
     <task id="LOCAL-00001" summary="Multi version support">
       <option name="closed" value="true" />
@@ -1056,7 +1013,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752432245358</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Many Reworks 2">
+      <option name="closed" value="true" />
+      <created>1752432604680</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1752432604680</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

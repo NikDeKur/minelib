@@ -11,6 +11,10 @@ interface PersonalEntityContext {
     val player: Player
 }
 
+data class SimplePersonalEntityContext(
+    override val player: Player
+) : PersonalEntityContext
+
 interface PersonalEntity<C : PersonalEntityContext> : Unique<UUID> {
 
     val world: World
