@@ -1,6 +1,6 @@
 package dev.nikdekur.minelib.v1_12_R1.packet.early
 
-import dev.nikdekur.minelib.v1_12_R1.nms.protocol.Sender
+import dev.nikdekur.minelib.v1_12_R1.protocol.Sender
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketEvent
 import io.netty.channel.Channel
 import net.minecraft.server.v1_12_R1.Packet

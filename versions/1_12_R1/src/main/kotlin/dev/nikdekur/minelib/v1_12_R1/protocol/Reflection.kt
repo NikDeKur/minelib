@@ -1,4 +1,4 @@
-package dev.nikdekur.minelib.v1_12_R1.nms.protocol
+package dev.nikdekur.minelib.v1_12_R1.protocol
 
 import org.bukkit.Bukkit
 import java.lang.reflect.Field

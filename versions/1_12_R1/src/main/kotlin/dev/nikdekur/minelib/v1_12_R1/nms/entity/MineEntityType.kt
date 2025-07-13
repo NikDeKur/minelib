@@ -1,6 +1,9 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.nikdekur.minelib.v1_12_R1.nms.entity
 
 import dev.nikdekur.minelib.nms.MineEntity
+import dev.nikdekur.minelib.v1_12_R1.nms.entity.MineEntityType.valueOf
 import dev.nikdekur.ndkore.ext.constructTyped
 import net.minecraft.server.v1_12_R1.*
 import org.bukkit.entity.EntityType
@@ -139,19 +142,22 @@ enum class MineEntityType(
 
     companion object {
         val ENTITY_DEFAULT_CONSTRUCTOR = arrayOf(World::class.java)
-        val BY_NMS_CLASS = HashMap<String, MineEntityType>().apply {
+        val BY_NMS_CLASS: Map<Class<out Entity>, MineEntityType> = buildMap {
             MineEntityType.entries.forEach {
                 val clazz = it.nmsClass ?: return@forEach
-                this[clazz.name] = it
+                this[clazz] = it
             }
         }
 
-        fun from(type: EntityType): MineEntityType {
+        inline fun from(type: EntityType): MineEntityType {
             return valueOf(type.name)
         }
 
-        fun fromNMS(entity: Entity): MineEntityType? {
-            return BY_NMS_CLASS[entity.javaClass.name]
+        inline fun fromEntityClass(clazz: Class<out Entity>): MineEntityType? {
+            return BY_NMS_CLASS[clazz]
         }
+
+        inline val Entity.type: MineEntityType
+            get() = fromEntityClass(javaClass) ?: MineEntityType.UNKNOWN
     }
 }

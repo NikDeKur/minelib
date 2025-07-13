@@ -1,10 +1,10 @@
-package dev.nikdekur.minelib.v1_12_R1.nms.protocol
+package dev.nikdekur.minelib.v1_12_R1.protocol
 
 import com.google.common.collect.MapMaker
 import com.mojang.authlib.GameProfile
 import dev.nikdekur.minelib.app.PluginApplication
-import dev.nikdekur.minelib.ext.bLogger
 import dev.nikdekur.minelib.ext.call
+import dev.nikdekur.minelib.ext.callEventIsCancelled
 import dev.nikdekur.minelib.service.PluginService
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketReceiveEvent
 import dev.nikdekur.minelib.v1_12_R1.packet.PacketSendEvent
@@ -14,13 +14,8 @@ import io.netty.channel.*
 import net.minecraft.server.v1_12_R1.Packet
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
 import java.util.*
-import java.util.logging.Level
-import kotlin.Throws
 
 /**
  * Represents a very tiny alternative to ProtocolLib.
@@ -28,11 +23,11 @@ import kotlin.Throws
  * It now supports intercepting packets during login and status ping (such as OUT_SERVER_PING)!
  *
  * @author Kristian
- * @author [Modified] Nik De Kur
+ * @author (Modified) Nik De Kur
  */
 open class InjectProtocolService(
     override val app: PluginApplication
-) : PluginService(), Listener {
+) : PluginService() {
 
     override suspend fun onEnable() {
         try {
@@ -40,11 +35,11 @@ open class InjectProtocolService(
             registerPlayers()
         } catch (_: IllegalArgumentException) {
             // Damn you, late bind
-            bLogger.info("[ProtocolModule] Delaying server channel injection due to late bind.")
-            app.scheduler.runTask {
+            logger.info { "[ProtocolModule] Delaying server channel injection due to late bind." }
+            app.bukkitScheduler.runTask {
                 registerChannelHandler()
                 registerPlayers()
-                bLogger.info("[ProtocolModule] Late bind injection successful.")
+                logger.info { "[ProtocolModule] Late bind injection successful." }
             }
         }
     }
@@ -64,7 +59,7 @@ open class InjectProtocolService(
     private val channelLookup: MutableMap<String, Channel> = MapMaker().weakValues().makeMap()
 
     // Channels that have already been removed
-    private val uninjectedChannels: MutableSet<Channel> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
+    val uninjectedChannels: MutableSet<Channel> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
 
     // List of network markers
     private var networkManagers: List<Any>? = null
@@ -89,7 +84,7 @@ open class InjectProtocolService(
                         channel.eventLoop().submit<PacketInterceptor> { injectChannelInternal(channel) }
                     }
                 } catch (e: Exception) {
-                    bLogger.log(Level.SEVERE, "Cannot inject incoming channel $channel", e)
+                    logger.error(e) { "Cannot inject incoming channel $channel" }
                 }
             }
         }
@@ -114,14 +109,8 @@ open class InjectProtocolService(
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerLogin(e: PlayerLoginEvent) {
-        val channel = getChannel(e.player)
 
-        // Don't inject players that have been explicitly uninjected
-        if (!uninjectedChannels.contains(channel)) {
-            injectPlayer(e.player)
-        }
     }
 
 
@@ -138,7 +127,7 @@ open class InjectProtocolService(
             @Suppress("UNCHECKED_CAST", "kotlin:S6531")
             networkManagers = field[serverConnection] as List<Any>
         } catch (ex: Exception) {
-            bLogger.info("Encountered an exception checking list fields$ex")
+            logger.info { "Encountered an exception checking list fields$ex" }
             val method =
                 Reflection.getTypedMethod(serverConnectionClass, null, MutableList::class.java, serverConnectionClass)
 
@@ -231,8 +220,8 @@ open class InjectProtocolService(
         else
             PacketReceiveEvent(sender, channel, packet)
 
-        event.call()
-        if (event.isCancelled) return null
+        if (event.callEventIsCancelled()) return null
+
         return event.packet
     }
 

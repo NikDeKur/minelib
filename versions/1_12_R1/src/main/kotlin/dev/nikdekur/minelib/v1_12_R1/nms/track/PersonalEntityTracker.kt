@@ -1,56 +1,72 @@
 package dev.nikdekur.minelib.v1_12_R1.nms.track
 
-import dev.nikdekur.minelib.v1_12_R1.pentity.TrackerPersonalEntity
 import dev.nikdekur.ndkore.ext.r_GetField
+import dev.nikdekur.ndkore.map.MutableMultiMap
+import dev.nikdekur.ndkore.map.put
+import dev.nikdekur.ndkore.map.remove
 import net.minecraft.server.v1_12_R1.Entity
 import net.minecraft.server.v1_12_R1.EntityTracker
 import net.minecraft.server.v1_12_R1.EntityTrackerEntry
+import net.minecraft.server.v1_12_R1.WorldServer
 import org.bukkit.entity.Player
-import java.util.*
 
-class PersonalEntityTracker(val pentity: TrackerPersonalEntity) {
+open class PersonalEntityTracker(
+    val world: WorldServer
+) {
 
-    val tracker: EntityTracker = pentity.worldNMS.tracker
+    val tracker: EntityTracker = world.tracker
 
     // Trackers Set
-    @Suppress("UNCHECKED_CAST")
-    val nmsEntries = tracker.r_GetField("c").value as MutableSet<EntityTrackerEntry>
+    val nmsTrackersSet: MutableSet<EntityTrackerEntry>
+        @Suppress("UNCHECKED_CAST")
+        get() = tracker.r_GetField("c").value as MutableSet<EntityTrackerEntry>
 
     // Shows what player actually must see
-    val viewMap = HashMap<Player, LinkedHashMap<Int, Entity>>()
+    val viewMap: MutableMultiMap<Player, Int, Entity> = HashMap()
 
     val viewers: Set<Player>
         get() = viewMap.keys
 
+    /**
+     * Creates a new tracker entry for the holder.
+     *
+     * EntityTracker contains values for render distance, update interval, and other settings.
+     * It's recommended to use [PersonalTrackerEntry.Companion.factory] to create a new tracker entry for specific entity types.
+     *
+     * @param player The player to create the tracker entry.
+     * @param entity The entity to create the tracker entry.
+     * @param spigotViewDistance The view distance from server.properties.
+     */
+    open fun newTrackerEntry(player: Player, entity: Entity, spigotViewDistance: Int): PersonalTrackerEntry {
+        return PersonalTrackerEntry.new(player, entity, spigotViewDistance)
+    }
 
     fun track(player: Player, entity: Entity) {
         // Spigot view distance from config
         val viewDistance = tracker.r_GetField("e").value as Int
 
-        viewMap.computeIfAbsent(player) { LinkedHashMap() }[entity.id] = entity
+        check(!tracker.trackedEntities.b(entity.id)) { "Entity is already tracked!" }
 
-        val trackEntry = pentity.newTrackerEntry(player, entity, viewDistance)
-        nmsEntries.add(trackEntry)
+        viewMap.put(player, entity.id, entity, ::linkedMapOf)
+
+        val trackEntry = newTrackerEntry(player, entity, viewDistance)
+        nmsTrackersSet.add(trackEntry)
+
+        // Register for NMS the entity in register,
+        // `a` is `put` for IntHashMap
         tracker.trackedEntities.a(entity.id, trackEntry)
+
         trackEntry.scan()
     }
 
 
 
     fun untrack(player: Player): Collection<Entity> {
-        val entities = viewMap[player] ?: return emptySet()
-
-        val copy = LinkedHashMap(entities)
-        copy.forEach { (id, entity) ->
-            tracker.untrackEntity(entity)
-            entities.remove(id)
-        }
-
-        if (entities.isEmpty())  {
-            viewMap.remove(player)
-        }
-
-        return copy.values
+        return getEntities(player)
+            .onEach { entity ->
+                tracker.untrackEntity(entity)
+                viewMap.remove(player, entity.id)
+            }
     }
 
 
@@ -62,26 +78,38 @@ class PersonalEntityTracker(val pentity: TrackerPersonalEntity) {
      * @return List of untracked entities.
      */
     fun untrackAll(): List<Entity> {
-        val entities = LinkedList(viewMap.values.map { it.values }).flatten()
-        HashSet(viewMap.keys).forEach(this::untrack)
+        val entities = viewMap.values.flatMap { it.values }
+        viewers.toSet().forEach(this::untrack)
         return entities
     }
 
 
-    fun isTracking(player: Player): Boolean {
+    fun isTrackingAnyEntities(player: Player): Boolean {
         return viewMap.containsKey(player)
     }
 
 
     fun reTrack(player: Player) {
-        val entities = viewMap[player]?.let { LinkedHashMap(it) }
-        if (entities.isNullOrEmpty()) return
+        // untrack will remove the player from the viewMap, so we need to get the entities first
+        val entities = getEntities(player)
+
         untrack(player)
-        entities.forEach { track(player, it.value) }
+
+        entities.forEach {
+            track(player, it)
+        }
     }
 
 
     fun updateAll() {
-        HashSet(viewMap.keys).forEach(this::reTrack)
+        viewers.toSet().forEach(this::reTrack)
+    }
+
+    fun getEntities(player: Player): Collection<Entity> {
+        return viewMap[player]?.values?.toSet() ?: emptySet()
+    }
+
+    fun getEntity(player: Player, entityId: Int): Entity? {
+        return viewMap[player]?.get(entityId)
     }
 }

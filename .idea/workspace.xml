@@ -1,0 +1,1176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b3cfc6ce-8f3f-4059-84cd-0ce1cea568db" name="Changes" comment="Many Reworks 2">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/config/CustomYamlRepresenter.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/config/SmartYamlConfiguration.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/ext/Equipment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastBoard.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastBoardBase.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/fastboard/FastReflection.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/gui/GUIListener.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/YamlBundleUtils.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/locale/LocaleProvider.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/sender/Contexts.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/RuntimePersonalEntityManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/pentity/RuntimePersonalEntityService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/plugin/SmartJavaPlugin.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scheduler/DelegatePluginScheduler.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scheduler/PluginScheduler.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/scoreboard/AssembleScoreboardService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/utils/TicksDurationSerializer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/VersionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/VersionAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/hologram/TrackHologram.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/entity/MineEntityType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/entity/MineEntityType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/InjectProtocolService.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/Reflection.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/protocol/Sender.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalEntityTracker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalEntityTracker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalTrackerEntry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/nms/track/PersonalTrackerEntry.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketReceiveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketReceiveEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketSendEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/PacketSendEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketReceiveEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketReceiveEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketSendEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/packet/early/EarlyPacketSendEvent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/PersonalEntityManagerImpl.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/PersonalEntityServiceImpl.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/TrackerPersonalEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/versions/1_12_R1/src/main/kotlin/dev/nikdekur/minelib/v1_12_R1/pentity/TrackerPersonalEntity.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/core">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/versions">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="minelib" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="minelib" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="minelib" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Enum" />
+        <option value="Kotlin Annotation" />
+        <option value="Kotlin Object" />
+        <option value="Kotlin Data Class" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin File" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;NikDeKur&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/NikDeKur/minelib.git&quot;,
+    &quot;accountId&quot;: &quot;31ef849b-f797-419f-890b-9ce4a95cf443&quot;
+  }
+}</component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12" javaHome="$USER_HOME$/.jdks/azul-23.0.2" gradleVersion="8.12" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.jdks/corretto-1.8.0_422/src.zip!/java/lang/System.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot-api/1.12.2-R0.1-SNAPSHOT/spigot-api-1.12.2-R0.1-SNAPSHOT.jar!/org/bukkit/command/CommandSender.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2drKRSHimdx6r7zChhDa1skGDjl" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build minelib.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.C:/codes/Java/Projects/NDKGlobal [jar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.DefaultDamageStrategyTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Load Gradle Dependencies.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.[build] minelib MAIN  .executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.[build] minelib TEST.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [assemble].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [jar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [publishToMavenLocal].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [shadowJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [updateDaemonJvm].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [updateLicenseMain publishToMavenLocal].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [updateLicenses publishToMavenLocal].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [updateLicenses publish].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib [updateLicenses shadowJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib:core [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib:core [shadowJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.minelib:versions [clean].executor&quot;: &quot;Run&quot;,
+    &quot;JAR Application.Go MineLib.executor&quot;: &quot;Run&quot;,
+    &quot;JavaClassFindUsagesOptions.isDerivedClasses&quot;: &quot;true&quot;,
+    &quot;JavaClassFindUsagesOptions.isFieldsUsages&quot;: &quot;true&quot;,
+    &quot;JavaClassFindUsagesOptions.isMethodsUsages&quot;: &quot;true&quot;,
+    &quot;JavaMethodFindUsagesOptions.isImplementingMethods&quot;: &quot;true&quot;,
+    &quot;JavaMethodFindUsagesOptions.isOverridingMethods&quot;: &quot;true&quot;,
+    &quot;JavaMethodFindUsagesOptions.isSearchForTextOccurrences&quot;: &quot;true&quot;,
+    &quot;Kotlin.DefaultDamageStrategyTestKt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.RPGBuffDataSerialTestKt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\nikdekur\\AppData\\Roaming\\JetBrains\\IntelliJIdea2024.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;external.system.task.project.file.to.start&quot;: &quot;C:/codes/Java/Projects/NDKGlobal&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JDK&quot;: &quot;corretto-21 (2)&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/codes/Java/Projects/minelib/core/src/main/kotlin/dev/nikdekur/minelib&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.16581371&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="Push.Settings">
+    <option name="SHOW_DETAILS_PANEL" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\codes\Java\Projects\minelib\core\src\main\kotlin\dev\nikdekur\minelib" />
+      <recent name="C:\codes\Java\Projects\minelib\versions\1_12_R1\src\main\kotlin\dev\nikdekur\minelib\v1_12_R1\pentity" />
+      <recent name="C:\codes\Java\Projects\minelib\core\src\main\kotlin\dev\nikdekur\minelib\pentity" />
+      <recent name="C:\codes\Java\Projects\minelib" />
+      <recent name="C:\codes\Java\Projects\minelib\versions\1_12_R1\src\main\kotlin\dev\nikdekur\minelib\event\packet" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\codes\Java\Projects\minelib\core\src\main\resources\translations\default" />
+      <recent name="C:\codes\Java\Projects\minelib\core" />
+      <recent name="C:\codes\Java\Projects\minelib\src\main\kotlin\org\ndk\minecraft\extension" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="org.ndk.minecraft" />
+      <recent name="org.ndk.minecraft.cooldown" />
+      <recent name="util" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="dev.nikdekur.minelib.i18n.locale" />
+      <recent name="dev.nikdekur.minelib.pentity" />
+      <recent name="dev.nikdekur.minelib.rpg.profile" />
+    </key>
+    <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="dev.nikdekur.minelib.i18n.sender" />
+      <recent name="dev.nikdekur.minelib.i18n" />
+      <recent name="dev.nikdekur.minelib.config" />
+      <recent name="dev.nikdekur.minelib.pentity" />
+      <recent name="dev.nikdekur.minelib.v1_12_R1" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.minelib [publishToMavenLocal]">
+    <configuration name="DefaultDamageStrategyTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":core:test" />
+            <option value="--tests" />
+            <option value="&quot;dev.nikdekur.minelib.rpg.strategy.DefaultDamageStrategyTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib MAIN  " type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib MAIN  " type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib MAIN  " type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib MAIN  " type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib TEST" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib TEST" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib TEST" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="[build] minelib TEST" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="updateLicenses" />
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [assemble]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="assemble" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--stacktrace" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="minelib:versions [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/versions" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Go MineLib" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/../../../Projects/ploader/build/libs/ploader-1.0.1.jar" />
+      <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=$PROJECT_DIR$/ploader/logback.xml" />
+      <option name="WORKING_DIRECTORY" value="C:\codes\Java\Projects\minelib\ploader" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="corretto-21" />
+      <method v="2">
+        <option name="Gradle.BeforeRunTask" enabled="false" tasks="shadowJar" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
+      </method>
+    </configuration>
+    <configuration name="DefaultDamageStrategyTestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dev.nikdekur.minelib.rpg.strategy.DefaultDamageStrategyTestKt" />
+      <module name="minelib.core.test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RPGBuffDataSerialTestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dev.nikdekur.minelib.rpg.strategy.RPGBuffDataSerialTestKt" />
+      <module name="minelib.core.test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RPGBuffDataSerialTestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dev.nikdekur.minelib.rpg.strategy.RPGBuffDataSerialTestKt" />
+      <module name="minelib.core.test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.[build] minelib MAIN  " />
+      <item itemvalue="Gradle.[build] minelib TEST" />
+      <item itemvalue="Gradle.DefaultDamageStrategyTest" />
+      <item itemvalue="Gradle.minelib [assemble]" />
+      <item itemvalue="Gradle.minelib [build]" />
+      <item itemvalue="Gradle.minelib [clean]" />
+      <item itemvalue="Gradle.minelib [publishToMavenLocal]" />
+      <item itemvalue="Gradle.minelib:versions [clean]" />
+      <item itemvalue="JAR Application.Go MineLib" />
+      <item itemvalue="Kotlin.DefaultDamageStrategyTestKt" />
+      <item itemvalue="Kotlin.RPGBuffDataSerialTestKt" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.minelib [publishToMavenLocal]" />
+        <item itemvalue="Gradle.minelib [assemble]" />
+        <item itemvalue="Gradle.minelib [clean]" />
+        <item itemvalue="Gradle.minelib [build]" />
+        <item itemvalue="Gradle.minelib:versions [clean]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23591.19" />
+        <option value="bundled-js-predefined-d6986cc7102b-6be00b7b0f42-JavaScript-IU-252.23591.19" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b3cfc6ce-8f3f-4059-84cd-0ce1cea568db" name="Changes" comment="" />
+      <created>1710760748753</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710760748753</updated>
+      <workItem from="1710760749821" duration="78000" />
+      <workItem from="1710765838645" duration="1486000" />
+      <workItem from="1710790434660" duration="73000" />
+      <workItem from="1710790581907" duration="2201000" />
+      <workItem from="1710792820206" duration="1774000" />
+      <workItem from="1710794659921" duration="41000" />
+      <workItem from="1710794702921" duration="1985000" />
+      <workItem from="1710796845426" duration="3862000" />
+      <workItem from="1710839133616" duration="3286000" />
+      <workItem from="1710846402233" duration="603000" />
+      <workItem from="1710851506360" duration="236000" />
+      <workItem from="1710855966207" duration="630000" />
+      <workItem from="1710867645940" duration="3997000" />
+      <workItem from="1722083320474" duration="2237000" />
+      <workItem from="1722086728176" duration="3724000" />
+      <workItem from="1722093362536" duration="196000" />
+      <workItem from="1722122112384" duration="1057000" />
+      <workItem from="1722159548244" duration="3749000" />
+      <workItem from="1722282473013" duration="571000" />
+      <workItem from="1722298274176" duration="589000" />
+      <workItem from="1722341462627" duration="1449000" />
+      <workItem from="1722366405025" duration="687000" />
+      <workItem from="1722373590752" duration="341000" />
+      <workItem from="1722374030388" duration="3234000" />
+      <workItem from="1722377956333" duration="9000" />
+      <workItem from="1722429445315" duration="2498000" />
+      <workItem from="1722470659697" duration="13000" />
+      <workItem from="1722470762768" duration="29000" />
+      <workItem from="1722601800637" duration="639000" />
+      <workItem from="1722631067882" duration="1924000" />
+      <workItem from="1722633454435" duration="1981000" />
+      <workItem from="1722635570044" duration="3595000" />
+      <workItem from="1722812293475" duration="997000" />
+      <workItem from="1722853101702" duration="3266000" />
+      <workItem from="1722859744204" duration="15040000" />
+      <workItem from="1722941116896" duration="5659000" />
+      <workItem from="1722971324309" duration="561000" />
+      <workItem from="1722983496306" duration="3640000" />
+      <workItem from="1723024232962" duration="7621000" />
+      <workItem from="1723060836070" duration="2511000" />
+      <workItem from="1723063832391" duration="11904000" />
+      <workItem from="1723105718190" duration="6541000" />
+      <workItem from="1723118852030" duration="835000" />
+      <workItem from="1723303084850" duration="3486000" />
+      <workItem from="1723309884598" duration="4543000" />
+      <workItem from="1723373588810" duration="348000" />
+      <workItem from="1723375581369" duration="6529000" />
+      <workItem from="1723460660998" duration="602000" />
+      <workItem from="1723466579214" duration="3253000" />
+      <workItem from="1723541570611" duration="24805000" />
+      <workItem from="1723656083090" duration="9511000" />
+      <workItem from="1723713860165" duration="1369000" />
+      <workItem from="1723715272569" duration="4718000" />
+      <workItem from="1723726757710" duration="1375000" />
+      <workItem from="1723733841077" duration="7409000" />
+      <workItem from="1723741867041" duration="5485000" />
+      <workItem from="1723758453899" duration="3145000" />
+      <workItem from="1723801046850" duration="12111000" />
+      <workItem from="1723891605800" duration="1453000" />
+      <workItem from="1723906787057" duration="5386000" />
+      <workItem from="1723918245271" duration="3694000" />
+      <workItem from="1723922157592" duration="8079000" />
+      <workItem from="1724100696637" duration="754000" />
+      <workItem from="1724157534090" duration="12495000" />
+      <workItem from="1724237957278" duration="4107000" />
+      <workItem from="1724245523794" duration="15125000" />
+      <workItem from="1724323089593" duration="11828000" />
+      <workItem from="1724349653373" duration="9761000" />
+      <workItem from="1724369231019" duration="384000" />
+      <workItem from="1724410508962" duration="4121000" />
+      <workItem from="1724432807811" duration="2745000" />
+      <workItem from="1724449174227" duration="2223000" />
+      <workItem from="1724453252073" duration="17000" />
+      <workItem from="1724459253668" duration="6000" />
+      <workItem from="1724702341818" duration="1506000" />
+      <workItem from="1724704748099" duration="1000" />
+      <workItem from="1724706216717" duration="358000" />
+      <workItem from="1724966937643" duration="9567000" />
+      <workItem from="1725021229939" duration="3171000" />
+      <workItem from="1725040043882" duration="12620000" />
+      <workItem from="1725102907297" duration="6510000" />
+      <workItem from="1725115070995" duration="4895000" />
+      <workItem from="1725147117536" duration="312000" />
+      <workItem from="1725209082439" duration="9634000" />
+      <workItem from="1725234228135" duration="2940000" />
+      <workItem from="1725271644711" duration="1733000" />
+      <workItem from="1725278506564" duration="944000" />
+      <workItem from="1725297993809" duration="9846000" />
+      <workItem from="1725357482242" duration="3288000" />
+      <workItem from="1725364590607" duration="574000" />
+      <workItem from="1725365180484" duration="4000" />
+      <workItem from="1725741473927" duration="5473000" />
+      <workItem from="1725793363868" duration="11332000" />
+      <workItem from="1725820293537" duration="6563000" />
+      <workItem from="1725877652354" duration="225000" />
+      <workItem from="1725878174569" duration="19000" />
+      <workItem from="1726509347119" duration="3770000" />
+      <workItem from="1726921418292" duration="909000" />
+      <workItem from="1726933675075" duration="1152000" />
+      <workItem from="1726934867057" duration="1100000" />
+      <workItem from="1726936088303" duration="2461000" />
+      <workItem from="1726947010703" duration="13000" />
+      <workItem from="1727041953395" duration="199000" />
+      <workItem from="1727191574248" duration="3587000" />
+      <workItem from="1727905982011" duration="347000" />
+      <workItem from="1734634108037" duration="2713000" />
+      <workItem from="1734695906361" duration="767000" />
+      <workItem from="1734705750373" duration="2121000" />
+      <workItem from="1734731171535" duration="2582000" />
+      <workItem from="1734735181310" duration="129000" />
+      <workItem from="1734735450624" duration="3714000" />
+      <workItem from="1734739695918" duration="54000" />
+      <workItem from="1734740232142" duration="1018000" />
+      <workItem from="1734781390090" duration="2260000" />
+      <workItem from="1734816237376" duration="4606000" />
+      <workItem from="1734869925542" duration="10994000" />
+      <workItem from="1734893072881" duration="3359000" />
+      <workItem from="1734958008544" duration="15720000" />
+      <workItem from="1734988367721" duration="16021000" />
+      <workItem from="1735041640958" duration="19497000" />
+      <workItem from="1735079851833" duration="2213000" />
+      <workItem from="1735151530301" duration="14810000" />
+      <workItem from="1735215728717" duration="2344000" />
+      <workItem from="1735238438451" duration="4731000" />
+      <workItem from="1735308696539" duration="1057000" />
+      <workItem from="1735332197422" duration="2075000" />
+      <workItem from="1735386906543" duration="8272000" />
+      <workItem from="1735422186057" duration="8328000" />
+      <workItem from="1735481384577" duration="283000" />
+      <workItem from="1735481717115" duration="1868000" />
+      <workItem from="1735506917952" duration="4750000" />
+      <workItem from="1735560447797" duration="11253000" />
+      <workItem from="1735649044596" duration="8250000" />
+      <workItem from="1735742538689" duration="4208000" />
+      <workItem from="1735767840286" duration="633000" />
+      <workItem from="1735822418714" duration="7775000" />
+      <workItem from="1735853702369" duration="1644000" />
+      <workItem from="1735919193363" duration="1124000" />
+      <workItem from="1735925763195" duration="411000" />
+      <workItem from="1736007657944" duration="3303000" />
+      <workItem from="1736422239003" duration="1966000" />
+      <workItem from="1736424627142" duration="13000" />
+      <workItem from="1736429164787" duration="741000" />
+      <workItem from="1736458987925" duration="11000" />
+      <workItem from="1736601049518" duration="13906000" />
+      <workItem from="1736687868529" duration="11171000" />
+      <workItem from="1736769180440" duration="2064000" />
+      <workItem from="1736785606752" duration="557000" />
+      <workItem from="1736801888061" duration="593000" />
+      <workItem from="1740178180584" duration="4326000" />
+      <workItem from="1740238580929" duration="3150000" />
+      <workItem from="1740396630887" duration="628000" />
+      <workItem from="1740423858352" duration="3016000" />
+      <workItem from="1740649676124" duration="4000" />
+      <workItem from="1740866918730" duration="739000" />
+      <workItem from="1740867943209" duration="298000" />
+      <workItem from="1740868266477" duration="4693000" />
+      <workItem from="1741022970072" duration="1934000" />
+      <workItem from="1741255307122" duration="15528000" />
+      <workItem from="1741370240762" duration="1913000" />
+      <workItem from="1741440146896" duration="1446000" />
+      <workItem from="1741447385867" duration="6000" />
+      <workItem from="1741536858013" duration="1345000" />
+      <workItem from="1741642371361" duration="1686000" />
+      <workItem from="1741719719368" duration="6733000" />
+      <workItem from="1742077165173" duration="10911000" />
+      <workItem from="1742144475864" duration="5803000" />
+      <workItem from="1742203521998" duration="6000" />
+      <workItem from="1742483007678" duration="755000" />
+      <workItem from="1749297530164" duration="2641000" />
+      <workItem from="1749658138663" duration="12000" />
+      <workItem from="1750190093678" duration="41000" />
+      <workItem from="1751233476358" duration="476000" />
+      <workItem from="1751280675449" duration="3174000" />
+      <workItem from="1751382232988" duration="497000" />
+      <workItem from="1751405615169" duration="980000" />
+      <workItem from="1751456849882" duration="760000" />
+      <workItem from="1751466574474" duration="3535000" />
+      <workItem from="1751567921445" duration="2348000" />
+      <workItem from="1751627251948" duration="1970000" />
+      <workItem from="1751657426765" duration="17000" />
+      <workItem from="1751799125384" duration="1182000" />
+      <workItem from="1752066964923" duration="492000" />
+      <workItem from="1752183427480" duration="1307000" />
+      <workItem from="1752237068057" duration="3551000" />
+      <workItem from="1752270118260" duration="46000" />
+      <workItem from="1752270185257" duration="11564000" />
+      <workItem from="1752428287636" duration="2790000" />
+      <workItem from="1752431963290" duration="564000" />
+    </task>
+    <task id="LOCAL-00001" summary="Multi version support">
+      <option name="closed" value="true" />
+      <created>1722943836185</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722943836185</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fix files">
+      <option name="closed" value="true" />
+      <created>1722959310140</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1722959310140</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Abstraction up">
+      <option name="closed" value="true" />
+      <created>1723303220345</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1723303220346</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Services System rework">
+      <option name="closed" value="true" />
+      <created>1723714091891</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1723714091891</updated>
+    </task>
+    <task id="LOCAL-00005" summary="reload command">
+      <option name="closed" value="true" />
+      <created>1723716369917</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1723716369917</updated>
+    </task>
+    <task id="LOCAL-00006" summary="commands rework">
+      <option name="closed" value="true" />
+      <created>1723809851889</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1723809851889</updated>
+    </task>
+    <task id="LOCAL-00007" summary="updates">
+      <option name="closed" value="true" />
+      <created>1724410785386</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1724410785386</updated>
+    </task>
+    <task id="LOCAL-00008" summary="RPG Alpha update">
+      <option name="closed" value="true" />
+      <created>1725115490468</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1725115490468</updated>
+    </task>
+    <task id="LOCAL-00009" summary="README created">
+      <option name="closed" value="true" />
+      <created>1725119356652</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1725119356652</updated>
+    </task>
+    <task id="LOCAL-00010" summary="README relevant version added, dependencies updated and bugs fixed">
+      <option name="closed" value="true" />
+      <created>1725147432537</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1725147432537</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Refactorings and rpg update">
+      <option name="closed" value="true" />
+      <created>1726509807253</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1726509807253</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Bug fixes">
+      <option name="closed" value="true" />
+      <created>1726513077621</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1726513077621</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Update dependencies">
+      <option name="closed" value="true" />
+      <created>1726939593375</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1726939593375</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Hot fix">
+      <option name="closed" value="true" />
+      <created>1726941150944</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1726941150944</updated>
+    </task>
+    <task id="LOCAL-00015" summary="command fixes">
+      <option name="closed" value="true" />
+      <created>1727193351520</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1727193351520</updated>
+    </task>
+    <task id="LOCAL-00016" summary="commands fix 2 and version up">
+      <option name="closed" value="true" />
+      <created>1727195289854</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1727195289854</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Massive rework to support ornament">
+      <option name="closed" value="true" />
+      <created>1735827339222</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1735827339222</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Many Reworks">
+      <option name="closed" value="true" />
+      <created>1752431621068</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1752431621068</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Many Reworks">
+      <option name="closed" value="true" />
+      <created>1752432245358</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1752432245358</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="multi" />
+    <MESSAGE value="Multi version support" />
+    <MESSAGE value="Fix files" />
+    <MESSAGE value="Abstraction up" />
+    <MESSAGE value="Services System rework" />
+    <MESSAGE value="reload command" />
+    <MESSAGE value="commands rework" />
+    <MESSAGE value="RPG Alpha update" />
+    <MESSAGE value="updates" />
+    <MESSAGE value="README created" />
+    <MESSAGE value="README relevant version added, dependencies updated and bugs fixed" />
+    <MESSAGE value="Refactorings and rpg update" />
+    <MESSAGE value="Bug fixes" />
+    <MESSAGE value="move to ndkore 1.4.0." />
+    <MESSAGE value="move to ndkore 1.4.0" />
+    <MESSAGE value="Update dependencies" />
+    <MESSAGE value="Hot fix" />
+    <MESSAGE value="command fixes" />
+    <MESSAGE value="commands fix 2 and version up" />
+    <MESSAGE value="Massive rework to support ornament" />
+    <MESSAGE value="Many Reworks" />
+    <MESSAGE value="Many Reworks 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Many Reworks 2" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$USER_HOME$/.gradle/caches/8.9/transforms/e55425167ddcae185209473b35b48f1b/transformed/unzipped-distribution/gradle-8.9/subprojects/core-api/src/main/java/org/gradle/api/artifacts/ConfigurationContainer.java</url>
+          <line>105</line>
+          <properties class="org.gradle.api.artifacts.ConfigurationContainer">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT-sources.jar!/org/bukkit/inventory/EntityEquipment.java</url>
+          <line>124</line>
+          <properties class="org.bukkit.inventory.EntityEquipment" method="getArmorContents">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT-sources.jar!/org/bukkit/attribute/Attributable.java</url>
+          <line>14</line>
+          <properties class="org.bukkit.attribute.Attributable" method="getAttribute">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT-sources.jar!/org/bukkit/configuration/file/FileConfiguration.java</url>
+          <line>104</line>
+          <properties class="org.bukkit.configuration.file.FileConfiguration" method="saveToString">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT-sources.jar!/org/bukkit/entity/Projectile.java</url>
+          <line>7</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/spigot-1.12.2-R0.1-SNAPSHOT-sources.jar!/org/bukkit/projectiles/ProjectileSource.java</url>
+          <line>8</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ExceptionInInitializerError" package="java.lang" />
+          <option name="timeStamp" value="9" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-function">
+          <url>file://$PROJECT_DIR$/core/src/main/kotlin/dev/nikdekur/minelib/i18n/I18nService.kt</url>
+          <line>22</line>
+          <properties class="dev.nikdekur.minelib.i18n.I18nService" method="saveBundle">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

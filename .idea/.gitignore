@@ -1,20 +1,17 @@
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/
+.idea
 *.iws
 *.iml
 *.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+HEADER
 
 ### Eclipse ###
 .apt_generated
@@ -41,11 +38,9 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### PLoader ###
-ploader/
-ploader
-
-
-### Kotlin ###
+### Gradle ###
+.gradle/
 .kotlin/
-.kotlin
+build/
+**/build/*
+!**/build/generated/

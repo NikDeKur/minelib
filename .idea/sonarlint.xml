@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SonarLintProjectSettings">
+    <option name="moduleMapping">
+      <map>
+        <entry key="minelib.versions.1_12_R1" value="minelib.versions.1_12_2" />
+      </map>
+    </option>
+  </component>
+</project>
